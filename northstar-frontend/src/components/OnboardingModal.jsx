@@ -74,7 +74,7 @@ function StepFirstSteps() {
           <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{ color: "var(--c)", textDecoration: "none", borderBottom: "1px solid var(--c)55" }}>
             Anthropic API key
           </a>{" "}
-          — this is required for all AI features. Without it, nothing will run.
+          — this is required for all AI features. Anthropic requires a minimum $5 credit top-up to activate API access. In practice, a weekly sync costs a few cents, so $5 lasts a long time.
         </>
       ),
     },

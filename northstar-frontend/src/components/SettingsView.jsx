@@ -104,7 +104,7 @@ function ApiKeysSettings() {
       )}
       <KeyRow
         label="ANTHROPIC API KEY"
-        hint="Required for all AI features. Get yours at"
+        hint="Required for all AI features. Anthropic requires a minimum $5 credit top-up to activate API access — a weekly sync costs a few cents, so it lasts a long time. Get yours at"
         hintUrl="https://console.anthropic.com"
         value={anthropicVal}
         onChange={setAnthropicVal}
