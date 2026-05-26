@@ -1,0 +1,55 @@
+{
+  "name": "northstar",
+  "version": "1.0.0",
+  "description": "Northstar - Personal Development OS",
+  "main": "electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix northstar-frontend\" \"npm run dev --prefix northstar-backend\"",
+    "electron:dev": "electron .",
+    "start": "concurrently \"npm run dev --prefix northstar-frontend\" \"npm run dev --prefix northstar-backend\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "npm run build --prefix northstar-frontend",
+    "package": "npm run build && electron-builder"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "electron": "^36.0.0",
+    "electron-builder": "^25.0.0",
+    "wait-on": "^9.0.5"
+  },
+  "build": {
+    "appId": "com.kasra.northstar",
+    "productName": "Northstar",
+    "asar": false,
+    "files": [
+      "electron/**/*",
+      "northstar-frontend/dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "northstar-backend",
+        "to": "backend",
+        "filter": [
+          "**/*",
+          "!data/**",
+          "!.env",
+          "!node_modules/.cache/**"
+        ]
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+node_modules/
+
+# Your Anthropic API key — never commit this
+.env
+
+# Your personal northstar data
+data/
+
+# macOS noise
+.DS_Store

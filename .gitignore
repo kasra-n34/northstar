@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+northstar-frontend/dist/
+
+# Secrets — never commit
+.env
+**/.env
+
+# Personal data
+northstar-backend/data/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
