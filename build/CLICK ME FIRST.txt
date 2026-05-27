@@ -1,0 +1,19 @@
+NORTHSTAR — Personal Development OS
+=====================================
+
+Northstar is a personal productivity app for tracking your growth across
+life pillars: career, health, relationships, finance, and more.
+
+
+INSTALLATION
+------------
+1. Drag Northstar to the Applications folder
+2. Double-click "Install Northstar" to finish setup
+   (This removes a Mac security restriction for unsigned apps)
+3. Open Northstar from your Applications folder
+
+
+REQUIREMENTS
+------------
+• Mac with Apple Silicon (M1 / M2 / M3 / M4)
+• macOS 12 or later
