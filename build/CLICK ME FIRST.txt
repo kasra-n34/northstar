@@ -8,8 +8,13 @@ life pillars: career, health, relationships, finance, and more.
 INSTALLATION
 ------------
 1. Drag Northstar to the Applications folder
-2. Double-click "Install Northstar" to finish setup
-   (This removes a Mac security restriction for unsigned apps)
+
+2. Open Terminal (search "Terminal" in Spotlight) and paste this command:
+
+      xattr -cr /Applications/Northstar.app
+
+   Then press Enter.
+
 3. Open Northstar from your Applications folder
 
 
