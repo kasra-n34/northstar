@@ -21,6 +21,7 @@
     "appId": "com.kasra.northstar",
     "productName": "Northstar",
     "asar": false,
+    "publish": null,
     "files": [
       "electron/**/*",
       "northstar-frontend/dist/**/*"
@@ -54,6 +55,14 @@
             "arm64"
           ]
         }
+      ]
+    },
+    "dmg": {
+      "window": { "width": 660, "height": 520 },
+      "contents": [
+        { "x": 150, "y": 160 },
+        { "x": 510, "y": 160, "type": "link", "path": "/Applications" },
+        { "x": 330, "y": 310, "type": "file", "path": "build/CLICK ME FIRST.txt" }
       ]
     },
     "win": {
