@@ -21,6 +21,7 @@
     "appId": "com.kasra.northstar",
     "productName": "Northstar",
     "asar": false,
+    "publish": null,
     "files": [
       "electron/**/*",
       "northstar-frontend/dist/**/*"
