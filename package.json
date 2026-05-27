@@ -33,7 +33,15 @@
           "**/*",
           "!data/**",
           "!.env",
-          "!node_modules/.cache/**"
+          "!node_modules/.cache/**",
+          "!node_modules/vitest/**",
+          "!node_modules/@vitest/**",
+          "!node_modules/@rolldown/**",
+          "!node_modules/tinyrainbow/**",
+          "!node_modules/tinypool/**",
+          "!node_modules/vite/**",
+          "!node_modules/@vite/**",
+          "!node_modules/.bin/**"
         ]
       }
     ],

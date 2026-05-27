@@ -256,10 +256,11 @@ app.post("/api/config", async (req, res) => {
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 
-app.get("/api/health", (req, res) => {
+app.get("/api/health", async (req, res) => {
+  const config = await readConfig();
   res.json({
     ok: true,
-    apiKeySet: !!process.env.ANTHROPIC_API_KEY,
+    apiKeySet: !!(config.anthropicKey || process.env.ANTHROPIC_API_KEY),
     timestamp: new Date().toISOString(),
   });
 });

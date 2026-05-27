@@ -25,10 +25,14 @@ import TermsView  from "./components/TermsView";
 function BackendStatus() {
   const [status, setStatus] = useState("checking");
   useEffect(() => {
-    fetch(`${BACKEND}/api/health`)
-      .then(r => r.json())
-      .then(d => setStatus(d.apiKeySet ? "ok" : "no_key"))
-      .catch(() => setStatus("error"));
+    const check = () =>
+      fetch(`${BACKEND}/api/health`)
+        .then(r => r.json())
+        .then(d => setStatus(d.apiKeySet ? "ok" : "no_key"))
+        .catch(() => setStatus("error"));
+    check();
+    const id = setInterval(check, 3000);
+    return () => clearInterval(id);
   }, []);
   if (status === "ok") return null;
   const msg = {
