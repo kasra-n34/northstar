@@ -30,7 +30,7 @@ jobs:
       - name: Build and package (Mac)
         run: npm run package
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EP_PUBLISH: never
 
       - name: Upload Mac DMG
         uses: softprops/action-gh-release@v2
@@ -60,7 +60,7 @@ jobs:
       - name: Build and package (Windows)
         run: npm run package
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EP_PUBLISH: never
 
       - name: Upload Windows installer
         uses: softprops/action-gh-release@v2
