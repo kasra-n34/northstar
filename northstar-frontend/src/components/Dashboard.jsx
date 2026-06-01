@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { PILLARS, ONE_WEEK_MS, BACKEND } from "../constants";
 import { Mono, Tag, PillarDot, DiffTag, ScoreBar, ScoreSparkline } from "./ui";
-import { isSunday, checkinDoneThisWeek, getNextSunday } from "../prompts";
+import { isSunday, isMonday, checkinDoneThisWeek, getNextSunday } from "../prompts";
 
 function TrendsSection({ state }) {
   const { analyses = {}, weeklyLogs = [], missions = [], completedMissions = [], missionCompletedAt = {} } = state;
@@ -197,10 +197,12 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
 
   // Sunday-aware check-in status
   const todayIsSunday  = isSunday();
+  const todayIsMonday  = isMonday();
   const doneThisWeek   = checkinDoneThisWeek(state.lastInterviewDate);
   const nextSunday     = getNextSunday();
   const daysUntilNext  = Math.ceil((nextSunday - now) / (1000 * 60 * 60 * 24));
-  const interviewDue   = todayIsSunday && !doneThisWeek && Object.keys(analyses).length > 0;
+  const missedCheckin  = todayIsMonday && !doneThisWeek && Object.keys(analyses).length > 0;
+  const interviewDue   = (todayIsSunday || todayIsMonday) && !doneThisWeek && Object.keys(analyses).length > 0;
 
   const recentLogs   = [...weeklyLogs].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
 
@@ -318,24 +320,32 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
 
       {/* Check-in status */}
       {Object.keys(analyses).length > 0 && (
-        <div className="fu1" style={{ background: interviewDue ? "var(--c)0D" : doneThisWeek ? "var(--g)0D" : "var(--bg2)", border: `1px solid ${interviewDue ? "var(--c)44" : doneThisWeek ? "var(--g)33" : "var(--border)"}`, padding: 20, position: "relative", overflow: "hidden" }}>
-          {interviewDue && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--c),transparent)" }} />}
+        <div className="fu1" style={{ background: missedCheckin ? "var(--o)0D" : interviewDue ? "var(--c)0D" : doneThisWeek ? "var(--g)0D" : "var(--bg2)", border: `1px solid ${missedCheckin ? "var(--o)44" : interviewDue ? "var(--c)44" : doneThisWeek ? "var(--g)33" : "var(--border)"}`, padding: 20, position: "relative", overflow: "hidden" }}>
+          {interviewDue && !missedCheckin && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--c),transparent)" }} />}
+          {missedCheckin && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--o),transparent)" }} />}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
             <div style={{ flex: 1 }}>
-              <Mono s={{ fontSize: 9, color: interviewDue ? "var(--c)" : doneThisWeek ? "var(--g)" : "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>
-                {interviewDue ? "⟳ SUNDAY CHECK-IN READY" : doneThisWeek ? "✓ THIS WEEK COMPLETE" : "⟳ WEEKLY CHECK-IN"}
+              <Mono s={{ fontSize: 9, color: missedCheckin ? "var(--o)" : interviewDue ? "var(--c)" : doneThisWeek ? "var(--g)" : "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>
+                {missedCheckin ? "⟳ MISSED YOUR CHECK-IN?" : interviewDue ? "⟳ SUNDAY CHECK-IN READY" : doneThisWeek ? "✓ THIS WEEK COMPLETE" : "⟳ WEEKLY CHECK-IN"}
               </Mono>
-              {interviewDue
-                ? <div style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.5 }}>Today is Sunday. Time for your weekly pulse — upload fresh data, answer 7 questions, and Northstar will update your pillars and generate new missions.</div>
-                : doneThisWeek
-                  ? <div style={{ fontSize: 13, color: "var(--text2)" }}>Done. Next check-in is <span style={{ color: "var(--c)" }}>Sunday {nextSunday.toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</span> — {daysUntilNext} day{daysUntilNext !== 1 ? "s" : ""} away.</div>
-                  : weeklyLogs.length === 0
-                    ? <div style={{ fontSize: 13, color: "var(--text2)" }}>Complete your first weekly check-in on a Sunday once your pillars are set up.</div>
-                    : <div style={{ fontSize: 13, color: "var(--text2)" }}>Next check-in: <span style={{ color: "var(--c)" }}>Sunday {nextSunday.toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</span> · {daysUntilNext} day{daysUntilNext !== 1 ? "s" : ""} away. Last: {new Date(state.lastInterviewDate).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}.</div>
+              {missedCheckin
+                ? <div style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.5 }}>No worries — you can still complete Sunday's check-in today. It only takes ~3 minutes.</div>
+                : interviewDue
+                  ? <div style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.5 }}>Today is Sunday. Time for your weekly pulse — upload fresh data, answer 7 questions, and Northstar will update your pillars and generate new missions.</div>
+                  : doneThisWeek
+                    ? <div style={{ fontSize: 13, color: "var(--text2)" }}>Done. Next check-in is <span style={{ color: "var(--c)" }}>Sunday {nextSunday.toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</span> — {daysUntilNext} day{daysUntilNext !== 1 ? "s" : ""} away.</div>
+                    : weeklyLogs.length === 0
+                      ? <div style={{ fontSize: 13, color: "var(--text2)" }}>Complete your first weekly check-in on a Sunday once your pillars are set up.</div>
+                      : <div style={{ fontSize: 13, color: "var(--text2)" }}>Next check-in: <span style={{ color: "var(--c)" }}>Sunday {nextSunday.toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</span> · {daysUntilNext} day{daysUntilNext !== 1 ? "s" : ""} away. Last: {new Date(state.lastInterviewDate).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}.</div>
               }
             </div>
-            {interviewDue && (
+            {interviewDue && !missedCheckin && (
               <button onClick={() => onNav("interview")} style={{ background: "var(--c)", color: "#000", border: "none", padding: "10px 18px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, flexShrink: 0, fontWeight: 500 }}>
+                BEGIN →
+              </button>
+            )}
+            {missedCheckin && (
+              <button onClick={() => onNav("interview")} style={{ background: "var(--o)", color: "#000", border: "none", padding: "10px 18px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, flexShrink: 0, fontWeight: 500 }}>
                 BEGIN →
               </button>
             )}

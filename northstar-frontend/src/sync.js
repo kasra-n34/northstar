@@ -106,6 +106,7 @@ export function computeAlgorithmicScore(pillarId, prevScore, missions, completed
   const ONE_WEEK_AGO = Date.now() - 7 * 24 * 60 * 60 * 1000;
   const now = Date.now();
   let delta = 0;
+  const overdueMissions = [];
 
   // Recurring habits (progress resets weekly — progressCount reflects this week)
   for (const m of (recurringMissions || []).filter(m => m.pillar === pillarId)) {
@@ -122,6 +123,8 @@ export function computeAlgorithmicScore(pillarId, prevScore, missions, completed
     const isCompleted     = (completedMissions || []).includes(m.id);
     const completedThisWk = isCompleted && missionCompletedAt?.[m.id] && new Date(missionCompletedAt[m.id]).getTime() > ONE_WEEK_AGO;
     const isOverdue       = !isCompleted && m.deadlineDate && new Date(m.deadlineDate).getTime() < now;
+
+    if (isOverdue) overdueMissions.push(m.title);
 
     if (m.missionType === "counted") {
       const pct = Math.min(1, (m.progressCount || 0) / Math.max(1, m.targetCount || 1));
@@ -143,7 +146,7 @@ export function computeAlgorithmicScore(pillarId, prevScore, missions, completed
 
   // Cap total swing per sync cycle
   delta = Math.max(-10, Math.min(10, delta));
-  return { baseScore: Math.max(1, Math.min(100, prevScore + delta)), delta, prevScore };
+  return { baseScore: Math.max(1, Math.min(100, prevScore + delta)), delta, prevScore, overdueMissions };
 }
 
 export async function runSync(state, onStep, onUpdate) {
@@ -261,8 +264,13 @@ export async function runSync(state, onStep, onUpdate) {
       analyses[pillar.id]?.priorityScore,
       missions, completedMissions, missionCompletedAt, recurringMissions
     );
+    const scoringFactors = scoreInfo ? [
+      "recurring habit completion",
+      "task completions",
+      ...(scoreInfo.overdueMissions.length > 0 ? [`overdue tasks (${scoreInfo.overdueMissions.join(", ")})`] : []),
+    ].join(", ") : "";
     const scoringCtx = scoreInfo
-      ? `SCORING BASELINE: Previous score ${scoreInfo.prevScore}/100. Mission-based delta this week: ${scoreInfo.delta > 0 ? "+" : ""}${scoreInfo.delta} pts (recurring habit completion, task completions, overdue tasks). Computed base score: ${scoreInfo.baseScore}/100. You MUST set priorityScore within [${Math.max(1, scoreInfo.baseScore - 6)}, ${Math.min(100, scoreInfo.baseScore + 6)}] — your only freedom is a ±6 qualitative adjustment on top of the computed base.`
+      ? `SCORING BASELINE: Previous score ${scoreInfo.prevScore}/100. Mission-based delta this week: ${scoreInfo.delta > 0 ? "+" : ""}${scoreInfo.delta} pts (${scoringFactors}). Computed base score: ${scoreInfo.baseScore}/100. You MUST set priorityScore within [${Math.max(1, scoreInfo.baseScore - 6)}, ${Math.min(100, scoreInfo.baseScore + 6)}] — your only freedom is a ±6 qualitative adjustment on top of the computed base.${scoreInfo.overdueMissions.length === 0 ? " There are currently no overdue missions." : ""}`
       : "SCORING: No score history — set priorityScore freely based on your full assessment (1–100).";
 
     const pillarHistoryCtx = buildPillarHistoryCtx(pillar.id, weeklyLogs, retentionWeeks);

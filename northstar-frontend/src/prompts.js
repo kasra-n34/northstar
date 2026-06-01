@@ -85,6 +85,11 @@ export function isSunday() {
   return new Date().getDay() === 0;
 }
 
+// Is it Monday today?
+export function isMonday() {
+  return new Date().getDay() === 1;
+}
+
 // Has the check-in been done this Sunday?
 export function checkinDoneThisWeek(lastInterviewDate) {
   if (!lastInterviewDate) return false;

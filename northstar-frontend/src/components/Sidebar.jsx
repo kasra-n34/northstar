@@ -1,6 +1,6 @@
 import { PILLARS, NAV, ONE_WEEK_MS } from "../constants";
 import { Mono } from "./ui";
-import { checkinDoneThisWeek, isSunday } from "../prompts";
+import { checkinDoneThisWeek, isSunday, isMonday } from "../prompts";
 import logoIcon from "../../assets/Northstar-2-removebg-preview.png";
 
 export default function Sidebar({ active, onNav, state }) {
@@ -9,7 +9,8 @@ export default function Sidebar({ active, onNav, state }) {
   const metaAge        = state.lastMetaDate ? Date.now() - new Date(state.lastMetaDate).getTime() : Infinity;
   const metaStale      = metaAge > ONE_WEEK_MS;
   const hasProfile     = state.userProfile && Object.keys(state.userProfile).length > 0;
-  const interviewDue = isSunday() && !checkinDoneThisWeek(state.lastInterviewDate) && Object.keys(state.analyses || {}).length > 0;
+  const checkinMissed = !checkinDoneThisWeek(state.lastInterviewDate) && Object.keys(state.analyses || {}).length > 0;
+  const interviewDue = (isSunday() || isMonday()) && checkinMissed;
 
   return (
     <div style={{ width: 196, flexShrink: 0, background: "var(--bg1)", borderRight: "1px solid var(--border)", display: "flex", flexDirection: "column", height: "100vh" }}>

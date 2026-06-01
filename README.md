@@ -4,6 +4,8 @@ A local-first personal development app built on Claude. All data stays on your m
 
 ---
 
+![northstar homescreen](assets/homescreen.png)
+
 ## Repo structure
 
 ```

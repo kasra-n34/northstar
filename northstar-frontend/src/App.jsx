@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
 import { PILLARS, EMPTY_STATE, BACKEND } from "./constants";
-import { getLastSunday } from "./prompts";
+import { getLastSunday, isMonday, checkinDoneThisWeek } from "./prompts";
 import { loadState, scheduleSave, pruneAndCompressLogs } from "./storage";
 import { runSync } from "./sync";
 
@@ -118,9 +118,14 @@ export default function App() {
   // ── Load & save ──────────────────────────────────────────────────────────────
   useEffect(() => {
     loadState().then(s => {
-      // Reset recurring mission progress if we've passed Sunday midnight since last reset
+      // Reset recurring mission progress if we've passed Sunday midnight since last reset.
+      // Exception: on Monday, if the check-in wasn't done yet, preserve last week's progress
+      // so the Monday catch-up check-in still sees accurate data. The reset fires after the
+      // check-in is saved (see saveLog), or on Tuesday regardless.
       const lastSunday = getLastSunday();
+      const mondayMissed = isMonday() && !checkinDoneThisWeek(s.lastInterviewDate);
       const recurring = (s.recurringMissions || []).map(m => {
+        if (mondayMissed) return m;
         const lastReset = m.lastResetWeek ? new Date(m.lastResetWeek) : null;
         if (!lastReset || lastReset < lastSunday) {
           return { ...m, progressCount: 0, lastResetWeek: lastSunday.toISOString() };
@@ -227,11 +232,16 @@ export default function App() {
     return { ...s, missions, completedMissions: trimmed, missionCompletedAt: prunedAt };
   }), [upd]);
   const uncomplete = useCallback(id => upd(s => ({ ...s, completedMissions: (s.completedMissions || []).filter(x => x !== id) })), [upd]);
-  const deleteMission = useCallback(id => upd(s => ({
-    ...s,
-    missions: (s.missions || []).filter(m => m.id !== id),
-    completedMissions: (s.completedMissions || []).filter(x => x !== id),
-  })), [upd]);
+  const deleteMission = useCallback(id => upd(s => {
+    const missionCompletedAt = { ...(s.missionCompletedAt || {}) };
+    delete missionCompletedAt[id];
+    return {
+      ...s,
+      missions: (s.missions || []).filter(m => m.id !== id),
+      completedMissions: (s.completedMissions || []).filter(x => x !== id),
+      missionCompletedAt,
+    };
+  }), [upd]);
 
   // Increment progress on a counted/recurring mission; auto-complete if standard mission hits target
   const incrementProgress = useCallback((id, delta = 1) => upd(s => {
@@ -328,7 +338,19 @@ export default function App() {
   const saveLog = useCallback(log => {
     upd(s => {
       const pruned = pruneAndCompressLogs([...(s.weeklyLogs || []), log], s.retentionWeeks || 4);
-      return { ...s, weeklyLogs: pruned, lastInterviewDate: log.date };
+      // If this check-in was done on Monday (catch-up), reset recurring missions now
+      // since we held off on the reset during app load to preserve last week's data.
+      const lastSunday = getLastSunday();
+      const recurringMissions = isMonday()
+        ? (s.recurringMissions || []).map(m => {
+            const lastReset = m.lastResetWeek ? new Date(m.lastResetWeek) : null;
+            if (!lastReset || lastReset < lastSunday) {
+              return { ...m, progressCount: 0, lastResetWeek: lastSunday.toISOString() };
+            }
+            return m;
+          })
+        : s.recurringMissions;
+      return { ...s, weeklyLogs: pruned, lastInterviewDate: log.date, recurringMissions };
     });
   }, [upd]);
 
@@ -379,11 +401,19 @@ export default function App() {
   }, [upd]);
 
   const deleteMissionById = useCallback(idOrAll => {
-    upd(s => ({
-      ...s,
-      missions: idOrAll === "all" ? [] : (s.missions || []).filter(m => m.id !== idOrAll),
-      completedMissions: idOrAll === "all" ? [] : (s.completedMissions || []).filter(x => x !== idOrAll),
-    }));
+    upd(s => {
+      if (idOrAll === "all") {
+        return { ...s, missions: [], completedMissions: [], missionCompletedAt: {} };
+      }
+      const missionCompletedAt = { ...(s.missionCompletedAt || {}) };
+      delete missionCompletedAt[idOrAll];
+      return {
+        ...s,
+        missions: (s.missions || []).filter(m => m.id !== idOrAll),
+        completedMissions: (s.completedMissions || []).filter(x => x !== idOrAll),
+        missionCompletedAt,
+      };
+    });
   }, [upd]);
 
   const addPendingMissions = useCallback(ms => upd(s => ({

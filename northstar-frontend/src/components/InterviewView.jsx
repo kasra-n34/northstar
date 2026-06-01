@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { PILLARS, LOG_RETENTION_WEEKS } from "../constants";
 import { callClaude, parseJSON } from "../api";
-import { INTERVIEW_SYS, buildInterviewQuestions, isSunday, checkinDoneThisWeek, getNextSunday } from "../prompts";
+import { INTERVIEW_SYS, buildInterviewQuestions, isSunday, isMonday, checkinDoneThisWeek, getNextSunday } from "../prompts";
 import { Mono, Tag, PillarDot, DiffTag } from "./ui";
 import { parseInstagramConnectionsZip, parseHevyCSV } from "./IntegrationsView";
 
@@ -206,6 +206,8 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
   const sortedLogs  = [...weeklyLogs].sort((a, b) => new Date(b.date) - new Date(a.date));
   const doneThisWeek= checkinDoneThisWeek(lastInterviewDate);
   const todayIsSunday = isSunday();
+  const todayIsMonday = isMonday();
+  const missedCheckin = todayIsMonday && !doneThisWeek;
   const nextSunday  = getNextSunday();
   const daysUntil   = Math.ceil((nextSunday - new Date()) / (1000 * 60 * 60 * 24));
   const canInterview= Object.keys(analyses).length > 0;
@@ -417,7 +419,9 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
               ? <span style={{ color: "var(--g)" }}>✓ Done this week · Next Sunday {nextSunday.toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</span>
               : todayIsSunday
                 ? <span style={{ color: "var(--c)" }}>Today is Sunday — your check-in is ready</span>
-                : <span>Next check-in: <strong>Sunday {nextSunday.toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</strong> · {daysUntil} day{daysUntil !== 1 ? "s" : ""} away</span>
+                : missedCheckin
+                  ? <span style={{ color: "var(--o)" }}>Missed yesterday's check-in? You can still do it today.</span>
+                  : <span>Next check-in: <strong>Sunday {nextSunday.toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</strong> · {daysUntil} day{daysUntil !== 1 ? "s" : ""} away</span>
             }
           </div>
         </div>
@@ -443,19 +447,22 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
         <div style={{ maxWidth: 704, display: "flex", flexDirection: "column", gap: 20 }}>
 
           {/* Status card */}
-          <div style={{ background: doneThisWeek ? "var(--g)0D" : todayIsSunday ? "var(--c)0D" : "var(--bg2)", border: `1px solid ${doneThisWeek ? "var(--g)44" : todayIsSunday ? "var(--c)44" : "var(--border)"}`, padding: 20, position: "relative", overflow: "hidden" }}>
-            {todayIsSunday && !doneThisWeek && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--c),transparent)" }} />}
+          <div style={{ background: doneThisWeek ? "var(--g)0D" : todayIsSunday ? "var(--c)0D" : missedCheckin ? "var(--o)0D" : "var(--bg2)", border: `1px solid ${doneThisWeek ? "var(--g)44" : todayIsSunday ? "var(--c)44" : missedCheckin ? "var(--o)44" : "var(--border)"}`, padding: 20, position: "relative", overflow: "hidden" }}>
+            {(todayIsSunday && !doneThisWeek) && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--c),transparent)" }} />}
+            {missedCheckin && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--o),transparent)" }} />}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
               <div style={{ flex: 1 }}>
-                <Mono s={{ fontSize: 9, color: doneThisWeek ? "var(--g)" : todayIsSunday ? "var(--c)" : "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>
-                  {doneThisWeek ? "✓ THIS WEEK COMPLETE" : todayIsSunday ? "TODAY IS CHECK-IN DAY" : "SCHEDULED FOR SUNDAY"}
+                <Mono s={{ fontSize: 9, color: doneThisWeek ? "var(--g)" : todayIsSunday ? "var(--c)" : missedCheckin ? "var(--o)" : "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>
+                  {doneThisWeek ? "✓ THIS WEEK COMPLETE" : todayIsSunday ? "TODAY IS CHECK-IN DAY" : missedCheckin ? "MISSED YOUR CHECK-IN?" : "SCHEDULED FOR SUNDAY"}
                 </Mono>
                 <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.5 }}>
                   {doneThisWeek
                     ? `You completed this week's review. Next one is Sunday ${nextSunday.toLocaleDateString("en-CA", { month: "long", day: "numeric" })}.`
                     : todayIsSunday
                       ? `${questions.length} questions, ~3 minutes. northstar compares against your previous ${Math.min(sortedLogs.length, 4)} weeks and generates updated missions.`
-                      : `Check-ins happen every Sunday. Come back in ${daysUntil} day${daysUntil !== 1 ? "s" : ""}, or do it early below.`
+                      : missedCheckin
+                        ? `No worries — you can still complete Sunday's check-in today. ${questions.length} questions, ~3 minutes.`
+                        : `Check-ins happen every Sunday. Come back in ${daysUntil} day${daysUntil !== 1 ? "s" : ""}, or do it early below.`
                   }
                 </div>
               </div>
@@ -464,11 +471,16 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                   BEGIN →
                 </button>
               )}
+              {missedCheckin && (
+                <button onClick={() => { setPhase("data-refresh"); }} style={{ background: "var(--o)", color: "#000", border: "none", padding: "12px 22px", fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: 2, fontWeight: 500, flexShrink: 0 }}>
+                  BEGIN →
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Early / redo option when not Sunday */}
-          {(!todayIsSunday || doneThisWeek) && (
+          {/* Early / redo option when not Sunday and not Monday missed */}
+          {(!todayIsSunday && !missedCheckin || doneThisWeek) && (
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <button onClick={() => { setPhase("interview"); setCurrentQ(0); setAnswers({}); }} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text2)", padding: "8px 16px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>
                 {doneThisWeek ? "↺ REDO THIS WEEK'S CHECK-IN" : "DO IT EARLY →"}
