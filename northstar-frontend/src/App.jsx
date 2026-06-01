@@ -43,7 +43,7 @@ function BackendStatus() {
   return (
     <div style={{ position: "fixed", bottom: 16, right: 16, background: "var(--bg2)", border: `1px solid ${msg.color}55`, padding: "10px 16px", zIndex: 999, display: "flex", alignItems: "center", gap: 10, maxWidth: 420 }}>
       <span style={{ width: 7, height: 7, borderRadius: "50%", background: msg.color, flexShrink: 0, animation: "pulse 2s infinite" }} />
-      <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, color: msg.color, lineHeight: 1.5 }}>{msg.text}</span>
+      <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 14, color: msg.color, lineHeight: 1.5 }}>{msg.text}</span>
     </div>
   );
 }
@@ -61,7 +61,7 @@ function SyncBar({ syncing, syncStep, syncProgress, lastSyncDate, onSync, canSyn
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <Spinner color="var(--c)" size={13} />
         <div>
-          <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 1, display: "block" }}>{syncStep}</Mono>
+          <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1, display: "block" }}>{syncStep}</Mono>
           <div style={{ width: 120, height: 2, background: "var(--border)", marginTop: 3 }}>
             <div style={{ height: "100%", width: `${pct}%`, background: "var(--c)", transition: "width 0.4s ease" }} />
           </div>
@@ -72,7 +72,7 @@ function SyncBar({ syncing, syncStep, syncProgress, lastSyncDate, onSync, canSyn
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      {lastStr && <Mono s={{ fontSize: 9, color: "var(--text3)" }}>last sync {lastStr}</Mono>}
+      {lastStr && <Mono s={{ fontSize: 13, color: "var(--text3)" }}>last sync {lastStr}</Mono>}
       <button
         onClick={onSync}
         disabled={!canSync}
@@ -82,7 +82,7 @@ function SyncBar({ syncing, syncStep, syncProgress, lastSyncDate, onSync, canSyn
           border: "none",
           padding: "5px 14px",
           fontFamily: "'DM Mono',monospace",
-          fontSize: 9,
+          fontSize: 13,
           letterSpacing: 1.5,
           fontWeight: 600,
           cursor: canSync ? "pointer" : "not-allowed",
@@ -466,17 +466,17 @@ export default function App() {
 
           {/* Top nav bar */}
           <div style={{ height: 46, background: "var(--bg1)", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 26px", flexShrink: 0 }}>
-            <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2 }}>
+            <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2 }}>
               {new Date().toLocaleTimeString("en-CA", { hour: "2-digit", minute: "2-digit" })} · TORONTO, ON
             </Mono>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               {/* Sync error indicator */}
               {syncErrors.length > 0 && !syncing && (
-                <Mono s={{ fontSize: 9, color: "var(--r)" }} title={syncErrors.join(", ")}>
+                <Mono s={{ fontSize: 13, color: "var(--r)" }} title={syncErrors.join(", ")}>
                   ⚠ {syncErrors.length} error{syncErrors.length > 1 ? "s" : ""} in last sync
                 </Mono>
               )}
-              <Mono s={{ fontSize: 9, color: "var(--text3)" }}>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>
                 {stateLoaded ? "SYNCED · LOCAL" : "LOADING..."}
               </Mono>
               <SyncBar
@@ -494,12 +494,12 @@ export default function App() {
           {syncConfirm && !syncing && (
             <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
               <div style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "28px 32px", maxWidth: 400, width: "90%" }}>
-                <Mono s={{ fontSize: 9, color: "var(--o)", letterSpacing: 2, display: "block", marginBottom: 10 }}>⚠ MANUAL SYNC OVERRIDE</Mono>
+                <Mono s={{ fontSize: 13, color: "var(--o)", letterSpacing: 2, display: "block", marginBottom: 10 }}>⚠ MANUAL SYNC OVERRIDE</Mono>
                 <div style={{ fontFamily: "'Bebas Neue'", fontSize: 26, color: "var(--text)", marginBottom: 12, letterSpacing: 1 }}>Run NORTHSTAR Sync?</div>
-                <div style={{ fontSize: 12, color: "var(--text3)", lineHeight: 1.7, marginBottom: 22 }}>This manually re-analyzes all pillars and regenerates missions. It's normally triggered automatically after your Sunday check-in. Continue?</div>
+                <div style={{ fontSize: 14, color: "var(--text3)", lineHeight: 1.7, marginBottom: 22 }}>This manually re-analyzes all pillars and regenerates missions. It's normally triggered automatically after your Sunday check-in. Continue?</div>
                 <div style={{ display: "flex", gap: 10 }}>
-                  <button onClick={() => { setSyncConfirm(false); runSyncFlow(); }} style={{ background: "var(--c)", color: "#000", border: "none", padding: "9px 22px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1.5, fontWeight: 600 }}>YES, RUN SYNC</button>
-                  <button onClick={() => setSyncConfirm(false)} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "9px 18px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>CANCEL</button>
+                  <button onClick={() => { setSyncConfirm(false); runSyncFlow(); }} style={{ background: "var(--c)", color: "#000", border: "none", padding: "9px 22px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1.5, fontWeight: 600 }}>YES, RUN SYNC</button>
+                  <button onClick={() => setSyncConfirm(false)} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "9px 18px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>CANCEL</button>
                 </div>
               </div>
             </div>
@@ -509,20 +509,20 @@ export default function App() {
           {syncing && (
             <div style={{ background: "var(--c)0D", borderBottom: "1px solid var(--c)33", padding: "8px 26px", display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
               <Spinner color="var(--c)" size={12} />
-              <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 1 }}>{syncStep}...</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1 }}>{syncStep}...</Mono>
               {syncProgress && (
-                <Mono s={{ fontSize: 9, color: "var(--text3)" }}>
+                <Mono s={{ fontSize: 13, color: "var(--text3)" }}>
                   step {syncProgress.current} of {syncProgress.total}
                 </Mono>
               )}
-              <Mono s={{ fontSize: 9, color: "var(--text3)", marginLeft: "auto" }}>
+              <Mono s={{ fontSize: 13, color: "var(--text3)", marginLeft: "auto" }}>
                 ~{syncProgress ? (syncProgress.total - syncProgress.current) * 4 : "?"}s remaining
               </Mono>
             </div>
           )}
 
           <div style={{ flex: 1, overflowY: "auto", padding: "34px 38px 80px" }}>
-            <div style={{ maxWidth: 924 }}>
+            <div style={{ maxWidth: 1040, margin: "0 auto" }}>
               {stateLoaded ? renderTab() : <LoadingBlock label="LOADING YOUR DATA" />}
             </div>
           </div>

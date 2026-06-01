@@ -21,8 +21,8 @@ function DropZone({ accept, onFile, loading, loadingLabel, emptyLabel, hasData, 
     >
       <input ref={el => fileRef.current = el} type="file" accept={accept} onChange={e => onFile(e.target.files[0])} style={{ display: "none" }} />
       {loading
-        ? <><div style={{ width: 22, height: 22, border: `2px solid ${color}33`, borderTop: `2px solid ${color}`, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} /><Mono s={{ fontSize: 10, color }}>{loadingLabel}</Mono></>
-        : <><div style={{ fontSize: 20, marginBottom: 6 }}>📂</div><Mono s={{ fontSize: 10, color: hasData ? "var(--text3)" : "var(--text2)", letterSpacing: 1 }}>{hasData ? `DROP NEW ${emptyLabel} TO UPDATE` : `DROP ${emptyLabel} HERE`}</Mono><div style={{ fontSize: 11, color: "var(--text3)", marginTop: 3 }}>or click to browse</div></>
+        ? <><div style={{ width: 22, height: 22, border: `2px solid ${color}33`, borderTop: `2px solid ${color}`, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} /><Mono s={{ fontSize: 14, color }}>{loadingLabel}</Mono></>
+        : <><div style={{ fontSize: 20, marginBottom: 6 }}>📂</div><Mono s={{ fontSize: 14, color: hasData ? "var(--text3)" : "var(--text2)", letterSpacing: 1 }}>{hasData ? `DROP NEW ${emptyLabel} TO UPDATE` : `DROP ${emptyLabel} HERE`}</Mono><div style={{ fontSize: 13, color: "var(--text3)", marginTop: 3 }}>or click to browse</div></>
       }
     </div>
   );
@@ -34,7 +34,7 @@ function SectionHeader({ icon, name, tag, tagColor }) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 7 }}>
       <span style={{ fontSize: 18 }}>{icon}</span>
-      <Mono s={{ fontSize: 12, color: "var(--text)", letterSpacing: 1 }}>{name}</Mono>
+      <Mono s={{ fontSize: 14, color: "var(--text)", letterSpacing: 1 }}>{name}</Mono>
       {tag && <Tag color={tagColor || "var(--text3)"}>{tag}</Tag>}
     </div>
   );
@@ -73,11 +73,11 @@ export default function InstagramSection({ integrations, onSave }) {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, marginBottom: 14 }}>
         <div style={{ flex: 1 }}>
           <SectionHeader icon="📸" name="Instagram Connections" tag={instagramData ? "IMPORTED" : "ZIP IMPORT"} tagColor={instagramData ? "#E1306C" : "var(--text3)"} />
-          <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>
-            Go to <Mono s={{ fontSize: 11, color: "var(--text3)" }}>Instagram → Privacy Centre → Download your information → Format: JSON</Mono> and request your data. Once downloaded, drop either <Mono s={{ fontSize: 11, color: "var(--text3)" }}>connections.zip</Mono> or <Mono s={{ fontSize: 11, color: "var(--text3)" }}>followers_and_following.zip</Mono> here. northstar reads follower counts, follow-back rates, and outreach patterns to inform your Network pillar.
+          <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>
+            Go to <Mono s={{ fontSize: 13, color: "var(--text3)" }}>Instagram → Privacy Centre → Download your information → Format: JSON</Mono> and request your data. Once downloaded, drop either <Mono s={{ fontSize: 13, color: "var(--text3)" }}>connections.zip</Mono> or <Mono s={{ fontSize: 13, color: "var(--text3)" }}>followers_and_following.zip</Mono> here. northstar reads follower counts, follow-back rates, and outreach patterns to inform your Network pillar.
           </div>
         </div>
-        {instagramData && <button onClick={() => save({ ...integrations, instagramData: undefined })} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "6px 12px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, flexShrink: 0 }}>CLEAR</button>}
+        {instagramData && <button onClick={() => save({ ...integrations, instagramData: undefined })} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "6px 12px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, flexShrink: 0 }}>CLEAR</button>}
       </div>
 
       {instagramData && (
@@ -100,7 +100,7 @@ export default function InstagramSection({ integrations, onSave }) {
 
           {instagramData.pendingStats && (
             <div style={{ marginBottom: 12, background: "var(--bg2)", border: "1px solid var(--o)33", padding: "14px 16px" }}>
-              <Mono s={{ fontSize: 8, color: "var(--o)", letterSpacing: 1.5, display: "block", marginBottom: 12 }}>PENDING REQUEST ANALYSIS</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--o)", letterSpacing: 1.5, display: "block", marginBottom: 12 }}>PENDING REQUEST ANALYSIS</Mono>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 12 }}>
                 {[
                   { label: "SENT / DAY",   value: instagramData.pendingStats.requestsPerDay, color: "var(--o)",    tip: "avg rate across entire pending window" },
@@ -144,8 +144,8 @@ export default function InstagramSection({ integrations, onSave }) {
                 </div>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 10 }}>
-                <Mono s={{ fontSize: 8, color: "var(--text3)" }}>Oldest pending: <span style={{ color: instagramData.pendingStats.oldestAgeDays > 90 ? "var(--r)" : "var(--text2)" }}>{instagramData.pendingStats.oldestAgeDays}d ago</span></Mono>
-                <Mono s={{ fontSize: 8, color: "var(--text3)" }}>Most recent: <span style={{ color: "var(--text2)" }}>{instagramData.pendingStats.newestAgeDays === 0 ? "today" : instagramData.pendingStats.newestAgeDays + "d ago"}</span></Mono>
+                <Mono s={{ fontSize: 14, color: "var(--text3)" }}>Oldest pending: <span style={{ color: instagramData.pendingStats.oldestAgeDays > 90 ? "var(--r)" : "var(--text2)" }}>{instagramData.pendingStats.oldestAgeDays}d ago</span></Mono>
+                <Mono s={{ fontSize: 14, color: "var(--text3)" }}>Most recent: <span style={{ color: "var(--text2)" }}>{instagramData.pendingStats.newestAgeDays === 0 ? "today" : instagramData.pendingStats.newestAgeDays + "d ago"}</span></Mono>
               </div>
             </div>
           )}
@@ -166,17 +166,17 @@ export default function InstagramSection({ integrations, onSave }) {
           )}
 
           <div style={{ display: "flex", gap: 5, flexWrap: "wrap", marginBottom: 8 }}>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", marginRight: 4 }}>FILES FOUND:</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", marginRight: 4 }}>FILES FOUND:</Mono>
             {(instagramData.filesFound || []).map(f => <Tag key={f} color="#E1306C">{f}</Tag>)}
           </div>
 
           {instagramData.notFollowingBackList?.length > 0 && (
             <div style={{ marginTop: 14, borderTop: "1px solid var(--border)", paddingTop: 14 }}>
-              <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>NOT FOLLOWING BACK ({instagramData.notFollowingBackList.length})</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>NOT FOLLOWING BACK ({instagramData.notFollowingBackList.length})</Mono>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 5, maxHeight: 160, overflowY: "auto" }}>
                 {instagramData.notFollowingBackList.map((u, i) => (
                   <a key={i} href={"https://instagram.com/" + u} target="_blank" rel="noopener noreferrer"
-                    style={{ fontFamily: "'DM Mono',monospace", fontSize: 9, color: "var(--text3)", padding: "2px 7px", border: "1px solid var(--border)", background: "var(--bg2)", textDecoration: "none", opacity: 0.7 }}
+                    style={{ fontFamily: "'DM Mono',monospace", fontSize: 13, color: "var(--text3)", padding: "2px 7px", border: "1px solid var(--border)", background: "var(--bg2)", textDecoration: "none", opacity: 0.7 }}
                     onMouseEnter={e => { e.target.style.color = "#E1306C"; e.target.style.opacity = 1; e.target.style.borderColor = "#E1306C55"; }}
                     onMouseLeave={e => { e.target.style.color = "var(--text3)"; e.target.style.opacity = 0.7; e.target.style.borderColor = "var(--border)"; }}
                   >{u}</a>
@@ -185,14 +185,14 @@ export default function InstagramSection({ integrations, onSave }) {
             </div>
           )}
 
-          <Mono s={{ fontSize: 8, color: "var(--text3)", display: "block", marginTop: 10 }}>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", display: "block", marginTop: 10 }}>
             imported {new Date(instagramData.uploadedAt).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "numeric" })}
           </Mono>
         </div>
       )}
 
       <DropZone accept=".zip" onFile={handleIgFile} loading={igImporting} loadingLabel="PARSING ZIP..." emptyLabel="CONNECTIONS ZIP" hasData={!!instagramData} accentColor="#E1306C" />
-      {igError && <div style={{ fontSize: 11, color: "var(--r)", marginTop: 8, fontFamily: "'DM Mono',monospace", lineHeight: 1.5 }}>{igError}</div>}
+      {igError && <div style={{ fontSize: 13, color: "var(--r)", marginTop: 8, fontFamily: "'DM Mono',monospace", lineHeight: 1.5 }}>{igError}</div>}
     </div>
   );
 }

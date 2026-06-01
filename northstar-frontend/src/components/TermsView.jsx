@@ -5,7 +5,7 @@ const EFFECTIVE_DATE = "May 2026";
 function Section({ title, children }) {
   return (
     <div style={{ marginBottom: 28 }}>
-      <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 8 }}>{title}</Mono>
+      <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 8 }}>{title}</Mono>
       <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.8 }}>{children}</div>
     </div>
   );
@@ -15,9 +15,9 @@ export default function TermsView() {
   return (
     <div style={{ maxWidth: 720 }}>
       <div style={{ marginBottom: 28, paddingBottom: 18, borderBottom: "1px solid var(--border)" }}>
-        <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 3, display: "block", marginBottom: 5 }}>§ LEGAL</Mono>
+        <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 3, display: "block", marginBottom: 5 }}>§ LEGAL</Mono>
         <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 1, color: "var(--text)", marginBottom: 6 }}>Terms of Service</h2>
-        <Mono s={{ fontSize: 9, color: "var(--text3)" }}>Effective: {EFFECTIVE_DATE} · northstar / Northstar OS</Mono>
+        <Mono s={{ fontSize: 13, color: "var(--text3)" }}>Effective: {EFFECTIVE_DATE} · northstar / Northstar OS</Mono>
       </div>
 
       <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: "14px 18px", marginBottom: 28 }}>
@@ -31,7 +31,7 @@ export default function TermsView() {
       </Section>
 
       <Section title="02 — YOUR DATA">
-        All personal information you enter into northstar (goals, finances, relationships, health stats, etc.) is stored exclusively on your own device at <Mono s={{ fontSize: 11 }}>northstar-backend/data/northstar_data.json</Mono>. The developer of northstar has no access to this data, does not collect it, and does not transmit it to any server other than Anthropic's API at the moment you trigger a sync — using your own API key and subject to Anthropic's own privacy policy. You are solely responsible for the security of your device and the data stored on it.
+        All personal information you enter into northstar (goals, finances, relationships, health stats, etc.) is stored exclusively on your own device at <Mono s={{ fontSize: 13 }}>northstar-backend/data/northstar_data.json</Mono>. The developer of northstar has no access to this data, does not collect it, and does not transmit it to any server other than Anthropic's API at the moment you trigger a sync — using your own API key and subject to Anthropic's own privacy policy. You are solely responsible for the security of your device and the data stored on it.
       </Section>
 
       <Section title="03 — AI-GENERATED CONTENT">
@@ -67,7 +67,7 @@ export default function TermsView() {
       </Section>
 
       <div style={{ borderTop: "1px solid var(--border)", paddingTop: 18, marginTop: 8 }}>
-        <Mono s={{ fontSize: 9, color: "var(--text3)" }}>© {new Date().getFullYear()} northstar / Northstar OS. All rights reserved.</Mono>
+        <Mono s={{ fontSize: 13, color: "var(--text3)" }}>© {new Date().getFullYear()} northstar / Northstar OS. All rights reserved.</Mono>
       </div>
     </div>
   );

@@ -23,7 +23,7 @@ class ErrorBoundary extends React.Component {
             {this.state.error.toString()}
           </pre>
           <h3 style={{ color: "#888", marginBottom: 8 }}>Component Stack:</h3>
-          <pre style={{ color: "#666", fontSize: 11, whiteSpace: "pre-wrap" }}>
+          <pre style={{ color: "#666", fontSize: 13, whiteSpace: "pre-wrap" }}>
             {this.state.info?.componentStack}
           </pre>
         </div>

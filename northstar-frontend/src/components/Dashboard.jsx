@@ -69,17 +69,17 @@ function TrendsSection({ state }) {
 
   return (
     <div className="fu4">
-      <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 14 }}>TRENDS</Mono>
+      <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 14 }}>TRENDS</Mono>
 
       {/* Pillar Score Trajectories */}
       {pillarHistories.length > 0 && (
         <div style={{ marginBottom: 10 }}>
-          <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>SCORE HISTORY</Mono>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>SCORE HISTORY</Mono>
           <div style={{ display: "grid", gridTemplateColumns: pillarHistories.length === 1 ? "1fr" : "1fr 1fr", gap: 8 }}>
             {pillarHistories.map(p => (
               <div key={p.id} style={{ background: "var(--bg1)", border: `1px solid ${p.color}22`, padding: "12px 14px", position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1, background: p.color + "55" }} />
-                <Mono s={{ fontSize: 8, color: p.color, letterSpacing: 1.5, display: "block", marginBottom: 10 }}>{p.icon} {p.label}</Mono>
+                <Mono s={{ fontSize: 14, color: p.color, letterSpacing: 1.5, display: "block", marginBottom: 10 }}>{p.icon} {p.label}</Mono>
                 <ScoreSparkline history={p.history} color={p.color} height={32} width={110} />
               </div>
             ))}
@@ -90,7 +90,7 @@ function TrendsSection({ state }) {
       {/* Pillar Momentum */}
       {hasMomentumData && (
         <div style={{ marginBottom: 10 }}>
-          <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>PILLAR MOMENTUM · CUMULATIVE CHECK-IN DELTAS</Mono>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>PILLAR MOMENTUM · CUMULATIVE CHECK-IN DELTAS</Mono>
           <div style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
             {PILLARS.map(p => {
               const val = pillarMomentum[p.id] || 0;
@@ -101,8 +101,8 @@ function TrendsSection({ state }) {
               return (
                 <div key={p.id}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                    <Mono s={{ fontSize: 8, color: p.color, letterSpacing: 1 }}>{p.icon} {p.label}</Mono>
-                    <Mono s={{ fontSize: 10, color: isPos ? "var(--g)" : isNeg ? "var(--r)" : "var(--text3)" }}>
+                    <Mono s={{ fontSize: 14, color: p.color, letterSpacing: 1 }}>{p.icon} {p.label}</Mono>
+                    <Mono s={{ fontSize: 14, color: isPos ? "var(--g)" : isNeg ? "var(--r)" : "var(--text3)" }}>
                       {isPos ? "+" : ""}{val}
                     </Mono>
                   </div>
@@ -120,31 +120,31 @@ function TrendsSection({ state }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: recentWins.length > 0 ? 10 : 0 }}>
         {totalCompleted > 0 && (
           <div style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "12px 14px" }}>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>COMPLETED</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>COMPLETED</Mono>
             <div style={{ fontFamily: "'Bebas Neue'", fontSize: 30, color: "var(--c)", lineHeight: 1 }}>{totalCompleted}</div>
             {completionRate !== null && (
-              <Mono s={{ fontSize: 8, color: "var(--text3)", display: "block", marginTop: 3 }}>{completionRate}% RATE</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--text3)", display: "block", marginTop: 3 }}>{completionRate}% RATE</Mono>
             )}
           </div>
         )}
         {totalCompleted > 0 && (
           <div style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "12px 14px" }}>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>THIS WEEK</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>THIS WEEK</Mono>
             <div style={{ fontFamily: "'Bebas Neue'", fontSize: 30, color: missionDelta > 0 ? "var(--g)" : missionDelta < 0 ? "var(--r)" : "var(--text2)", lineHeight: 1 }}>
               {completedThisWeek}
             </div>
-            <Mono s={{ fontSize: 8, color: missionDelta > 0 ? "var(--g)" : missionDelta < 0 ? "var(--r)" : "var(--text3)", display: "block", marginTop: 3 }}>
+            <Mono s={{ fontSize: 14, color: missionDelta > 0 ? "var(--g)" : missionDelta < 0 ? "var(--r)" : "var(--text3)", display: "block", marginTop: 3 }}>
               {missionDelta > 0 ? `↑ +${missionDelta} VS LAST` : missionDelta < 0 ? `↓ ${missionDelta} VS LAST` : "→ SAME AS LAST"}
             </Mono>
           </div>
         )}
         {weeklyLogs.length > 0 && (
           <div style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "12px 14px" }}>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>STREAK</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>STREAK</Mono>
             <div style={{ fontFamily: "'Bebas Neue'", fontSize: 30, color: streak >= 4 ? "var(--g)" : streak >= 2 ? "var(--y)" : "var(--text2)", lineHeight: 1 }}>
               {streak}<span style={{ fontSize: 13, color: "var(--text3)" }}> WK</span>
             </div>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", display: "block", marginTop: 3 }}>{weeklyLogs.length} TOTAL LOGS</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", display: "block", marginTop: 3 }}>{weeklyLogs.length} TOTAL LOGS</Mono>
           </div>
         )}
       </div>
@@ -152,14 +152,14 @@ function TrendsSection({ state }) {
       {/* Recent key wins */}
       {recentWins.length > 0 && (
         <div>
-          <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>RECENT WINS</Mono>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>RECENT WINS</Mono>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {recentWins.map(log => (
               <div key={log.id} style={{ background: "var(--bg1)", border: "1px solid var(--g)22", padding: "10px 14px", display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <Mono s={{ fontSize: 9, color: "var(--g)", flexShrink: 0, marginTop: 1 }}>✓</Mono>
+                <Mono s={{ fontSize: 13, color: "var(--g)", flexShrink: 0, marginTop: 1 }}>✓</Mono>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.5 }}>{log.keyWin}</div>
-                  <Mono s={{ fontSize: 8, color: "var(--text3)", display: "block", marginTop: 3 }}>
+                  <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.5 }}>{log.keyWin}</div>
+                  <Mono s={{ fontSize: 14, color: "var(--text3)", display: "block", marginTop: 3 }}>
                     {new Date(log.date).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}
                   </Mono>
                 </div>
@@ -225,7 +225,7 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
       {/* Header */}
       <div className="fu" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
         <div>
-          <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 5 }}>
+          <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 5 }}>
             {now.toLocaleDateString("en-CA", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
           </Mono>
           <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: 44, letterSpacing: 2, color: "var(--text)", lineHeight: 1 }}>{greeting}{name}.</h1>
@@ -234,7 +234,7 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
           <button
             onClick={onShowHelp}
             title="How Northstar works"
-            style={{ width: 28, height: 28, borderRadius: "50%", background: "none", border: "1px solid var(--border)", color: "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 11, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 4, transition: "border-color 0.2s, color 0.2s" }}
+            style={{ width: 28, height: 28, borderRadius: "50%", background: "none", border: "1px solid var(--border)", color: "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 4, transition: "border-color 0.2s, color 0.2s" }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--c)"; e.currentTarget.style.color = "var(--c)"; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.color = "var(--text3)"; }}
           >
@@ -249,7 +249,7 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
           <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--c),transparent)" }} />
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, gap: 10 }}>
             <div>
-              <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 5 }}>GETTING STARTED</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 5 }}>GETTING STARTED</Mono>
               <div style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.5 }}>
                 Fill in each pillar's core goals, then hit <strong style={{ color: "var(--c)" }}>⟳ SYNC NORTHSTAR</strong> to run your first analysis.
               </div>
@@ -266,14 +266,14 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
             className="card"
             style={{ width: "100%", background: apiKeySet ? "var(--g)0D" : "var(--r)0D", border: `1px solid ${apiKeySet ? "var(--g)55" : "var(--r)55"}`, padding: "12px 14px", textAlign: "left", display: "flex", alignItems: "center", gap: 10, marginBottom: 8, transition: "all 0.2s" }}
           >
-            <div style={{ width: 22, height: 22, borderRadius: "50%", background: apiKeySet ? "var(--g)22" : "var(--r)18", border: `1px solid ${apiKeySet ? "var(--g)88" : "var(--r)66"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 11 }}>
+            <div style={{ width: 22, height: 22, borderRadius: "50%", background: apiKeySet ? "var(--g)22" : "var(--r)18", border: `1px solid ${apiKeySet ? "var(--g)88" : "var(--r)66"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 13 }}>
               {apiKeySet ? <span style={{ color: "var(--g)" }}>✓</span> : <span style={{ color: "var(--r)" }}>!</span>}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <Mono s={{ fontSize: 8, color: apiKeySet ? "var(--g)" : "var(--r)", letterSpacing: 1.5, display: "block" }}>⚙ ANTHROPIC API KEY</Mono>
-              <div style={{ fontSize: 10, color: "var(--text3)", marginTop: 2 }}>{apiKeySet ? "API key saved — AI features active" : "Required — open Settings to add your key"}</div>
+              <Mono s={{ fontSize: 14, color: apiKeySet ? "var(--g)" : "var(--r)", letterSpacing: 1.5, display: "block" }}>⚙ ANTHROPIC API KEY</Mono>
+              <div style={{ fontSize: 14, color: "var(--text3)", marginTop: 2 }}>{apiKeySet ? "API key saved — AI features active" : "Required — open Settings to add your key"}</div>
             </div>
-            {!apiKeySet && <Mono s={{ fontSize: 8, color: "var(--r)", letterSpacing: 1 }}>OPEN SETTINGS →</Mono>}
+            {!apiKeySet && <Mono s={{ fontSize: 14, color: "var(--r)", letterSpacing: 1 }}>OPEN SETTINGS →</Mono>}
           </button>
 
           {/* Profile step */}
@@ -282,12 +282,12 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
             className="card"
             style={{ width: "100%", background: profileDone ? "var(--g)0D" : "var(--bg1)", border: `1px solid ${profileDone ? "var(--g)55" : "var(--border)"}`, padding: "12px 14px", textAlign: "left", display: "flex", alignItems: "center", gap: 10, marginBottom: 8, transition: "all 0.2s" }}
           >
-            <div style={{ width: 22, height: 22, borderRadius: "50%", background: profileDone ? "var(--g)22" : "var(--bg2)", border: `1px solid ${profileDone ? "var(--g)88" : "var(--border)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 11 }}>
+            <div style={{ width: 22, height: 22, borderRadius: "50%", background: profileDone ? "var(--g)22" : "var(--bg2)", border: `1px solid ${profileDone ? "var(--g)88" : "var(--border)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 13 }}>
               {profileDone ? <span style={{ color: "var(--g)" }}>✓</span> : <span style={{ color: "var(--text3)" }}>→</span>}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <Mono s={{ fontSize: 8, color: profileDone ? "var(--g)" : "var(--text2)", letterSpacing: 1.5, display: "block" }}>◎ YOUR PROFILE</Mono>
-              <div style={{ fontSize: 10, color: "var(--text3)", marginTop: 2 }}>{profileDone ? "Name, age, height & sex saved" : "Add your stats — age, height, sex"}</div>
+              <Mono s={{ fontSize: 14, color: profileDone ? "var(--g)" : "var(--text2)", letterSpacing: 1.5, display: "block" }}>◎ YOUR PROFILE</Mono>
+              <div style={{ fontSize: 14, color: "var(--text3)", marginTop: 2 }}>{profileDone ? "Name, age, height & sex saved" : "Add your stats — age, height, sex"}</div>
             </div>
           </button>
 
@@ -299,12 +299,12 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
                 className="card"
                 style={{ background: p.filled ? p.color + "0D" : "var(--bg1)", border: `1px solid ${p.filled ? p.color + "55" : "var(--border)"}`, padding: "12px 14px", textAlign: "left", display: "flex", alignItems: "center", gap: 10, transition: "all 0.2s" }}
               >
-                <div style={{ width: 22, height: 22, borderRadius: "50%", background: p.filled ? p.color + "22" : "var(--bg2)", border: `1px solid ${p.filled ? p.color + "88" : "var(--border)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 11 }}>
+                <div style={{ width: 22, height: 22, borderRadius: "50%", background: p.filled ? p.color + "22" : "var(--bg2)", border: `1px solid ${p.filled ? p.color + "88" : "var(--border)"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 13 }}>
                   {p.filled ? <span style={{ color: p.color }}>✓</span> : <span style={{ color: "var(--text3)" }}>→</span>}
                 </div>
                 <div style={{ minWidth: 0 }}>
-                  <Mono s={{ fontSize: 8, color: p.filled ? p.color : "var(--text3)", letterSpacing: 1.5, display: "block" }}>{p.icon} {p.label}</Mono>
-                  <div style={{ fontSize: 10, color: "var(--text3)", marginTop: 2 }}>{p.filled ? "Core goals saved" : "Tap to fill in"}</div>
+                  <Mono s={{ fontSize: 14, color: p.filled ? p.color : "var(--text3)", letterSpacing: 1.5, display: "block" }}>{p.icon} {p.label}</Mono>
+                  <div style={{ fontSize: 14, color: "var(--text3)", marginTop: 2 }}>{p.filled ? "Core goals saved" : "Tap to fill in"}</div>
                 </div>
               </button>
             ))}
@@ -312,7 +312,7 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
           {allFilled && (
             <div style={{ background: "var(--c)0D", border: "1px solid var(--c)33", padding: "12px 14px", display: "flex", alignItems: "center", gap: 10 }}>
               <span style={{ color: "var(--c)", fontSize: 14 }}>⟳</span>
-              <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.5 }}>All pillars are set up. Hit <strong style={{ color: "var(--c)" }}>⟳ SYNC NORTHSTAR</strong> in the top bar to run your first analysis and generate missions.</div>
+              <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.5 }}>All pillars are set up. Hit <strong style={{ color: "var(--c)" }}>⟳ SYNC NORTHSTAR</strong> in the top bar to run your first analysis and generate missions.</div>
             </div>
           )}
         </div>
@@ -325,7 +325,7 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
           {missedCheckin && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--o),transparent)" }} />}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
             <div style={{ flex: 1 }}>
-              <Mono s={{ fontSize: 9, color: missedCheckin ? "var(--o)" : interviewDue ? "var(--c)" : doneThisWeek ? "var(--g)" : "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>
+              <Mono s={{ fontSize: 13, color: missedCheckin ? "var(--o)" : interviewDue ? "var(--c)" : doneThisWeek ? "var(--g)" : "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>
                 {missedCheckin ? "⟳ MISSED YOUR CHECK-IN?" : interviewDue ? "⟳ SUNDAY CHECK-IN READY" : doneThisWeek ? "✓ THIS WEEK COMPLETE" : "⟳ WEEKLY CHECK-IN"}
               </Mono>
               {missedCheckin
@@ -340,12 +340,12 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
               }
             </div>
             {interviewDue && !missedCheckin && (
-              <button onClick={() => onNav("interview")} style={{ background: "var(--c)", color: "#000", border: "none", padding: "10px 18px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, flexShrink: 0, fontWeight: 500 }}>
+              <button onClick={() => onNav("interview")} style={{ background: "var(--c)", color: "#000", border: "none", padding: "10px 18px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, flexShrink: 0, fontWeight: 500 }}>
                 BEGIN →
               </button>
             )}
             {missedCheckin && (
-              <button onClick={() => onNav("interview")} style={{ background: "var(--o)", color: "#000", border: "none", padding: "10px 18px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, flexShrink: 0, fontWeight: 500 }}>
+              <button onClick={() => onNav("interview")} style={{ background: "var(--o)", color: "#000", border: "none", padding: "10px 18px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, flexShrink: 0, fontWeight: 500 }}>
                 BEGIN →
               </button>
             )}
@@ -358,12 +358,12 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
         {overallScore && (
           <div style={{ background: "var(--bg2)", border: "1px solid var(--y)44", padding: "14px 16px", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1.5, background: "var(--y)88" }} />
-            <Mono s={{ fontSize: 8, color: "var(--y)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>OVERALL RATING</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--y)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>OVERALL RATING</Mono>
             <div style={{ display: "flex", alignItems: "baseline", gap: 2 }}>
               <div style={{ fontFamily: "'Bebas Neue'", fontSize: 38, color: overallScore >= 80 ? "var(--g)" : overallScore >= 60 ? "var(--y)" : overallScore >= 40 ? "var(--o)" : "var(--r)", lineHeight: 1 }}>{overallScore}</div>
-              <Mono s={{ fontSize: 11, color: "var(--text3)" }}>/100</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>/100</Mono>
             </div>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1, display: "block", marginTop: 4 }}>{metaAnalysis?.overallScore ? "META" : "AVG"}</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1, display: "block", marginTop: 4 }}>{metaAnalysis?.overallScore ? "META" : "AVG"}</Mono>
           </div>
         )}
         {[
@@ -373,7 +373,7 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
           { label: "CHECK-INS",      value: weeklyLogs.length,                      color: "var(--p)" },
         ].map(s => (
           <div key={s.label} style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "14px 16px" }}>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>{s.label}</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>{s.label}</Mono>
             <div style={{ fontFamily: "'Bebas Neue'", fontSize: 30, color: s.color, lineHeight: 1 }}>
               {s.value}{s.total ? <span style={{ fontSize: 16, color: "var(--text3)" }}>/{s.total}</span> : ""}
             </div>
@@ -385,16 +385,16 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
       {pendingMissions.length > 0 && (
         <div className="fu2" style={{ background: "var(--y)0D", border: "1px solid var(--y)44", padding: 18 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-            <Mono s={{ fontSize: 9, color: "var(--y)", letterSpacing: 2 }}>⚡ MISSIONS AWAITING REVIEW</Mono>
-            <button onClick={() => onNav("missions")} style={{ background: "var(--y)", border: "none", color: "#000", padding: "5px 12px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>REVIEW →</button>
+            <Mono s={{ fontSize: 13, color: "var(--y)", letterSpacing: 2 }}>⚡ MISSIONS AWAITING REVIEW</Mono>
+            <button onClick={() => onNav("missions")} style={{ background: "var(--y)", border: "none", color: "#000", padding: "5px 12px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>REVIEW →</button>
           </div>
-          <div style={{ fontSize: 12, color: "var(--text2)", marginTop: 6 }}>{pendingMissions.length} new mission{pendingMissions.length !== 1 ? "s" : ""} — accept or decline each one.</div>
+          <div style={{ fontSize: 14, color: "var(--text2)", marginTop: 6 }}>{pendingMissions.length} new mission{pendingMissions.length !== 1 ? "s" : ""} — accept or decline each one.</div>
         </div>
       )}
 
       {/* Pillar overview */}
       <div className="fu2">
-        <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>PILLAR OVERVIEW</Mono>
+        <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>PILLAR OVERVIEW</Mono>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           {PILLARS.map(p => {
             const a = analyses[p.id];
@@ -403,14 +403,14 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
                 {a && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1.5, background: p.color + "88" }} />}
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                   <div>
-                    <div style={{ color: p.color, fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 2, marginBottom: 3 }}>{p.icon} {p.label}</div>
-                    <div style={{ color: "var(--text2)", fontSize: 11 }}>{p.sub}</div>
+                    <div style={{ color: p.color, fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 2, marginBottom: 3 }}>{p.icon} {p.label}</div>
+                    <div style={{ color: "var(--text2)", fontSize: 13 }}>{p.sub}</div>
                   </div>
                   {a ? <Tag color={p.color}>ACTIVE</Tag> : <Tag color="var(--text3)">SETUP →</Tag>}
                 </div>
                 {a
-                  ? <><div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.5, marginBottom: 10 }}>{a.assessment?.slice(0, 90)}...</div><ScoreBar value={a.priorityScore} color={p.color} /></>
-                  : <div style={{ fontSize: 11, color: "var(--text3)" }}>Click to configure this pillar</div>
+                  ? <><div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.5, marginBottom: 10 }}>{a.assessment?.slice(0, 90)}...</div><ScoreBar value={a.priorityScore} color={p.color} /></>
+                  : <div style={{ fontSize: 13, color: "var(--text3)" }}>Click to configure this pillar</div>
                 }
               </button>
             );
@@ -422,14 +422,14 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
       {recentLogs.length > 0 && (
         <div className="fu3">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2 }}>RECENT CHECK-INS</Mono>
-            <button onClick={() => onNav("interview")} style={{ background: "none", border: "none", color: "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>ALL HISTORY →</button>
+            <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2 }}>RECENT CHECK-INS</Mono>
+            <button onClick={() => onNav("interview")} style={{ background: "none", border: "none", color: "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>ALL HISTORY →</button>
           </div>
           {recentLogs.map(log => (
             <div key={log.id} style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "12px 14px", marginBottom: 6, display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10 }}>
               <div style={{ flex: 1 }}>
-                <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1, display: "block", marginBottom: 5 }}>{new Date(log.date).toLocaleDateString("en-CA", { weekday: "short", month: "short", day: "numeric" })}</Mono>
-                <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.5 }}>{log.digest || "No digest available."}</div>
+                <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1, display: "block", marginBottom: 5 }}>{new Date(log.date).toLocaleDateString("en-CA", { weekday: "short", month: "short", day: "numeric" })}</Mono>
+                <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.5 }}>{log.digest || "No digest available."}</div>
               </div>
               {log.missionIds?.length > 0 && <Tag color="var(--c)">{log.missionIds.length} missions</Tag>}
             </div>
@@ -441,15 +441,15 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
       {activeMissions.length > 0 && (
         <div className="fu3">
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2 }}>ACTIVE MISSIONS</Mono>
-            <button onClick={() => onNav("missions")} style={{ background: "none", border: "none", color: "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>ALL →</button>
+            <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2 }}>ACTIVE MISSIONS</Mono>
+            <button onClick={() => onNav("missions")} style={{ background: "none", border: "none", color: "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>ALL →</button>
           </div>
           {activeMissions.slice(0, 3).map(m => (
             <div key={m.id} style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "12px 14px", display: "flex", gap: 12, alignItems: "center", marginBottom: 6 }}>
               <PillarDot id={m.pillar} size={6} />
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, fontWeight: 500 }}>{m.title}</div>
-                <div style={{ fontSize: 10, color: "var(--text2)", marginTop: 2 }}>{m.estimatedTime} · {m.category}</div>
+                <div style={{ fontSize: 14, color: "var(--text2)", marginTop: 2 }}>{m.estimatedTime} · {m.category}</div>
               </div>
               <DiffTag level={m.difficulty} />
             </div>

@@ -57,42 +57,42 @@ function LogCard({ log, idx }) {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 10, marginBottom: 8 }}>
           <div style={{ flex: 1 }}>
             <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 4 }}>
-              <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 1 }}>{new Date(log.date).toLocaleDateString("en-CA", { weekday: "long", month: "long", day: "numeric" })}</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1 }}>{new Date(log.date).toLocaleDateString("en-CA", { weekday: "long", month: "long", day: "numeric" })}</Mono>
               {log.compressed && <Tag color="var(--text3)">COMPRESSED</Tag>}
               {idx === 0 && <Tag color="var(--c)">LATEST</Tag>}
             </div>
-            <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.5 }}>{log.digest}</div>
+            <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.5 }}>{log.digest}</div>
           </div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
             {log.missionIds?.length > 0 && <Tag color="var(--o)">{log.missionIds.length} missions</Tag>}
-            <button onClick={() => setExp(e => !e)} style={{ background: "none", border: "none", color: "var(--text3)", fontSize: 11 }}>{exp ? "▲" : "▼"}</button>
+            <button onClick={() => setExp(e => !e)} style={{ background: "none", border: "none", color: "var(--text3)", fontSize: 13 }}>{exp ? "▲" : "▼"}</button>
           </div>
         </div>
         {exp && !log.compressed && (
           <div style={{ borderTop: "1px solid var(--border)", paddingTop: 12, marginTop: 4 }}>
             {log.progressSummary && (
               <div style={{ marginBottom: 12 }}>
-                <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>ASSESSMENT</Mono>
-                <div style={{ fontSize: 12, color: "var(--text)", lineHeight: 1.6 }}>{log.progressSummary}</div>
+                <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>ASSESSMENT</Mono>
+                <div style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.6 }}>{log.progressSummary}</div>
               </div>
             )}
             {(log.keyWin || log.keyBlocker) && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
-                {log.keyWin     && <div style={{ background: "var(--bg2)", padding: "10px 12px" }}><Mono s={{ fontSize: 8, color: "var(--g)", letterSpacing: 1.5, display: "block", marginBottom: 4 }}>WIN</Mono><div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.4 }}>{log.keyWin}</div></div>}
-                {log.keyBlocker && <div style={{ background: "var(--bg2)", padding: "10px 12px" }}><Mono s={{ fontSize: 8, color: "var(--o)", letterSpacing: 1.5, display: "block", marginBottom: 4 }}>BLOCKER</Mono><div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.4 }}>{log.keyBlocker}</div></div>}
+                {log.keyWin     && <div style={{ background: "var(--bg2)", padding: "10px 12px" }}><Mono s={{ fontSize: 14, color: "var(--g)", letterSpacing: 1.5, display: "block", marginBottom: 4 }}>WIN</Mono><div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.4 }}>{log.keyWin}</div></div>}
+                {log.keyBlocker && <div style={{ background: "var(--bg2)", padding: "10px 12px" }}><Mono s={{ fontSize: 14, color: "var(--o)", letterSpacing: 1.5, display: "block", marginBottom: 4 }}>BLOCKER</Mono><div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.4 }}>{log.keyBlocker}</div></div>}
               </div>
             )}
             {log.feedback?.length > 0 && (
               <div>
-                <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>FEEDBACK</Mono>
-                {log.feedback.map((f, i) => <div key={i} style={{ fontSize: 11, color: "var(--text3)", paddingLeft: 10, borderLeft: "1px solid var(--border2)", lineHeight: 1.5, marginBottom: 4 }}>{f}</div>)}
+                <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>FEEDBACK</Mono>
+                {log.feedback.map((f, i) => <div key={i} style={{ fontSize: 13, color: "var(--text3)", paddingLeft: 10, borderLeft: "1px solid var(--border2)", lineHeight: 1.5, marginBottom: 4 }}>{f}</div>)}
               </div>
             )}
           </div>
         )}
         {exp && log.compressed && (
           <div style={{ borderTop: "1px solid var(--border)", paddingTop: 12, marginTop: 4 }}>
-            <div style={{ fontSize: 11, color: "var(--text3)", fontStyle: "italic" }}>Full answers were compressed — logs older than 1 week are kept as digest only.</div>
+            <div style={{ fontSize: 13, color: "var(--text3)", fontStyle: "italic" }}>Full answers were compressed — logs older than 1 week are kept as digest only.</div>
           </div>
         )}
       </div>
@@ -123,17 +123,17 @@ function NotificationPanel({ lastInterviewDate }) {
 
   return (
     <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: "16px 18px" }}>
-      <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>🔔 SUNDAY REMINDERS</Mono>
+      <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>🔔 SUNDAY REMINDERS</Mono>
 
       {!supported && (
-        <div style={{ fontSize: 12, color: "var(--text3)", lineHeight: 1.6 }}>
+        <div style={{ fontSize: 14, color: "var(--text3)", lineHeight: 1.6 }}>
           Browser notifications aren't supported in this environment.
         </div>
       )}
 
       {supported && (
         <>
-          <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6, marginBottom: 14 }}>
+          <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6, marginBottom: 14 }}>
             {enabled
               ? <>Reminders are <span style={{ color: "var(--g)" }}>on</span>. When you have northstar open on a Sunday, you'll get a browser notification if your check-in isn't done yet.</>
               : <>Get a browser notification every Sunday reminding you to do your check-in. <span style={{ color: "var(--text3)" }}>Requires the app to be open in a tab.</span></>
@@ -144,21 +144,21 @@ function NotificationPanel({ lastInterviewDate }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, padding: "10px 12px", background: "var(--bg3)", border: "1px solid var(--border)" }}>
             <span style={{ fontSize: 16 }}>📅</span>
             <div>
-              <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 2 }}>NEXT CHECK-IN</Mono>
-              <div style={{ fontSize: 12, color: "var(--text)" }}>
+              <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 2 }}>NEXT CHECK-IN</Mono>
+              <div style={{ fontSize: 14, color: "var(--text)" }}>
                 {nextSunday.toLocaleDateString("en-CA", { weekday: "long", month: "long", day: "numeric" })} at 8:00 PM
               </div>
             </div>
           </div>
 
           {permission === "denied" && (
-            <div style={{ fontSize: 11, color: "var(--o)", lineHeight: 1.6, marginBottom: 12 }}>
+            <div style={{ fontSize: 13, color: "var(--o)", lineHeight: 1.6, marginBottom: 12 }}>
               Notifications are blocked in your browser settings. Go to <strong>Settings → Site Settings → Notifications</strong> and allow this site.
             </div>
           )}
 
           {!enabled && permission !== "denied" && (
-            <button onClick={handleEnable} style={{ background: "var(--c)", color: "#000", border: "none", padding: "9px 18px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>
+            <button onClick={handleEnable} style={{ background: "var(--c)", color: "#000", border: "none", padding: "9px 18px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>
               ENABLE SUNDAY REMINDERS →
             </button>
           )}
@@ -166,13 +166,13 @@ function NotificationPanel({ lastInterviewDate }) {
           {enabled && (
             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
               <Tag color="var(--g)">✓ REMINDERS ON</Tag>
-              <button onClick={handleDisable} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "5px 12px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>TURN OFF</button>
+              <button onClick={handleDisable} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "5px 12px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>TURN OFF</button>
             </div>
           )}
 
           <div style={{ marginTop: 14, padding: "10px 12px", background: "var(--bg3)", border: "1px solid var(--border2)" }}>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>FOR PHONE NOTIFICATIONS</Mono>
-            <div style={{ fontSize: 11, color: "var(--text3)", lineHeight: 1.7 }}>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 6 }}>FOR PHONE NOTIFICATIONS</Mono>
+            <div style={{ fontSize: 13, color: "var(--text3)", lineHeight: 1.7 }}>
               On iPhone: open northstar in Safari → Share → <em>Add to Home Screen</em>. Then open the homescreen app on Sundays — browser notifications will fire.<br />
               On Android: Chrome supports background push natively once you allow notifications.
             </div>
@@ -412,9 +412,9 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       {/* Header */}
       <div style={{ marginBottom: 24, paddingBottom: 18, borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
         <div>
-          <div style={{ color: "var(--c)", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 3, marginBottom: 5 }}>⟳ WEEKLY CHECK-IN</div>
+          <div style={{ color: "var(--c)", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 3, marginBottom: 5 }}>⟳ WEEKLY CHECK-IN</div>
           <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 1, color: "var(--text)" }}>Sunday Review</h2>
-          <div style={{ fontSize: 11, color: "var(--text3)", marginTop: 4 }}>
+          <div style={{ fontSize: 13, color: "var(--text3)", marginTop: 4 }}>
             {doneThisWeek
               ? <span style={{ color: "var(--g)" }}>✓ Done this week · Next Sunday {nextSunday.toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</span>
               : todayIsSunday
@@ -427,10 +427,10 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           {phase !== "history" && sortedLogs.length > 0 && (
-            <button onClick={() => setPhase("history")} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>HISTORY</button>
+            <button onClick={() => setPhase("history")} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>HISTORY</button>
           )}
           {phase === "history" && (
-            <button onClick={() => setPhase("intro")} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>← BACK</button>
+            <button onClick={() => setPhase("intro")} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>← BACK</button>
           )}
         </div>
       </div>
@@ -452,7 +452,7 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
             {missedCheckin && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--o),transparent)" }} />}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
               <div style={{ flex: 1 }}>
-                <Mono s={{ fontSize: 9, color: doneThisWeek ? "var(--g)" : todayIsSunday ? "var(--c)" : missedCheckin ? "var(--o)" : "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>
+                <Mono s={{ fontSize: 13, color: doneThisWeek ? "var(--g)" : todayIsSunday ? "var(--c)" : missedCheckin ? "var(--o)" : "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>
                   {doneThisWeek ? "✓ THIS WEEK COMPLETE" : todayIsSunday ? "TODAY IS CHECK-IN DAY" : missedCheckin ? "MISSED YOUR CHECK-IN?" : "SCHEDULED FOR SUNDAY"}
                 </Mono>
                 <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.5 }}>
@@ -467,12 +467,12 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                 </div>
               </div>
               {(todayIsSunday && !doneThisWeek) && (
-                <button onClick={() => { setPhase("data-refresh"); }} style={{ background: "var(--c)", color: "#000", border: "none", padding: "12px 22px", fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: 2, fontWeight: 500, flexShrink: 0 }}>
+                <button onClick={() => { setPhase("data-refresh"); }} style={{ background: "var(--c)", color: "#000", border: "none", padding: "12px 22px", fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 2, fontWeight: 500, flexShrink: 0 }}>
                   BEGIN →
                 </button>
               )}
               {missedCheckin && (
-                <button onClick={() => { setPhase("data-refresh"); }} style={{ background: "var(--o)", color: "#000", border: "none", padding: "12px 22px", fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: 2, fontWeight: 500, flexShrink: 0 }}>
+                <button onClick={() => { setPhase("data-refresh"); }} style={{ background: "var(--o)", color: "#000", border: "none", padding: "12px 22px", fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 2, fontWeight: 500, flexShrink: 0 }}>
                   BEGIN →
                 </button>
               )}
@@ -482,23 +482,23 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
           {/* Early / redo option when not Sunday and not Monday missed */}
           {(!todayIsSunday && !missedCheckin || doneThisWeek) && (
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <button onClick={() => { setPhase("interview"); setCurrentQ(0); setAnswers({}); }} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text2)", padding: "8px 16px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>
+              <button onClick={() => { setPhase("interview"); setCurrentQ(0); setAnswers({}); }} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text2)", padding: "8px 16px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>
                 {doneThisWeek ? "↺ REDO THIS WEEK'S CHECK-IN" : "DO IT EARLY →"}
               </button>
-              <Mono s={{ fontSize: 10, color: "var(--text3)" }}>{questions.length} questions · ~3 min</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--text3)" }}>{questions.length} questions · ~3 min</Mono>
             </div>
           )}
 
           {/* Prior context */}
           {sortedLogs.length > 0 && (
             <div>
-              <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>CONTEXT northstar WILL USE</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>CONTEXT northstar WILL USE</Mono>
               {sortedLogs.slice(0, 3).map((l, i) => (
                 <div key={l.id} style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "10px 14px", marginBottom: 6, display: "flex", gap: 12 }}>
-                  <Mono s={{ fontSize: 9, color: "var(--text3)", flexShrink: 0 }}>W-{i + 1}</Mono>
+                  <Mono s={{ fontSize: 13, color: "var(--text3)", flexShrink: 0 }}>W-{i + 1}</Mono>
                   <div>
-                    <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1, display: "block", marginBottom: 3 }}>{new Date(l.date).toLocaleDateString("en-CA", { weekday: "short", month: "short", day: "numeric" })}{l.compressed ? " · COMPRESSED" : ""}</Mono>
-                    <div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.5 }}>{l.digest}</div>
+                    <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1, display: "block", marginBottom: 3 }}>{new Date(l.date).toLocaleDateString("en-CA", { weekday: "short", month: "short", day: "numeric" })}{l.compressed ? " · COMPRESSED" : ""}</Mono>
+                    <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.5 }}>{l.digest}</div>
                   </div>
                 </div>
               ))}
@@ -528,15 +528,15 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
                     <span style={{ fontSize: 16 }}>{icon}</span>
-                    <Mono s={{ fontSize: 11, color: isDone ? color : "var(--text)", letterSpacing: 1 }}>{title}</Mono>
-                    {displayDone && !isDone && hasData && <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 8, color: "var(--text3)", background: "var(--bg3)", padding: "2px 6px" }}>HAS DATA</span>}
-                    {isDone && <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 8, color, background: color + "15", padding: "2px 6px" }}>✓ UPDATED</span>}
+                    <Mono s={{ fontSize: 13, color: isDone ? color : "var(--text)", letterSpacing: 1 }}>{title}</Mono>
+                    {displayDone && !isDone && hasData && <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 14, color: "var(--text3)", background: "var(--bg3)", padding: "2px 6px" }}>HAS DATA</span>}
+                    {isDone && <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 14, color, background: color + "15", padding: "2px 6px" }}>✓ UPDATED</span>}
                   </div>
-                  <div style={{ fontSize: 11, color: "var(--text3)", lineHeight: 1.5 }}>{subtitle}</div>
+                  <div style={{ fontSize: 13, color: "var(--text3)", lineHeight: 1.5 }}>{subtitle}</div>
                   {hasData && uploadedAt && status === "idle" && (
-                    <div style={{ fontSize: 10, color: "var(--text3)", marginTop: 4 }}>Last upload: {new Date(uploadedAt).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</div>
+                    <div style={{ fontSize: 14, color: "var(--text3)", marginTop: 4 }}>Last upload: {new Date(uploadedAt).toLocaleDateString("en-CA", { month: "short", day: "numeric" })}</div>
                   )}
-                  {error && <div style={{ fontSize: 11, color: "var(--r)", marginTop: 6 }}>⚠ {error}</div>}
+                  {error && <div style={{ fontSize: 13, color: "var(--r)", marginTop: 6 }}>⚠ {error}</div>}
                 </div>
                 <div style={{ flexShrink: 0 }}>
                   {isUploading
@@ -546,7 +546,7 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                       : (
                         <button
                           onClick={() => fileRef.current?.click()}
-                          style={{ background: hasData ? "var(--bg3)" : color, color: hasData ? "var(--text2)" : "#000", border: hasData ? "1px solid var(--border)" : "none", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer" }}
+                          style={{ background: hasData ? "var(--bg3)" : color, color: hasData ? "var(--text2)" : "#000", border: hasData ? "1px solid var(--border)" : "none", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
                         >
                           {hasData ? "UPDATE" : "UPLOAD"}
                         </button>
@@ -562,9 +562,9 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
         return (
           <div style={{ maxWidth: 704, display: "flex", flexDirection: "column", gap: 20 }}>
             <div>
-              <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 6 }}>STEP 1 OF 4 · DATA REFRESH</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 6 }}>STEP 1 OF 4 · DATA REFRESH</Mono>
               <div style={{ fontFamily: "'Bebas Neue'", fontSize: 30, color: "var(--text)", letterSpacing: 1, marginBottom: 8 }}>Update Your Data</div>
-              <div style={{ fontSize: 12, color: "var(--text3)", lineHeight: 1.6 }}>Before your check-in, upload fresh data from your connected sources. All fields are optional — skip anything you haven't updated this week.</div>
+              <div style={{ fontSize: 14, color: "var(--text3)", lineHeight: 1.6 }}>Before your check-in, upload fresh data from your connected sources. All fields are optional — skip anything you haven't updated this week.</div>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -601,11 +601,11 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
             <div style={{ display: "flex", gap: 10, alignItems: "center", paddingTop: 8, borderTop: "1px solid var(--border)" }}>
               <button
                 onClick={() => { setPhase("interview"); setCurrentQ(0); setAnswers({}); }}
-                style={{ background: "var(--c)", color: "#000", border: "none", padding: "11px 26px", fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: 2, fontWeight: 600 }}
+                style={{ background: "var(--c)", color: "#000", border: "none", padding: "11px 26px", fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 2, fontWeight: 600 }}
               >
                 CONTINUE TO CHECK-IN →
               </button>
-              <Mono s={{ fontSize: 9, color: "var(--text3)" }}>or skip — data from last upload will be used</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>or skip — data from last upload will be used</Mono>
             </div>
           </div>
         );
@@ -616,8 +616,8 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
         <div style={{ maxWidth: 704 }}>
           <div style={{ marginBottom: 28 }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-              <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 1 }}>QUESTION {currentQ + 1} OF {questions.length}</Mono>
-              <Mono s={{ fontSize: 9, color: "var(--text3)" }}>{Math.round(progress)}%</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1 }}>QUESTION {currentQ + 1} OF {questions.length}</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>{Math.round(progress)}%</Mono>
             </div>
             <div style={{ height: 2, background: "var(--border)" }}>
               <div style={{ height: "100%", width: `${progress}%`, background: "var(--c)", transition: "width 0.3s ease" }} />
@@ -629,8 +629,8 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
               const p = PILLARS.find(p => p.id === q.pillar);
               return p ? (
                 <div style={{ display: "inline-flex", alignItems: "center", gap: 5, marginBottom: 10, padding: "3px 8px", border: `1px solid ${p.color}44`, background: `${p.color}11` }}>
-                  <span style={{ fontSize: 10 }}>{p.icon}</span>
-                  <Mono s={{ fontSize: 8, color: p.color, letterSpacing: 1.5 }}>{p.label}</Mono>
+                  <span style={{ fontSize: 14 }}>{p.icon}</span>
+                  <Mono s={{ fontSize: 14, color: p.color, letterSpacing: 1.5 }}>{p.label}</Mono>
                 </div>
               ) : null;
             })()}
@@ -649,7 +649,7 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                         border: `1px solid ${selected ? "var(--c)" : "var(--border)"}`,
                         padding: "14px 36px",
                         fontFamily: "'DM Mono',monospace",
-                        fontSize: 12,
+                        fontSize: 14,
                         letterSpacing: 2,
                         fontWeight: selected ? 600 : 400,
                         cursor: "pointer",
@@ -676,26 +676,26 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
 
           <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
             {currentQ > 0 && (
-              <button onClick={goPrev} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "10px 18px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>← BACK</button>
+              <button onClick={goPrev} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "10px 18px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>← BACK</button>
             )}
-            <button onClick={goNext} style={{ background: answers[q.key]?.trim() ? "var(--c)" : "var(--bg3)", color: answers[q.key]?.trim() ? "#000" : "var(--text3)", border: "none", padding: "10px 24px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1.5, fontWeight: 500 }}>
+            <button onClick={goNext} style={{ background: answers[q.key]?.trim() ? "var(--c)" : "var(--bg3)", color: answers[q.key]?.trim() ? "#000" : "var(--text3)", border: "none", padding: "10px 24px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1.5, fontWeight: 500 }}>
               {currentQ === questions.length - 1 ? "SUBMIT & ANALYZE →" : "NEXT →"}
             </button>
             {!answers[q.key]?.trim() && (
-              <button onClick={goNext} style={{ background: "none", border: "none", color: "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>SKIP</button>
+              <button onClick={goNext} style={{ background: "none", border: "none", color: "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>SKIP</button>
             )}
           </div>
 
           {/* Question list */}
           <div style={{ marginTop: 32, borderTop: "1px solid var(--border)", paddingTop: 20 }}>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 10 }}>ALL QUESTIONS</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 10 }}>ALL QUESTIONS</Mono>
             {questions.map((qq, i) => (
               <button key={qq.key} onClick={() => setCurrentQ(i)} style={{ display: "flex", gap: 10, alignItems: "center", width: "100%", textAlign: "left", background: "none", border: "none", padding: "5px 0", marginBottom: 2 }}>
                 <div style={{ width: 16, height: 16, border: `1px solid ${answers[qq.key]?.trim() ? "var(--c)" : "var(--border)"}`, background: answers[qq.key]?.trim() ? "var(--c)22" : "transparent", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  {answers[qq.key]?.trim() && <span style={{ color: "var(--c)", fontSize: 9 }}>✓</span>}
+                  {answers[qq.key]?.trim() && <span style={{ color: "var(--c)", fontSize: 13 }}>✓</span>}
                   {i === currentQ && !answers[qq.key]?.trim() && <span style={{ width: 4, height: 4, background: "var(--text3)", borderRadius: "50%", display: "block" }} />}
                 </div>
-                <div style={{ fontSize: 11, color: i === currentQ ? "var(--text)" : answers[qq.key]?.trim() ? "var(--text2)" : "var(--text3)", lineHeight: 1.4 }}>{qq.q}</div>
+                <div style={{ fontSize: 13, color: i === currentQ ? "var(--text)" : answers[qq.key]?.trim() ? "var(--text2)" : "var(--text3)", lineHeight: 1.4 }}>{qq.q}</div>
               </button>
             ))}
           </div>
@@ -706,8 +706,8 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       {canInterview && phase === "processing" && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 0", gap: 20 }}>
           <div style={{ width: 48, height: 48, border: "2px solid var(--c)22", borderTop: "2px solid var(--c)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-          <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 3 }}>northstar IS ANALYZING YOUR WEEK...</Mono>
-          <div style={{ fontSize: 11, color: "var(--text3)", textAlign: "center", maxWidth: 360, lineHeight: 1.7 }}>Comparing against previous logs, assessing progress, generating personalised missions...</div>
+          <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 3 }}>northstar IS ANALYZING YOUR WEEK...</Mono>
+          <div style={{ fontSize: 13, color: "var(--text3)", textAlign: "center", maxWidth: 360, lineHeight: 1.7 }}>Comparing against previous logs, assessing progress, generating personalised missions...</div>
         </div>
       )}
 
@@ -716,17 +716,17 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
         <div style={{ maxWidth: 770, display: "flex", flexDirection: "column", gap: 20 }}>
           <div className="fu" style={{ background: "var(--c)0D", border: "1px solid var(--c)44", padding: 22, position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg,var(--c),transparent)" }} />
-            <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 10 }}>THIS WEEK'S ASSESSMENT</Mono>
+            <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 10 }}>THIS WEEK'S ASSESSMENT</Mono>
             <div style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.7, marginBottom: 14 }}>{result.progressSummary}</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div style={{ background: "var(--bg3)", padding: "12px 14px" }}><Mono s={{ fontSize: 8, color: "var(--g)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>KEY WIN</Mono><div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.5 }}>{result.keyWin}</div></div>
-              <div style={{ background: "var(--bg3)", padding: "12px 14px" }}><Mono s={{ fontSize: 8, color: "var(--o)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>KEY BLOCKER</Mono><div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.5 }}>{result.keyBlocker}</div></div>
+              <div style={{ background: "var(--bg3)", padding: "12px 14px" }}><Mono s={{ fontSize: 14, color: "var(--g)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>KEY WIN</Mono><div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.5 }}>{result.keyWin}</div></div>
+              <div style={{ background: "var(--bg3)", padding: "12px 14px" }}><Mono s={{ fontSize: 14, color: "var(--o)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>KEY BLOCKER</Mono><div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.5 }}>{result.keyBlocker}</div></div>
             </div>
           </div>
 
           {result.pillarDeltas && (
             <div className="fu1">
-              <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>PILLAR SCORE ADJUSTMENTS</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>PILLAR SCORE ADJUSTMENTS</Mono>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {PILLARS.map(p => {
                   const delta = result.pillarDeltas?.[p.id];
@@ -736,10 +736,10 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                   return (
                     <div key={p.id} style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "12px 14px", display: "flex", alignItems: "center", gap: 12 }}>
                       <div style={{ width: 8, height: 8, borderRadius: "50%", background: p.color, flexShrink: 0 }} />
-                      <div style={{ flex: 1 }}><Mono s={{ fontSize: 9, color: p.color, letterSpacing: 1, display: "block", marginBottom: 2 }}>{p.label}</Mono><div style={{ fontSize: 10, color: "var(--text3)", lineHeight: 1.4 }}>{delta.note}</div></div>
+                      <div style={{ flex: 1 }}><Mono s={{ fontSize: 13, color: p.color, letterSpacing: 1, display: "block", marginBottom: 2 }}>{p.label}</Mono><div style={{ fontSize: 14, color: "var(--text3)", lineHeight: 1.4 }}>{delta.note}</div></div>
                       <div style={{ textAlign: "right", flexShrink: 0 }}>
                         <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: delta.delta > 0 ? "var(--g)" : delta.delta < 0 ? "var(--r)" : "var(--text3)", lineHeight: 1 }}>{delta.delta > 0 ? "+" : ""}{delta.delta !== 0 ? delta.delta : "—"}</div>
-                        <Mono s={{ fontSize: 8, color: "var(--text3)" }}>{current}→{newScore}</Mono>
+                        <Mono s={{ fontSize: 14, color: "var(--text3)" }}>{current}→{newScore}</Mono>
                       </div>
                     </div>
                   );
@@ -750,15 +750,15 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
 
           {result.feedback?.length > 0 && (
             <div className="fu2">
-              <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>northstar FEEDBACK</Mono>
-              {result.feedback.map((f, i) => <div key={i} style={{ display: "flex", gap: 12, marginBottom: 10 }}><span style={{ color: "var(--c)", fontSize: 11, flexShrink: 0 }}>◈</span><div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6 }}>{f}</div></div>)}
+              <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>northstar FEEDBACK</Mono>
+              {result.feedback.map((f, i) => <div key={i} style={{ display: "flex", gap: 12, marginBottom: 10 }}><span style={{ color: "var(--c)", fontSize: 13, flexShrink: 0 }}>◈</span><div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6 }}>{f}</div></div>)}
             </div>
           )}
 
           {/* Mission removal suggestions */}
           {result.missionRemovals?.length > 0 && (
             <div className="fu3a" style={{ border: "1px solid var(--r)44", padding: 18 }}>
-              <Mono s={{ fontSize: 9, color: "var(--r)", letterSpacing: 2, display: "block", marginBottom: 12 }}>⚠ SUGGESTED MISSION REMOVAL</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--r)", letterSpacing: 2, display: "block", marginBottom: 12 }}>⚠ SUGGESTED MISSION REMOVAL</Mono>
               {result.missionRemovals.map(r => {
                 const decision = removalDecisions[r.missionId];
                 return (
@@ -766,10 +766,10 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                     <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 8 }}>
                       <PillarDot id={r.pillar} size={5} />
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 12, color: "var(--text)", marginBottom: 3 }}>"{r.title}"</div>
-                        <div style={{ fontSize: 11, color: "var(--text3)", lineHeight: 1.5 }}>{r.reason}</div>
+                        <div style={{ fontSize: 14, color: "var(--text)", marginBottom: 3 }}>"{r.title}"</div>
+                        <div style={{ fontSize: 13, color: "var(--text3)", lineHeight: 1.5 }}>{r.reason}</div>
                       </div>
-                      <Mono s={{ fontSize: 8, color: "var(--text3)", background: "var(--bg3)", padding: "2px 6px", flexShrink: 0 }}>{r.missionKind}</Mono>
+                      <Mono s={{ fontSize: 14, color: "var(--text3)", background: "var(--bg3)", padding: "2px 6px", flexShrink: 0 }}>{r.missionKind}</Mono>
                     </div>
                     {!decision && (
                       <div style={{ display: "flex", gap: 8, paddingLeft: 15 }}>
@@ -779,20 +779,20 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                             else onDeleteMission(r.missionId);
                             setRemovalDecisions(d => ({ ...d, [r.missionId]: "accepted" }));
                           }}
-                          style={{ background: "var(--r)", color: "#fff", border: "none", padding: "6px 14px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer" }}
+                          style={{ background: "var(--r)", color: "#fff", border: "none", padding: "6px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
                         >
                           REMOVE
                         </button>
                         <button
                           onClick={() => setRemovalDecisions(d => ({ ...d, [r.missionId]: "declined" }))}
-                          style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "6px 14px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer" }}
+                          style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "6px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
                         >
                           KEEP
                         </button>
                       </div>
                     )}
-                    {decision === "accepted" && <Mono s={{ fontSize: 9, color: "var(--r)", paddingLeft: 15 }}>✓ Removed</Mono>}
-                    {decision === "declined" && <Mono s={{ fontSize: 9, color: "var(--text3)", paddingLeft: 15 }}>Kept</Mono>}
+                    {decision === "accepted" && <Mono s={{ fontSize: 13, color: "var(--r)", paddingLeft: 15 }}>✓ Removed</Mono>}
+                    {decision === "declined" && <Mono s={{ fontSize: 13, color: "var(--text3)", paddingLeft: 15 }}>Kept</Mono>}
                   </div>
                 );
               })}
@@ -802,7 +802,7 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
           {/* Mission update suggestions */}
           {result.missionUpdates?.length > 0 && (
             <div className="fu3b" style={{ border: "1px solid var(--c)44", padding: 18 }}>
-              <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 12 }}>✏ SUGGESTED MISSION UPDATES</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 12 }}>✏ SUGGESTED MISSION UPDATES</Mono>
               {result.missionUpdates.map(u => {
                 const decision = updateDecisions[u.missionId];
                 const changes  = u.proposedChanges || {};
@@ -817,17 +817,17 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                     <div style={{ display: "flex", gap: 10, alignItems: "flex-start", marginBottom: 8 }}>
                       <PillarDot id={u.pillar} size={5} />
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 12, color: "var(--text)", marginBottom: 3 }}>"{u.existingTitle}"</div>
+                        <div style={{ fontSize: 14, color: "var(--text)", marginBottom: 3 }}>"{u.existingTitle}"</div>
                         {changeLines.length > 0 && (
                           <div style={{ marginBottom: 4 }}>
                             {changeLines.map((cl, i) => (
-                              <Mono key={i} s={{ fontSize: 9, color: "var(--c)", display: "block", lineHeight: 1.7 }}>{cl}</Mono>
+                              <Mono key={i} s={{ fontSize: 13, color: "var(--c)", display: "block", lineHeight: 1.7 }}>{cl}</Mono>
                             ))}
                           </div>
                         )}
-                        <div style={{ fontSize: 11, color: "var(--text3)", lineHeight: 1.5 }}>{u.reason}</div>
+                        <div style={{ fontSize: 13, color: "var(--text3)", lineHeight: 1.5 }}>{u.reason}</div>
                       </div>
-                      <Mono s={{ fontSize: 8, color: "var(--text3)", background: "var(--bg3)", padding: "2px 6px", flexShrink: 0 }}>{u.missionKind}</Mono>
+                      <Mono s={{ fontSize: 14, color: "var(--text3)", background: "var(--bg3)", padding: "2px 6px", flexShrink: 0 }}>{u.missionKind}</Mono>
                     </div>
                     {!decision && (
                       <div style={{ display: "flex", gap: 8, paddingLeft: 15 }}>
@@ -837,20 +837,20 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
                             fn(u.missionId, u.proposedChanges || {});
                             setUpdateDecisions(d => ({ ...d, [u.missionId]: "accepted" }));
                           }}
-                          style={{ background: "var(--c)", color: "#000", border: "none", padding: "6px 14px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer" }}
+                          style={{ background: "var(--c)", color: "#000", border: "none", padding: "6px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
                         >
                           APPLY UPDATE
                         </button>
                         <button
                           onClick={() => setUpdateDecisions(d => ({ ...d, [u.missionId]: "declined" }))}
-                          style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "6px 14px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer" }}
+                          style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "6px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
                         >
                           SKIP
                         </button>
                       </div>
                     )}
-                    {decision === "accepted" && <Mono s={{ fontSize: 9, color: "var(--g)", paddingLeft: 15 }}>✓ Updated</Mono>}
-                    {decision === "declined" && <Mono s={{ fontSize: 9, color: "var(--text3)", paddingLeft: 15 }}>Skipped</Mono>}
+                    {decision === "accepted" && <Mono s={{ fontSize: 13, color: "var(--g)", paddingLeft: 15 }}>✓ Updated</Mono>}
+                    {decision === "declined" && <Mono s={{ fontSize: 13, color: "var(--text3)", paddingLeft: 15 }}>Skipped</Mono>}
                   </div>
                 );
               })}
@@ -859,13 +859,13 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
 
           {result.newMissions?.length > 0 && (
             <div className="fu3" style={{ background: "var(--o)0D", border: "1px solid var(--o)33", padding: 18 }}>
-              <Mono s={{ fontSize: 9, color: "var(--o)", letterSpacing: 2, display: "block", marginBottom: 12 }}>⚡ {result.newMissions.length} NEW MISSIONS ADDED TO PENDING</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--o)", letterSpacing: 2, display: "block", marginBottom: 12 }}>⚡ {result.newMissions.length} NEW MISSIONS ADDED TO PENDING</Mono>
               {result.newMissions.map((m, i) => (
                 <div key={i} style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 7 }}>
                   <PillarDot id={m.pillar} size={5} />
-                  <div style={{ flex: 1, fontSize: 12, color: "var(--text)" }}>{m.title}</div>
+                  <div style={{ flex: 1, fontSize: 14, color: "var(--text)" }}>{m.title}</div>
                   <DiffTag level={m.difficulty} />
-                  <Mono s={{ fontSize: 9, color: "var(--text3)" }}>{m.estimatedTime}</Mono>
+                  <Mono s={{ fontSize: 13, color: "var(--text3)" }}>{m.estimatedTime}</Mono>
                 </div>
               ))}
             </div>
@@ -877,17 +877,17 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
 
           <div style={{ background: "var(--c)0D", border: "1px solid var(--c)44", padding: "18px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16 }}>
             <div>
-              <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 1.5, display: "block", marginBottom: 4 }}>NEXT STEP</Mono>
-              <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.5 }}>Your check-in answers will be saved to your pillar profiles and a full sync will generate new weekly missions.</div>
+              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1.5, display: "block", marginBottom: 4 }}>NEXT STEP</Mono>
+              <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.5 }}>Your check-in answers will be saved to your pillar profiles and a full sync will generate new weekly missions.</div>
             </div>
-            <button onClick={applyAndSync} style={{ background: "var(--c)", color: "#000", border: "none", padding: "12px 22px", fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: 2, fontWeight: 600, flexShrink: 0, whiteSpace: "nowrap" }}>
+            <button onClick={applyAndSync} style={{ background: "var(--c)", color: "#000", border: "none", padding: "12px 22px", fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 2, fontWeight: 600, flexShrink: 0, whiteSpace: "nowrap" }}>
               SAVE & SYNC →
             </button>
           </div>
 
           <div style={{ display: "flex", gap: 10 }}>
-            <button onClick={reset} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "9px 20px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>← BACK</button>
-            <button onClick={() => setPhase("history")} style={{ background: "var(--bg2)", border: "1px solid var(--border)", color: "var(--text2)", padding: "9px 20px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>VIEW HISTORY</button>
+            <button onClick={reset} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "9px 20px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>← BACK</button>
+            <button onClick={() => setPhase("history")} style={{ background: "var(--bg2)", border: "1px solid var(--border)", color: "var(--text2)", padding: "9px 20px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>VIEW HISTORY</button>
           </div>
         </div>
       )}
@@ -896,8 +896,8 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       {canInterview && phase === "syncing" && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 0", gap: 20 }}>
           <div style={{ width: 48, height: 48, border: "2px solid var(--c)22", borderTop: "2px solid var(--c)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-          <Mono s={{ fontSize: 9, color: "var(--c)", letterSpacing: 3 }}>RUNNING FULL SYNC...</Mono>
-          <div style={{ fontSize: 11, color: "var(--text3)", textAlign: "center", maxWidth: 400, lineHeight: 1.7 }}>northstar is re-analyzing all pillars with this week's data and generating new missions. This takes about 30–60 seconds.</div>
+          <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 3 }}>RUNNING FULL SYNC...</Mono>
+          <div style={{ fontSize: 13, color: "var(--text3)", textAlign: "center", maxWidth: 400, lineHeight: 1.7 }}>northstar is re-analyzing all pillars with this week's data and generating new missions. This takes about 30–60 seconds.</div>
         </div>
       )}
 
@@ -908,8 +908,8 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
             <div style={{ fontFamily: "'Bebas Neue'", fontSize: 48, color: "var(--g)", letterSpacing: 2, marginBottom: 8 }}>WEEK LOCKED IN</div>
             <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.7, marginBottom: 20 }}>Check-in complete. Pillars updated. New missions generated. Your week is loaded and ready.</div>
             <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
-              <button onClick={reset} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text2)", padding: "9px 20px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>← BACK TO CHECK-IN</button>
-              <button onClick={() => setPhase("history")} style={{ background: "var(--bg2)", border: "1px solid var(--border)", color: "var(--text2)", padding: "9px 20px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>VIEW HISTORY</button>
+              <button onClick={reset} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text2)", padding: "9px 20px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>← BACK TO CHECK-IN</button>
+              <button onClick={() => setPhase("history")} style={{ background: "var(--bg2)", border: "1px solid var(--border)", color: "var(--text2)", padding: "9px 20px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>VIEW HISTORY</button>
             </div>
           </div>
         </div>
@@ -918,7 +918,7 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       {/* HISTORY */}
       {phase === "history" && (
         <div style={{ maxWidth: 770 }}>
-          <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 16 }}>{sortedLogs.length} LOG{sortedLogs.length !== 1 ? "S" : ""} · LAST {state.retentionWeeks || LOG_RETENTION_WEEKS} WEEKS</Mono>
+          <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 16 }}>{sortedLogs.length} LOG{sortedLogs.length !== 1 ? "S" : ""} · LAST {state.retentionWeeks || LOG_RETENTION_WEEKS} WEEKS</Mono>
           {sortedLogs.length === 0
             ? <div style={{ textAlign: "center", padding: "60px 0" }}><div style={{ fontFamily: "'Bebas Neue'", fontSize: 36, color: "var(--border2)", marginBottom: 12 }}>NO HISTORY YET</div></div>
             : sortedLogs.map((log, idx) => <LogCard key={log.id} log={log} idx={idx} />)

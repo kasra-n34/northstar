@@ -8,7 +8,7 @@ export const CSS = `
   --border:#1A2535;--border2:#243040;--text:#C4CED8;--text2:#567088;--text3:#2A3D52;
   --y:#60C8F5;--c:#3BB8FF;--o:#FF6B35;--p:#B03BFF;--r:#FF3B5C;--g:#3BFF8A;
 }
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow:hidden;zoom:1.08;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow:hidden;font-size:15px;}
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
@@ -34,7 +34,7 @@ export const Mono = ({ children, s = {} }) => (
 
 export const Tag = ({ children, color = "var(--text3)" }) => (
   <span style={{
-    fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1.5,
+    fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1.5,
     padding: "3px 7px", border: `1px solid ${color}44`,
     color, background: color + "11", whiteSpace: "nowrap",
   }}>{children}</span>
@@ -68,7 +68,7 @@ export const ScoreBar = ({ value, max = 100, color }) => (
     <div style={{ flex: 1, height: 2, background: "var(--border)" }}>
       <div style={{ height: "100%", width: `${(value / max) * 100}%`, background: color, transition: "width 0.6s ease" }} />
     </div>
-    <Mono s={{ fontSize: 10, color: "var(--text2)" }}>{value}<span style={{fontSize:8,color:"var(--text3)"}}>/{max}</span></Mono>
+    <Mono s={{ fontSize: 14, color: "var(--text2)" }}>{value}<span style={{fontSize:10,color:"var(--text3)"}}>/{max}</span></Mono>
   </div>
 );
 
@@ -99,9 +99,9 @@ export const ScoreSparkline = ({ history = [], color = "var(--c)", height = 36, 
       </svg>
       <div>
         <div style={{ fontFamily: "'Bebas Neue'", fontSize: 20, color, lineHeight: 1 }}>
-          {latest}<span style={{ fontSize: 10, color: "var(--text3)" }}>/100</span>
+          {latest}<span style={{ fontSize: 14, color: "var(--text3)" }}>/100</span>
         </div>
-        <Mono s={{ fontSize: 9, color: trendColor }}>{trend} {history.length} pts</Mono>
+        <Mono s={{ fontSize: 13, color: trendColor }}>{trend} {history.length} pts</Mono>
       </div>
     </div>
   );
@@ -110,6 +110,6 @@ export const ScoreSparkline = ({ history = [], color = "var(--c)", height = 36, 
 export const LoadingBlock = ({ color = "var(--c)", label = "NORTHSTAR IS WORKING" }) => (
   <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 0", gap: 20 }}>
     <div style={{ width: 40, height: 40, border: `2px solid ${color}22`, borderTop: `2px solid ${color}`, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-    <Mono s={{ fontSize: 9, color, letterSpacing: 3 }}>{label}...</Mono>
+    <Mono s={{ fontSize: 13, color, letterSpacing: 3 }}>{label}...</Mono>
   </div>
 );

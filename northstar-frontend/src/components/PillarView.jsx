@@ -74,10 +74,10 @@ function PhysicalityTrends({ workoutData }) {
     return (
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8, padding: "7px 0", borderBottom: "1px solid var(--border)" }}>
         <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 11, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.ex}</div>
-          <Mono s={{ fontSize: 8, color: "var(--text3)", marginTop: 2, display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</Mono>
+          <div style={{ fontSize: 13, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.ex}</div>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", marginTop: 2, display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{sub}</Mono>
         </div>
-        <Mono s={{ fontSize: 10, color, flexShrink: 0, fontWeight: 600 }}>{delta}</Mono>
+        <Mono s={{ fontSize: 14, color, flexShrink: 0, fontWeight: 600 }}>{delta}</Mono>
       </div>
     );
   };
@@ -86,7 +86,7 @@ function PhysicalityTrends({ workoutData }) {
     <div style={{ flex: 1, minWidth: 0 }}>
       <Mono s={{ fontSize: 7, color, letterSpacing: 2, display: "block", marginBottom: 4 }}>{label}</Mono>
       {list.length === 0
-        ? <Mono s={{ fontSize: 9, color: "var(--text3)", display: "block", paddingTop: 6 }}>—</Mono>
+        ? <Mono s={{ fontSize: 13, color: "var(--text3)", display: "block", paddingTop: 6 }}>—</Mono>
         : list.map((t, i) => <ExItem key={i} t={t} dir={dir} />)
       }
     </div>
@@ -96,7 +96,7 @@ function PhysicalityTrends({ workoutData }) {
     <div>
       {/* Header row */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-        <Mono s={{ fontSize: 8, color: "#E8FF3B", letterSpacing: 2 }}>WORKOUT TRENDS</Mono>
+        <Mono s={{ fontSize: 14, color: "#E8FF3B", letterSpacing: 2 }}>WORKOUT TRENDS</Mono>
         <div style={{ display: "flex", gap: 0 }}>
           {[["bestset", "BEST SET"], ["sessVol", "SESSION VOL"]].map(([v, l]) => (
             <button key={v} onClick={() => { setTab(v); setExpanded(false); }} style={{ padding: "3px 10px", background: tab === v ? "#E8FF3B18" : "none", border: `1px solid ${tab === v ? "#E8FF3B44" : "var(--border)"}`, fontFamily: "'DM Mono',monospace", fontSize: 7, letterSpacing: 1, color: tab === v ? "#E8FF3B" : "var(--text3)", cursor: "pointer" }}>
@@ -120,7 +120,7 @@ function PhysicalityTrends({ workoutData }) {
       </div>
 
       {needsMore && (
-        <button onClick={() => setExpanded(e => !e)} style={{ marginTop: 8, background: "none", border: "none", padding: 0, fontFamily: "'DM Mono',monospace", fontSize: 8, color: "var(--text3)", cursor: "pointer", letterSpacing: 1 }}>
+        <button onClick={() => setExpanded(e => !e)} style={{ marginTop: 8, background: "none", border: "none", padding: 0, fontFamily: "'DM Mono',monospace", fontSize: 14, color: "var(--text3)", cursor: "pointer", letterSpacing: 1 }}>
           {expanded ? "▲ SHOW LESS" : `▼ ${maxLen - PREVIEW_COUNT} MORE`}
         </button>
       )}
@@ -161,11 +161,11 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
       {/* Header */}
       <div style={{ marginBottom: 24, paddingBottom: 18, borderBottom: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
         <div>
-          <div style={{ color: pillar.color, fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 3, marginBottom: 5 }}>{pillar.icon} {pillar.label}</div>
+          <div style={{ color: pillar.color, fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 3, marginBottom: 5 }}>{pillar.icon} {pillar.label}</div>
           <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 1, color: "var(--text)" }}>{pillar.sub}</h2>
         </div>
         {analysis && (
-          <button onClick={() => setMode(m => m === "analysis" ? "input" : "analysis")} className="hov-border" style={{ background: "none", border: "1px solid var(--border)", color: "var(--text2)", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1 }}>
+          <button onClick={() => setMode(m => m === "analysis" ? "input" : "analysis")} className="hov-border" style={{ background: "none", border: "1px solid var(--border)", color: "var(--text2)", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>
             {mode === "analysis" ? "EDIT CORE GOALS" : "VIEW ANALYSIS"}
           </button>
         )}
@@ -177,7 +177,7 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
           {!analysis && (
             <div style={{ background: pillar.color + "0D", border: `1px solid ${pillar.color}33`, padding: "12px 16px", display: "flex", gap: 12, alignItems: "flex-start" }}>
               <span style={{ color: pillar.color, fontSize: 14, flexShrink: 0 }}>ℹ</span>
-              <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>
+              <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>
                 Fill in your answers and save. Then hit <strong style={{ color: "var(--c)" }}>⟳ SYNC NORTHSTAR</strong> in the top bar to run the analysis — this keeps all API calls together and avoids rate limits.
               </div>
             </div>
@@ -186,13 +186,13 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
           {/* Core goals section */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: `1px solid ${pillar.color}33` }}>
-              <Mono s={{ fontSize: 9, color: pillar.color, letterSpacing: 2 }}>CORE GOALS</Mono>
-              <Mono s={{ fontSize: 9, color: "var(--text3)" }}>— set once, kept across weeks</Mono>
+              <Mono s={{ fontSize: 13, color: pillar.color, letterSpacing: 2 }}>CORE GOALS</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>— set once, kept across weeks</Mono>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
               {pillar.questions.filter(q => q.core).map((q, i) => (
                 <div key={q.key}>
-                  <label style={{ display: "block", fontFamily: "'DM Mono',monospace", fontSize: 9, color: "var(--text3)", letterSpacing: 1.5, marginBottom: 7, textTransform: "uppercase" }}>
+                  <label style={{ display: "block", fontFamily: "'DM Mono',monospace", fontSize: 13, color: "var(--text3)", letterSpacing: 1.5, marginBottom: 7, textTransform: "uppercase" }}>
                     <span style={{ color: pillar.color }}>{String(i + 1).padStart(2, "0")}</span>{"  "}{q.q}
                   </label>
                   <textarea
@@ -200,7 +200,7 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
                     value={answers[q.key] || ""}
                     onChange={e => setAnswers(a => ({ ...a, [q.key]: e.target.value }))}
                     placeholder="Be specific — this stays as your long-term anchor..."
-                    style={{ width: "100%", padding: "10px 12px", fontSize: 12, resize: "vertical", lineHeight: 1.6, border: `1px solid ${answers[q.key]?.trim() ? pillar.color + "55" : "var(--border)"}` }}
+                    style={{ width: "100%", padding: "10px 12px", fontSize: 14, resize: "vertical", lineHeight: 1.6, border: `1px solid ${answers[q.key]?.trim() ? pillar.color + "55" : "var(--border)"}` }}
                   />
                 </div>
               ))}
@@ -210,11 +210,11 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
           {/* Current status section */}
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 8, borderBottom: "1px solid var(--border)" }}>
-              <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2 }}>CURRENT STATUS</Mono>
-              <Mono s={{ fontSize: 9, color: "var(--text3)" }}>— updated each week from your check-in</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2 }}>CURRENT STATUS</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>— updated each week from your check-in</Mono>
               <button
                 onClick={() => statusLocked ? setShowStatusWarning(true) : setStatusLocked(true)}
-                style={{ marginLeft: "auto", background: "none", border: "1px solid var(--border)", color: statusLocked ? "var(--text3)" : "var(--o)", padding: "3px 10px", fontFamily: "'DM Mono',monospace", fontSize: 8, letterSpacing: 1, cursor: "pointer" }}
+                style={{ marginLeft: "auto", background: "none", border: "1px solid var(--border)", color: statusLocked ? "var(--text3)" : "var(--o)", padding: "3px 10px", fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 1, cursor: "pointer" }}
               >
                 {statusLocked ? "EDIT" : "LOCK"}
               </button>
@@ -222,7 +222,7 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 14, opacity: statusLocked ? 0.5 : 1, transition: "opacity 0.2s" }}>
               {pillar.questions.filter(q => !q.core).map((q, i) => (
                 <div key={q.key}>
-                  <label style={{ display: "block", fontFamily: "'DM Mono',monospace", fontSize: 9, color: "var(--text3)", letterSpacing: 1.5, marginBottom: 7, textTransform: "uppercase" }}>
+                  <label style={{ display: "block", fontFamily: "'DM Mono',monospace", fontSize: 13, color: "var(--text3)", letterSpacing: 1.5, marginBottom: 7, textTransform: "uppercase" }}>
                     <span style={{ color: "var(--text3)" }}>{String(i + 1).padStart(2, "0")}</span>{"  "}{q.q}
                   </label>
                   <textarea
@@ -231,7 +231,7 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
                     onChange={e => !statusLocked && setAnswers(a => ({ ...a, [q.key]: e.target.value }))}
                     readOnly={statusLocked}
                     placeholder={statusLocked ? "" : "Be specific — detail = better output..."}
-                    style={{ width: "100%", padding: "10px 12px", fontSize: 12, resize: statusLocked ? "none" : "vertical", lineHeight: 1.6, border: `1px solid ${!statusLocked && answers[q.key]?.trim() ? pillar.color + "55" : "var(--border)"}`, cursor: statusLocked ? "default" : "text", background: statusLocked ? "var(--bg2)" : undefined }}
+                    style={{ width: "100%", padding: "10px 12px", fontSize: 14, resize: statusLocked ? "none" : "vertical", lineHeight: 1.6, border: `1px solid ${!statusLocked && answers[q.key]?.trim() ? pillar.color + "55" : "var(--border)"}`, cursor: statusLocked ? "default" : "text", background: statusLocked ? "var(--bg2)" : undefined }}
                   />
                 </div>
               ))}
@@ -243,23 +243,23 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
             <div style={{ position: "fixed", inset: 0, background: "#000a", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setShowStatusWarning(false)}>
               <div onClick={e => e.stopPropagation()} style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "28px 30px", maxWidth: 420, width: "90%", position: "relative" }}>
                 <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "var(--o)" }} />
-                <Mono s={{ fontSize: 9, color: "var(--o)", letterSpacing: 2, display: "block", marginBottom: 12 }}>⚠ HEADS UP</Mono>
+                <Mono s={{ fontSize: 13, color: "var(--o)", letterSpacing: 2, display: "block", marginBottom: 12 }}>⚠ HEADS UP</Mono>
                 <div style={{ fontSize: 13, color: "var(--text)", lineHeight: 1.7, marginBottom: 20 }}>
                   These fields are automatically updated during your <strong>weekly check-in</strong>. Editing them manually may be overwritten next Sunday.
                 </div>
-                <div style={{ fontSize: 12, color: "var(--text3)", lineHeight: 1.6, marginBottom: 24 }}>
+                <div style={{ fontSize: 14, color: "var(--text3)", lineHeight: 1.6, marginBottom: 24 }}>
                   We recommend answering them through the check-in flow so northstar has full context. Edit manually only if you need to correct something right now.
                 </div>
                 <div style={{ display: "flex", gap: 10 }}>
                   <button
                     onClick={() => { setShowStatusWarning(false); setStatusLocked(false); }}
-                    style={{ background: "var(--o)", color: "#000", border: "none", padding: "10px 20px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer", fontWeight: 600 }}
+                    style={{ background: "var(--o)", color: "#000", border: "none", padding: "10px 20px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer", fontWeight: 600 }}
                   >
                     EDIT ANYWAY
                   </button>
                   <button
                     onClick={() => setShowStatusWarning(false)}
-                    style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "10px 20px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer" }}
+                    style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "10px 20px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
                   >
                     CANCEL
                   </button>
@@ -269,8 +269,8 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
           )}
 
           <div style={{ opacity: statusLocked ? 0.5 : 1, transition: "opacity 0.2s" }}>
-            <label style={{ display: "block", fontFamily: "'DM Mono',monospace", fontSize: 9, color: "var(--text3)", letterSpacing: 1.5, marginBottom: 7 }}>ADDITIONAL CONTEXT (optional)</label>
-            <textarea rows={3} value={extra} onChange={e => !statusLocked && setExtra(e.target.value)} readOnly={statusLocked} placeholder={statusLocked ? "" : "Anything else Northstar should know..."} style={{ width: "100%", padding: "10px 12px", fontSize: 12, resize: statusLocked ? "none" : "vertical", lineHeight: 1.6, cursor: statusLocked ? "default" : "text", background: statusLocked ? "var(--bg2)" : undefined }} />
+            <label style={{ display: "block", fontFamily: "'DM Mono',monospace", fontSize: 13, color: "var(--text3)", letterSpacing: 1.5, marginBottom: 7 }}>ADDITIONAL CONTEXT (optional)</label>
+            <textarea rows={3} value={extra} onChange={e => !statusLocked && setExtra(e.target.value)} readOnly={statusLocked} placeholder={statusLocked ? "" : "Anything else Northstar should know..."} style={{ width: "100%", padding: "10px 12px", fontSize: 14, resize: statusLocked ? "none" : "vertical", lineHeight: 1.6, cursor: statusLocked ? "default" : "text", background: statusLocked ? "var(--bg2)" : undefined }} />
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -281,7 +281,7 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
                 background: saved ? "var(--g)" : allAnswered ? pillar.color : "var(--bg2)",
                 color: allAnswered ? "#000" : "var(--text3)",
                 border: "none", padding: "12px 26px",
-                fontFamily: "'DM Mono',monospace", fontSize: 10, letterSpacing: 2,
+                fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 2,
                 cursor: allAnswered ? "pointer" : "not-allowed", fontWeight: 500,
                 transition: "background 0.2s",
               }}
@@ -289,7 +289,7 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
               {saved ? "✓ SAVED" : analysis ? "SAVE CHANGES" : "SAVE ANSWERS"}
             </button>
             {allAnswered && !saved && (
-              <Mono s={{ fontSize: 9, color: "var(--text3)" }}>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>
                 {analysis ? "then run ⟳ SYNC NORTHSTAR to re-analyze" : "then run ⟳ SYNC NORTHSTAR to analyze"}
               </Mono>
             )}
@@ -300,13 +300,13 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
         /* Analysis display */
         <div style={{ display: "flex", flexDirection: "column", gap: 22, maxWidth: 770 }}>
           <div className="fu" style={{ borderLeft: `2px solid ${pillar.color}`, paddingLeft: 16 }}>
-            <Mono s={{ fontSize: 9, color: pillar.color, letterSpacing: 2, display: "block", marginBottom: 7 }}>ASSESSMENT</Mono>
+            <Mono s={{ fontSize: 13, color: pillar.color, letterSpacing: 2, display: "block", marginBottom: 7 }}>ASSESSMENT</Mono>
             <p style={{ color: "var(--text)", fontSize: 14, lineHeight: 1.7 }}>{analysis?.assessment}</p>
           </div>
 
           <div className="fu1" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
             <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: 14 }}>
-              <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>{pillar.label} SCORE</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>{pillar.label} SCORE</Mono>
               {analysis?.scoreHistory?.length >= 2
                 ? <ScoreSparkline history={analysis.scoreHistory} color={pillar.color} />
                 : <div style={{ fontFamily: "'Bebas Neue'", fontSize: 34, color: analysis?.priorityScore >= 80 ? "var(--o)" : analysis?.priorityScore >= 50 ? "var(--y)" : "var(--c)", lineHeight: 1 }}>{analysis?.priorityScore}<span style={{ fontSize: 14, color: "var(--text3)" }}>/100</span></div>
@@ -314,8 +314,8 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
             </div>
             {[{ l: "30-DAY TARGET", v: analysis?.thirtyDayMilestone }, { l: "90-DAY TARGET", v: analysis?.ninetyDayMilestone }].map(m => (
               <div key={m.l} style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: 14 }}>
-                <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 7 }}>{m.l}</Mono>
-                <div style={{ fontSize: 12, color: "var(--text)", lineHeight: 1.5 }}>{m.v}</div>
+                <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 7 }}>{m.l}</Mono>
+                <div style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.5 }}>{m.v}</div>
               </div>
             ))}
           </div>
@@ -327,20 +327,20 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
           {(analysis?.wins?.length > 0 || analysis?.losses?.length > 0) && (
             <div className="fu-wl" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <div style={{ background: "var(--g)0D", border: "1px solid var(--g)33", padding: "14px 16px" }}>
-                <Mono s={{ fontSize: 8, color: "var(--g)", letterSpacing: 2, display: "block", marginBottom: 10 }}>WINS</Mono>
+                <Mono s={{ fontSize: 14, color: "var(--g)", letterSpacing: 2, display: "block", marginBottom: 10 }}>WINS</Mono>
                 {(analysis.wins || []).map((w, i) => (
                   <div key={i} style={{ display: "flex", gap: 8, marginBottom: 7, alignItems: "flex-start" }}>
-                    <span style={{ color: "var(--g)", fontSize: 10, flexShrink: 0, marginTop: 3 }}>▲</span>
-                    <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>{w}</div>
+                    <span style={{ color: "var(--g)", fontSize: 14, flexShrink: 0, marginTop: 3 }}>▲</span>
+                    <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>{w}</div>
                   </div>
                 ))}
               </div>
               <div style={{ background: "var(--r)0D", border: "1px solid var(--r)33", padding: "14px 16px" }}>
-                <Mono s={{ fontSize: 8, color: "var(--r)", letterSpacing: 2, display: "block", marginBottom: 10 }}>LOSSES</Mono>
+                <Mono s={{ fontSize: 14, color: "var(--r)", letterSpacing: 2, display: "block", marginBottom: 10 }}>LOSSES</Mono>
                 {(analysis.losses || []).map((l, i) => (
                   <div key={i} style={{ display: "flex", gap: 8, marginBottom: 7, alignItems: "flex-start" }}>
-                    <span style={{ color: "var(--r)", fontSize: 10, flexShrink: 0, marginTop: 3 }}>▼</span>
-                    <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>{l}</div>
+                    <span style={{ color: "var(--r)", fontSize: 14, flexShrink: 0, marginTop: 3 }}>▼</span>
+                    <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>{l}</div>
                   </div>
                 ))}
               </div>
@@ -348,19 +348,19 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
           )}
 
           <div className="fu2" style={{ background: pillar.color + "0D", border: `1px solid ${pillar.color}33`, padding: "16px 18px" }}>
-            <Mono s={{ fontSize: 8, color: pillar.color, letterSpacing: 2, display: "block", marginBottom: 7 }}>KEY INSIGHT</Mono>
+            <Mono s={{ fontSize: 14, color: pillar.color, letterSpacing: 2, display: "block", marginBottom: 7 }}>KEY INSIGHT</Mono>
             <p style={{ color: "var(--text)", fontSize: 13, fontStyle: "italic", lineHeight: 1.7 }}>"{analysis?.keyInsight}"</p>
           </div>
 
           <div className="fu3">
-            <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>THIS WEEK — MISSIONS</Mono>
+            <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>THIS WEEK — MISSIONS</Mono>
             <div style={{ background: pillar.color + "0D", border: `1px solid ${pillar.color}33`, padding: "14px 16px", display: "flex", gap: 12, alignItems: "flex-start" }}>
               <span style={{ color: pillar.color, fontSize: 16, flexShrink: 0, lineHeight: 1 }}>◉</span>
               <div>
                 <div style={{ fontSize: 13, color: "var(--text)", fontWeight: 500, marginBottom: 4 }}>
                   {(analysis?.weeklyActions?.length || 0)} mission{(analysis?.weeklyActions?.length || 0) !== 1 ? "s" : ""} sent to Mission Control
                 </div>
-                <div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.5 }}>
+                <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.5 }}>
                   Pillar missions have been added to your pending queue. Head to <span style={{ color: pillar.color, fontFamily: "'DM Mono',monospace" }}>MISSIONS</span> to accept or decline them.
                 </div>
               </div>
@@ -369,9 +369,9 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
 
           {analysis?.resources?.length > 0 && (
             <div className="fu4">
-              <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>RESOURCES</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>RESOURCES</Mono>
               {analysis.resources.map((r, i) => (
-                <div key={i} style={{ fontSize: 12, color: "var(--text2)", paddingLeft: 12, borderLeft: `1px solid ${pillar.color}44`, lineHeight: 1.5, marginBottom: 6 }}>{r}</div>
+                <div key={i} style={{ fontSize: 14, color: "var(--text2)", paddingLeft: 12, borderLeft: `1px solid ${pillar.color}44`, lineHeight: 1.5, marginBottom: 6 }}>{r}</div>
               ))}
             </div>
           )}

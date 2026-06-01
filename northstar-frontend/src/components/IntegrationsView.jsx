@@ -379,21 +379,21 @@ function ExerciseCard({ name, history }) {
         style={{ width: "100%", background: "none", border: "none", padding: "11px 14px", display: "flex", gap: 12, alignItems: "center", textAlign: "left", cursor: "pointer" }}
       >
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 500, color: "var(--text)", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</div>
+          <div style={{ fontSize: 14, fontWeight: 500, color: "var(--text)", marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</div>
           <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
             {latestWeight != null
-              ? <Mono s={{ fontSize: 10, color: "var(--y)" }}>{latestWeight}lbs × {latestReps}</Mono>
+              ? <Mono s={{ fontSize: 14, color: "var(--y)" }}>{latestWeight}lbs × {latestReps}</Mono>
               : latestReps != null
-                ? <Mono s={{ fontSize: 10, color: "var(--g)" }}>BW × {latestReps}</Mono>
+                ? <Mono s={{ fontSize: 14, color: "var(--g)" }}>BW × {latestReps}</Mono>
                 : null
             }
-            {totalVol && <Mono s={{ fontSize: 9, color: "var(--text3)" }}>{totalVol} vol</Mono>}
+            {totalVol && <Mono s={{ fontSize: 13, color: "var(--text3)" }}>{totalVol} vol</Mono>}
             {trendLabel && <Tag color={trendColor}>{trendLabel}{hasWeight ? "lbs" : " reps"}</Tag>}
-            <Mono s={{ fontSize: 9, color: "var(--text3)" }}>{history.length}×</Mono>
+            <Mono s={{ fontSize: 13, color: "var(--text3)" }}>{history.length}×</Mono>
           </div>
         </div>
         {miniSparkline}
-        <span style={{ color: "var(--text3)", fontSize: 11, flexShrink: 0, marginLeft: 4 }}>{exp ? "▲" : "▼"}</span>
+        <span style={{ color: "var(--text3)", fontSize: 13, flexShrink: 0, marginLeft: 4 }}>{exp ? "▲" : "▼"}</span>
       </button>
 
       {/* Expanded panel */}
@@ -425,7 +425,7 @@ function ExerciseCard({ name, history }) {
                 <button
                   key={m.id}
                   onClick={() => setMetric(m.id)}
-                  style={{ flex: 1, background: activeMetric === m.id ? "var(--bg3)" : "none", border: "none", borderRight: "1px solid var(--border)", padding: "7px 0", fontFamily: "'DM Mono',monospace", fontSize: 8, letterSpacing: 1, color: activeMetric === m.id ? (m.id === "weight" ? "var(--y)" : m.id === "volume" ? "var(--p)" : m.id === "sets" ? "var(--c)" : "var(--g)") : "var(--text3)", cursor: "pointer" }}
+                  style={{ flex: 1, background: activeMetric === m.id ? "var(--bg3)" : "none", border: "none", borderRight: "1px solid var(--border)", padding: "7px 0", fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 1, color: activeMetric === m.id ? (m.id === "weight" ? "var(--y)" : m.id === "volume" ? "var(--p)" : m.id === "sets" ? "var(--c)" : "var(--g)") : "var(--text3)", cursor: "pointer" }}
                 >
                   {m.label}
                 </button>
@@ -442,7 +442,7 @@ function ExerciseCard({ name, history }) {
 
           {/* ── Session history table ── */}
           <div style={{ borderTop: "1px solid var(--border)", maxHeight: 260, overflowY: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
               <thead>
                 <tr style={{ background: "var(--bg3)" }}>
                   {["DATE", "BEST SET", "BEST VOL SET", "SESSION VOL", "SETS"].map((h, i) => (
@@ -463,34 +463,34 @@ function ExerciseCard({ name, history }) {
                   const sv = h.sessionVolume;
                   return (
                     <tr key={i} style={{ background: isLatest ? "var(--o)08" : i % 2 === 0 ? "var(--bg2)" : "var(--bg1)", borderBottom: "1px solid var(--border)" }}>
-                      <td style={{ padding: "7px 10px", color: isLatest ? "var(--text)" : "var(--text2)", fontFamily: "'DM Mono',monospace", fontSize: 9, whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "7px 10px", color: isLatest ? "var(--text)" : "var(--text2)", fontFamily: "'DM Mono',monospace", fontSize: 13, whiteSpace: "nowrap" }}>
                         {new Date(h.date).toLocaleDateString("en-CA", { month: "short", day: "numeric", year: "2-digit" })}
                         {isLatest && <span style={{ marginLeft: 5, color: "var(--o)", fontSize: 7 }}>LATEST</span>}
                       </td>
-                      <td style={{ padding: "7px 10px", textAlign: "right", fontFamily: "'DM Mono',monospace", fontSize: 10, color: isLatest ? "var(--y)" : "var(--text2)", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "7px 10px", textAlign: "right", fontFamily: "'DM Mono',monospace", fontSize: 14, color: isLatest ? "var(--y)" : "var(--text2)", whiteSpace: "nowrap" }}>
                         {h.bestSet?.weight != null
-                          ? <>{h.bestSet.weight}<span style={{ color: "var(--text3)", fontSize: 8 }}>lbs</span> × {h.bestSet.reps}
+                          ? <>{h.bestSet.weight}<span style={{ color: "var(--text3)", fontSize: 14 }}>lbs</span> × {h.bestSet.reps}
                               {weightDelta != null && weightDelta !== 0 && (
-                                <span style={{ marginLeft: 5, fontSize: 8, color: weightDelta > 0 ? "var(--g)" : "var(--r)" }}>{weightDelta > 0 ? "▲" : "▼"}{Math.abs(weightDelta)}</span>
+                                <span style={{ marginLeft: 5, fontSize: 14, color: weightDelta > 0 ? "var(--g)" : "var(--r)" }}>{weightDelta > 0 ? "▲" : "▼"}{Math.abs(weightDelta)}</span>
                               )}
                             </>
                           : h.bestReps != null
                             ? <>BW × {h.bestReps}</>
                             : <span style={{ color: "var(--text3)" }}>—</span>}
                       </td>
-                      <td style={{ padding: "7px 10px", textAlign: "right", fontFamily: "'DM Mono',monospace", fontSize: 10, color: "var(--text2)", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "7px 10px", textAlign: "right", fontFamily: "'DM Mono',monospace", fontSize: 14, color: "var(--text2)", whiteSpace: "nowrap" }}>
                         {bvs?.weight != null
-                          ? <>{bvs.weight}<span style={{ color: "var(--text3)", fontSize: 8 }}>lbs</span> × {bvs.reps}
-                              {bvsVol && <span style={{ color: "var(--text3)", fontSize: 8 }}> = {bvsVol}</span>}
+                          ? <>{bvs.weight}<span style={{ color: "var(--text3)", fontSize: 14 }}>lbs</span> × {bvs.reps}
+                              {bvsVol && <span style={{ color: "var(--text3)", fontSize: 14 }}> = {bvsVol}</span>}
                             </>
                           : <span style={{ color: "var(--text3)" }}>—</span>}
                       </td>
-                      <td style={{ padding: "7px 10px", textAlign: "right", fontFamily: "'DM Mono',monospace", fontSize: 10, color: isLatest ? "var(--p)" : "var(--text2)" }}>
+                      <td style={{ padding: "7px 10px", textAlign: "right", fontFamily: "'DM Mono',monospace", fontSize: 14, color: isLatest ? "var(--p)" : "var(--text2)" }}>
                         {sv != null && sv > 0
                           ? Math.round(sv).toLocaleString()
                           : <span style={{ color: "var(--text3)" }}>—</span>}
                       </td>
-                      <td style={{ padding: "7px 10px", textAlign: "right", fontFamily: "'DM Mono',monospace", fontSize: 10, color: "var(--text3)" }}>
+                      <td style={{ padding: "7px 10px", textAlign: "right", fontFamily: "'DM Mono',monospace", fontSize: 14, color: "var(--text3)" }}>
                         {h.setCount ?? <span style={{ color: "var(--text3)" }}>—</span>}
                       </td>
                     </tr>
@@ -522,8 +522,8 @@ function DropZone({ accept, onFile, loading, loadingLabel, emptyLabel, hasData, 
     >
       <input ref={fileRef} type="file" accept={accept} onChange={e => onFile(e.target.files[0])} style={{ display: "none" }} />
       {loading
-        ? <><div style={{ width: 22, height: 22, border: `2px solid ${color}33`, borderTop: `2px solid ${color}`, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} /><Mono s={{ fontSize: 10, color }}>{loadingLabel}</Mono></>
-        : <><div style={{ fontSize: 20, marginBottom: 6 }}>📂</div><Mono s={{ fontSize: 10, color: hasData ? "var(--text3)" : "var(--text2)", letterSpacing: 1 }}>{hasData ? `DROP NEW ${emptyLabel} TO UPDATE` : `DROP ${emptyLabel} HERE`}</Mono><div style={{ fontSize: 11, color: "var(--text3)", marginTop: 3 }}>or click to browse</div></>
+        ? <><div style={{ width: 22, height: 22, border: `2px solid ${color}33`, borderTop: `2px solid ${color}`, borderRadius: "50%", animation: "spin 0.8s linear infinite", margin: "0 auto 8px" }} /><Mono s={{ fontSize: 14, color }}>{loadingLabel}</Mono></>
+        : <><div style={{ fontSize: 20, marginBottom: 6 }}>📂</div><Mono s={{ fontSize: 14, color: hasData ? "var(--text3)" : "var(--text2)", letterSpacing: 1 }}>{hasData ? `DROP NEW ${emptyLabel} TO UPDATE` : `DROP ${emptyLabel} HERE`}</Mono><div style={{ fontSize: 13, color: "var(--text3)", marginTop: 3 }}>or click to browse</div></>
       }
     </div>
   );
@@ -583,19 +583,19 @@ function WorkoutTrends({ exerciseHistory }) {
     const arrow = dir === "up" ? "▲" : dir === "down" ? "▼" : "→";
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", borderBottom: "1px solid var(--border)", background: "var(--bg2)" }}>
-        <span style={{ color, fontSize: 11, flexShrink: 0 }}>{arrow}</span>
+        <span style={{ color, fontSize: 13, flexShrink: 0 }}>{arrow}</span>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 11, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.ex}</div>
+          <div style={{ fontSize: 13, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.ex}</div>
           <div style={{ display: "flex", gap: 6, marginTop: 2, alignItems: "center" }}>
-            <Mono s={{ fontSize: 9, color: "var(--text3)" }}>
+            <Mono s={{ fontSize: 13, color: "var(--text3)" }}>
               {t.oldBVS.reps}×{Math.round(t.oldBVS.weight)}lbs → {t.newBVS.reps}×{Math.round(t.newBVS.weight)}lbs
             </Mono>
-            <Mono s={{ fontSize: 9, color: "var(--text3)" }}>· {t.sessions}× in 4W</Mono>
+            <Mono s={{ fontSize: 13, color: "var(--text3)" }}>· {t.sessions}× in 4W</Mono>
           </div>
         </div>
         <div style={{ textAlign: "right", flexShrink: 0 }}>
-          <Mono s={{ fontSize: 11, color }}>{dir === "up" ? "+" : ""}{Math.round(t.bsDelta).toLocaleString()}</Mono>
-          <Mono s={{ fontSize: 8, color: "var(--text3)", display: "block" }}>{t.bsPct > 0 ? "+" : ""}{t.bsPct.toFixed(1)}%</Mono>
+          <Mono s={{ fontSize: 13, color }}>{dir === "up" ? "+" : ""}{Math.round(t.bsDelta).toLocaleString()}</Mono>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", display: "block" }}>{t.bsPct > 0 ? "+" : ""}{t.bsPct.toFixed(1)}%</Mono>
         </div>
       </div>
     );
@@ -610,24 +610,24 @@ function WorkoutTrends({ exerciseHistory }) {
     return (
       <div style={{ padding: "8px 12px", borderBottom: "1px solid var(--border)", background: "var(--bg2)" }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-          <span style={{ color, fontSize: 11, flexShrink: 0, marginTop: 1 }}>{arrow}</span>
+          <span style={{ color, fontSize: 13, flexShrink: 0, marginTop: 1 }}>{arrow}</span>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 11, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.ex}</div>
+            <div style={{ fontSize: 13, color: "var(--text)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{t.ex}</div>
             <div style={{ display: "flex", gap: 6, marginTop: 2, alignItems: "center", flexWrap: "wrap" }}>
-              <Mono s={{ fontSize: 9, color: "var(--text3)" }}>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>
                 {Math.round(t.oldSV).toLocaleString()} → {Math.round(t.newSV).toLocaleString()} lbs
               </Mono>
-              <Mono s={{ fontSize: 9, color: "var(--text3)" }}>· {t.sessions}× in 4W</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)" }}>· {t.sessions}× in 4W</Mono>
             </div>
             {setsStr && (
-              <Mono s={{ fontSize: 8, color: "var(--text3)", marginTop: 3, display: "block", lineHeight: 1.6 }}>
+              <Mono s={{ fontSize: 14, color: "var(--text3)", marginTop: 3, display: "block", lineHeight: 1.6 }}>
                 latest: {setsStr}
               </Mono>
             )}
           </div>
           <div style={{ textAlign: "right", flexShrink: 0 }}>
-            <Mono s={{ fontSize: 11, color }}>{dir === "up" ? "+" : ""}{Math.round(t.svDelta).toLocaleString()}</Mono>
-            <Mono s={{ fontSize: 8, color: "var(--text3)", display: "block" }}>{t.svPct > 0 ? "+" : ""}{t.svPct.toFixed(1)}%</Mono>
+            <Mono s={{ fontSize: 13, color }}>{dir === "up" ? "+" : ""}{Math.round(t.svDelta).toLocaleString()}</Mono>
+            <Mono s={{ fontSize: 14, color: "var(--text3)", display: "block" }}>{t.svPct > 0 ? "+" : ""}{t.svPct.toFixed(1)}%</Mono>
           </div>
         </div>
       </div>
@@ -636,9 +636,9 @@ function WorkoutTrends({ exerciseHistory }) {
 
   if (trends.length === 0) {
     return (
-      <div style={{ textAlign: "center", padding: "40px 0", color: "var(--text3)", fontSize: 12 }}>
+      <div style={{ textAlign: "center", padding: "40px 0", color: "var(--text3)", fontSize: 14 }}>
         Not enough data in the last 4 weeks to compute trends.<br />
-        <span style={{ fontSize: 11 }}>Need at least 2 sessions per exercise in the past 28 days.</span>
+        <span style={{ fontSize: 13 }}>Need at least 2 sessions per exercise in the past 28 days.</span>
       </div>
     );
   }
@@ -658,7 +658,7 @@ function WorkoutTrends({ exerciseHistory }) {
           <button
             key={v}
             onClick={() => setTrendTab(v)}
-            style={{ padding: "7px 16px", background: "none", border: "none", borderBottom: trendTab === v ? "2px solid var(--p)" : "2px solid transparent", fontFamily: "'DM Mono',monospace", fontSize: 8, letterSpacing: 1.5, color: trendTab === v ? "var(--p)" : "var(--text3)", cursor: "pointer", marginBottom: -1 }}
+            style={{ padding: "7px 16px", background: "none", border: "none", borderBottom: trendTab === v ? "2px solid var(--p)" : "2px solid transparent", fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 1.5, color: trendTab === v ? "var(--p)" : "var(--text3)", cursor: "pointer", marginBottom: -1 }}
           >
             {l}
           </button>
@@ -681,7 +681,7 @@ function WorkoutTrends({ exerciseHistory }) {
 
       {improved.length > 0 && (
         <div style={{ marginBottom: 12 }}>
-          <Mono s={{ fontSize: 8, color: "var(--g)", letterSpacing: 2, display: "block", marginBottom: 6, paddingLeft: 2 }}>▲ IMPROVING — {sectionLabel}</Mono>
+          <Mono s={{ fontSize: 14, color: "var(--g)", letterSpacing: 2, display: "block", marginBottom: 6, paddingLeft: 2 }}>▲ IMPROVING — {sectionLabel}</Mono>
           <div style={{ border: "1px solid var(--g)33", overflow: "hidden" }}>
             {improved.map((t, i) => <RowComp key={i} t={t} dir="up" />)}
           </div>
@@ -690,7 +690,7 @@ function WorkoutTrends({ exerciseHistory }) {
 
       {declined.length > 0 && (
         <div style={{ marginBottom: 12 }}>
-          <Mono s={{ fontSize: 8, color: "var(--r)", letterSpacing: 2, display: "block", marginBottom: 6, paddingLeft: 2 }}>▼ DECLINING — {sectionLabel}</Mono>
+          <Mono s={{ fontSize: 14, color: "var(--r)", letterSpacing: 2, display: "block", marginBottom: 6, paddingLeft: 2 }}>▼ DECLINING — {sectionLabel}</Mono>
           <div style={{ border: "1px solid var(--r)33", overflow: "hidden" }}>
             {declined.map((t, i) => <RowComp key={i} t={t} dir="down" />)}
           </div>
@@ -699,7 +699,7 @@ function WorkoutTrends({ exerciseHistory }) {
 
       {unchanged.length > 0 && (
         <div>
-          <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6, paddingLeft: 2 }}>→ UNCHANGED — {sectionLabel}</Mono>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6, paddingLeft: 2 }}>→ UNCHANGED — {sectionLabel}</Mono>
           <div style={{ border: "1px solid var(--border)", overflow: "hidden" }}>
             {unchanged.map((t, i) => <RowComp key={i} t={t} dir="flat" />)}
           </div>
@@ -776,7 +776,7 @@ export default function IntegrationsView({ state, onSave }) {
   const sectionHeader = (icon, name, tag, tagColor) => (
     <div style={{ display: "flex", alignItems: "center", gap: 9, marginBottom: 7 }}>
       <span style={{ fontSize: 18 }}>{icon}</span>
-      <Mono s={{ fontSize: 12, color: "var(--text)", letterSpacing: 1 }}>{name}</Mono>
+      <Mono s={{ fontSize: 14, color: "var(--text)", letterSpacing: 1 }}>{name}</Mono>
       {tag && <Tag color={tagColor || "var(--text3)"}>{tag}</Tag>}
     </div>
   );
@@ -784,9 +784,9 @@ export default function IntegrationsView({ state, onSave }) {
   return (
     <div>
       <div style={{ marginBottom: 24, paddingBottom: 18, borderBottom: "1px solid var(--border)" }}>
-        <div style={{ color: "var(--c)", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 3, marginBottom: 5 }}>⊕ CONNECT</div>
+        <div style={{ color: "var(--c)", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 3, marginBottom: 5 }}>⊕ CONNECT</div>
         <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 1, color: "var(--text)" }}>Integrations</h2>
-        <div style={{ fontSize: 12, color: "var(--text2)", marginTop: 7 }}>Connect your data sources. All data is stored locally in <Mono s={{ fontSize: 11, color: "var(--text3)" }}>northstar-backend/data/northstar_data.json</Mono>.</div>
+        <div style={{ fontSize: 14, color: "var(--text2)", marginTop: 7 }}>Connect your data sources. All data is stored locally in <Mono s={{ fontSize: 13, color: "var(--text3)" }}>northstar-backend/data/northstar_data.json</Mono>.</div>
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 14, maxWidth: 770 }}>
@@ -800,11 +800,11 @@ export default function IntegrationsView({ state, onSave }) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, marginBottom: 14 }}>
             <div style={{ flex: 1 }}>
               {sectionHeader("🏋️", "Hevy Workout Data", workoutData ? "IMPORTED" : "CSV IMPORT", workoutData ? "var(--o)" : "var(--text3)")}
-              <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>
-                Export from Hevy: <Mono s={{ fontSize: 11, color: "var(--text3)" }}>Profile → Settings → Export Workout Data</Mono>. Your lifts, trends, and volume feed into your Physicality analysis.
+              <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>
+                Export from Hevy: <Mono s={{ fontSize: 13, color: "var(--text3)" }}>Profile → Settings → Export Workout Data</Mono>. Your lifts, trends, and volume feed into your Physicality analysis.
               </div>
             </div>
-            {workoutData && <button onClick={() => save({ ...integrations, workoutData: undefined })} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "6px 12px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, flexShrink: 0 }}>CLEAR</button>}
+            {workoutData && <button onClick={() => save({ ...integrations, workoutData: undefined })} style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "6px 12px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, flexShrink: 0 }}>CLEAR</button>}
           </div>
 
           {workoutData && (
@@ -824,7 +824,7 @@ export default function IntegrationsView({ state, onSave }) {
           )}
 
           <DropZone accept=".csv" onFile={handleHevyFile} loading={hevyImporting} loadingLabel="PARSING CSV..." emptyLabel="HEVY CSV" hasData={!!workoutData} accentColor="var(--o)" />
-          {hevyError && <div style={{ fontSize: 11, color: "var(--r)", marginTop: 8, fontFamily: "'DM Mono',monospace" }}>{hevyError}</div>}
+          {hevyError && <div style={{ fontSize: 13, color: "var(--r)", marginTop: 8, fontFamily: "'DM Mono',monospace" }}>{hevyError}</div>}
         </div>
 
         {/* ── Exercise Browser / Trends ─────────────────────────────────────── */}
@@ -838,13 +838,13 @@ export default function IntegrationsView({ state, onSave }) {
                 <button
                   key={v}
                   onClick={() => setHevyView(v)}
-                  style={{ padding: "8px 18px", background: "none", border: "none", borderBottom: hevyView === v ? "2px solid var(--o)" : "2px solid transparent", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1.5, color: hevyView === v ? "var(--o)" : "var(--text3)", cursor: "pointer", marginBottom: -1 }}
+                  style={{ padding: "8px 18px", background: "none", border: "none", borderBottom: hevyView === v ? "2px solid var(--o)" : "2px solid transparent", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1.5, color: hevyView === v ? "var(--o)" : "var(--text3)", cursor: "pointer", marginBottom: -1 }}
                 >
                   {l}
                 </button>
               ))}
               {dateRange && hevyView === "exercises" && (
-                <Mono s={{ fontSize: 9, color: "var(--text3)", marginLeft: "auto", alignSelf: "center" }}>
+                <Mono s={{ fontSize: 13, color: "var(--text3)", marginLeft: "auto", alignSelf: "center" }}>
                   {dateRange.from.toLocaleDateString("en-CA", { month: "short", year: "numeric" })} – {dateRange.to.toLocaleDateString("en-CA", { month: "short", year: "numeric" })}
                 </Mono>
               )}

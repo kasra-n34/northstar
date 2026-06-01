@@ -17,7 +17,7 @@ export function markOnboardingDone() {
 function StepWelcome() {
   return (
     <div style={{ textAlign: "center", padding: "8px 0 4px" }}>
-      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 10, color: "var(--c)", letterSpacing: 4, marginBottom: 16 }}>⬡ NORTHSTAR OS</div>
+      <div style={{ fontFamily: "'DM Mono',monospace", fontSize: 14, color: "var(--c)", letterSpacing: 4, marginBottom: 16 }}>⬡ NORTHSTAR OS</div>
       <h1 style={{ fontFamily: "'Bebas Neue'", fontSize: 52, letterSpacing: 3, color: "var(--text)", lineHeight: 1, marginBottom: 10 }}>
         Your Personal<br />Development OS
       </h1>
@@ -32,8 +32,8 @@ function StepWelcome() {
         ].map(c => (
           <div key={c.label} style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: "12px 10px", textAlign: "center" }}>
             <div style={{ fontSize: 16, color: "var(--c)", marginBottom: 5 }}>{c.icon}</div>
-            <Mono s={{ fontSize: 8, color: "var(--c)", letterSpacing: 1.5, display: "block", marginBottom: 3 }}>{c.label}</Mono>
-            <div style={{ fontSize: 10, color: "var(--text3)", lineHeight: 1.4 }}>{c.sub}</div>
+            <Mono s={{ fontSize: 14, color: "var(--c)", letterSpacing: 1.5, display: "block", marginBottom: 3 }}>{c.label}</Mono>
+            <div style={{ fontSize: 14, color: "var(--text3)", lineHeight: 1.4 }}>{c.sub}</div>
           </div>
         ))}
       </div>
@@ -44,7 +44,7 @@ function StepWelcome() {
 function StepPillars() {
   return (
     <div>
-      <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>THE FOUR PILLARS</Mono>
+      <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>THE FOUR PILLARS</Mono>
       <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 2, color: "var(--text)", marginBottom: 8, lineHeight: 1 }}>Everything tracked in one place</h2>
       <p style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.7, marginBottom: 18 }}>
         Each pillar has its own score (1–100), AI analysis, action plan, and score history. They feed into each other — better training sharpens focus, income expands network access, social energy affects everything.
@@ -53,9 +53,9 @@ function StepPillars() {
         {PILLARS.map(p => (
           <div key={p.id} style={{ background: "var(--bg2)", border: `1px solid ${p.color}33`, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: p.color + "88" }} />
-            <div style={{ color: p.color, fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 2, marginBottom: 5 }}>{p.icon} {p.label}</div>
-            <div style={{ fontSize: 11, color: "var(--text)", fontWeight: 500, marginBottom: 3 }}>{p.sub}</div>
-            <div style={{ fontSize: 11, color: "var(--text3)", lineHeight: 1.5 }}>{p.description}</div>
+            <div style={{ color: p.color, fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 2, marginBottom: 5 }}>{p.icon} {p.label}</div>
+            <div style={{ fontSize: 13, color: "var(--text)", fontWeight: 500, marginBottom: 3 }}>{p.sub}</div>
+            <div style={{ fontSize: 13, color: "var(--text3)", lineHeight: 1.5 }}>{p.description}</div>
           </div>
         ))}
       </div>
@@ -102,7 +102,7 @@ function StepFirstSteps() {
 
   return (
     <div>
-      <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>GETTING STARTED</Mono>
+      <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>GETTING STARTED</Mono>
       <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 2, color: "var(--text)", marginBottom: 8, lineHeight: 1 }}>Five steps to your first week</h2>
       <p style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.7, marginBottom: 18 }}>
         Setup takes about 15 minutes. After that, all you need is 10 minutes every Sunday.
@@ -113,19 +113,19 @@ function StepFirstSteps() {
             <div key={s.n} style={{ background: "var(--r)0D", border: "1px solid var(--r)55", padding: "14px 16px", position: "relative", overflow: "hidden" }}>
               <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "var(--r)" }} />
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                <Mono s={{ fontSize: 8, color: "var(--r)", letterSpacing: 2, background: "var(--r)18", padding: "2px 8px" }}>DO THIS FIRST</Mono>
+                <Mono s={{ fontSize: 14, color: "var(--r)", letterSpacing: 2, background: "var(--r)18", padding: "2px 8px" }}>DO THIS FIRST</Mono>
               </div>
               <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 4 }}>{s.title}</div>
-              <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>{s.desc}</div>
+              <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>{s.desc}</div>
             </div>
           ) : (
             <div key={s.n} style={{ display: "flex", gap: 14, background: "var(--bg2)", border: `1px solid ${s.color}22`, padding: "12px 14px", alignItems: "flex-start" }}>
               <div style={{ width: 32, height: 32, borderRadius: "50%", background: s.color + "18", border: `1px solid ${s.color}55`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Mono s={{ fontSize: 9, color: s.color, fontWeight: 600 }}>{s.n}</Mono>
+                <Mono s={{ fontSize: 13, color: s.color, fontWeight: 600 }}>{s.n}</Mono>
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 3 }}>{s.title}</div>
-                <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>{s.desc}</div>
+                <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>{s.desc}</div>
               </div>
             </div>
           )
@@ -145,7 +145,7 @@ function StepSundayFlow() {
 
   return (
     <div>
-      <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>THE WEEKLY RITUAL</Mono>
+      <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>THE WEEKLY RITUAL</Mono>
       <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 2, color: "var(--text)", marginBottom: 8, lineHeight: 1 }}>Every Sunday, ~5 minutes</h2>
       <p style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.7, marginBottom: 16 }}>
         The Sunday check-in is the heartbeat of northstar. It keeps every pillar's current status up to date, scores your week against prior ones, and reloads your mission queue. The dashboard shows a live countdown and shows a <strong style={{ color: "var(--c)" }}>Begin →</strong> button when Sunday arrives.
@@ -153,10 +153,10 @@ function StepSundayFlow() {
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         {flow.map((f, i) => (
           <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "10px 12px", background: "var(--bg2)", border: `1px solid ${f.color}22` }}>
-            <div style={{ width: 26, height: 26, background: f.color + "18", border: `1px solid ${f.color}44`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 11, color: f.color }}>{f.icon}</div>
+            <div style={{ width: 26, height: 26, background: f.color + "18", border: `1px solid ${f.color}44`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 13, color: f.color }}>{f.icon}</div>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: f.color, marginBottom: 2 }}>{f.label}</div>
-              <div style={{ fontSize: 11, color: "var(--text3)", lineHeight: 1.5 }}>{f.desc}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: f.color, marginBottom: 2 }}>{f.label}</div>
+              <div style={{ fontSize: 13, color: "var(--text3)", lineHeight: 1.5 }}>{f.desc}</div>
             </div>
           </div>
         ))}
@@ -168,7 +168,7 @@ function StepSundayFlow() {
 function StepPrivacy() {
   return (
     <div>
-      <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>YOUR DATA</Mono>
+      <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 6 }}>YOUR DATA</Mono>
       <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 2, color: "var(--text)", marginBottom: 8, lineHeight: 1 }}>Stays on your machine</h2>
       <p style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.7, marginBottom: 16 }}>
         Northstar is designed so you never have to wonder what happens to your personal data. There's no account, no server, no subscription.
@@ -182,14 +182,14 @@ function StepPrivacy() {
           <div key={item.title} style={{ display: "flex", gap: 14, background: "var(--bg2)", border: `1px solid ${item.color}22`, padding: "12px 14px", alignItems: "flex-start" }}>
             <div style={{ fontSize: 16, color: item.color, flexShrink: 0, marginTop: 1 }}>{item.icon}</div>
             <div>
-              <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", marginBottom: 3 }}>{item.title}</div>
-              <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>{item.body}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: "var(--text)", marginBottom: 3 }}>{item.title}</div>
+              <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>{item.body}</div>
             </div>
           </div>
         ))}
       </div>
       <div style={{ background: "var(--c)0D", border: "1px solid var(--c)33", padding: "12px 16px" }}>
-        <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.7 }}>
+        <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.7 }}>
           <strong style={{ color: "var(--c)" }}>Bottom line:</strong> the only thing that ever leaves your computer is the AI prompt when you hit Sync — and only to Anthropic, using your own API key. Everything else stays here.
         </div>
       </div>
@@ -239,7 +239,7 @@ export default function OnboardingModal({ onDone }) {
               />
             ))}
           </div>
-          <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1 }}>{step + 1} / {STEPS.length}</Mono>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1 }}>{step + 1} / {STEPS.length}</Mono>
         </div>
 
         {/* Scrollable content */}
@@ -253,14 +253,14 @@ export default function OnboardingModal({ onDone }) {
             {step > 0 ? (
               <button
                 onClick={back}
-                style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "8px 16px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1.5 }}
+                style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "8px 16px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1.5 }}
               >
                 ← BACK
               </button>
             ) : (
               <button
                 onClick={finish}
-                style={{ background: "none", border: "none", color: "var(--text3)", padding: "8px 0", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1, cursor: "pointer" }}
+                style={{ background: "none", border: "none", color: "var(--text3)", padding: "8px 0", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
               >
                 SKIP TUTORIAL
               </button>
@@ -268,7 +268,7 @@ export default function OnboardingModal({ onDone }) {
           </div>
           <button
             onClick={next}
-            style={{ background: isLast ? "var(--c)" : "var(--bg3)", color: isLast ? "#000" : "var(--text)", border: `1px solid ${isLast ? "var(--c)" : "var(--border2)"}`, padding: "9px 22px", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 1.5, fontWeight: isLast ? 600 : 400, transition: "all 0.2s" }}
+            style={{ background: isLast ? "var(--c)" : "var(--bg3)", color: isLast ? "#000" : "var(--text)", border: `1px solid ${isLast ? "var(--c)" : "var(--border2)"}`, padding: "9px 22px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1.5, fontWeight: isLast ? 600 : 400, transition: "all 0.2s" }}
           >
             {isLast ? "LET'S GO →" : "NEXT →"}
           </button>

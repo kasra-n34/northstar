@@ -6,7 +6,7 @@ function Section({ title, icon, color = "var(--text3)", children }) {
     <div style={{ marginBottom: 32 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, paddingBottom: 10, borderBottom: "1px solid var(--border)" }}>
         {icon && <span style={{ fontSize: 16, color }}>{icon}</span>}
-        <Mono s={{ fontSize: 10, color, letterSpacing: 2 }}>{title}</Mono>
+        <Mono s={{ fontSize: 14, color, letterSpacing: 2 }}>{title}</Mono>
       </div>
       {children}
     </div>
@@ -21,7 +21,7 @@ function Callout({ color = "var(--c)", icon, children }) {
   return (
     <div style={{ background: color + "0D", border: `1px solid ${color}33`, padding: "12px 16px", marginBottom: 12, display: "flex", gap: 12, alignItems: "flex-start" }}>
       {icon && <span style={{ color, fontSize: 14, flexShrink: 0, marginTop: 1 }}>{icon}</span>}
-      <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.7 }}>{children}</div>
+      <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.7 }}>{children}</div>
     </div>
   );
 }
@@ -30,11 +30,11 @@ function Step({ n, color, title, desc }) {
   return (
     <div style={{ display: "flex", gap: 14, marginBottom: 14, alignItems: "flex-start" }}>
       <div style={{ width: 26, height: 26, borderRadius: "50%", background: color + "22", border: `1px solid ${color}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-        <Mono s={{ fontSize: 10, color, fontWeight: 600 }}>{n}</Mono>
+        <Mono s={{ fontSize: 14, color, fontWeight: 600 }}>{n}</Mono>
       </div>
       <div>
         <div style={{ fontSize: 13, fontWeight: 600, color: "var(--text)", marginBottom: 3 }}>{title}</div>
-        <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.6 }}>{desc}</div>
+        <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.6 }}>{desc}</div>
       </div>
     </div>
   );
@@ -62,9 +62,9 @@ export default function HowItWorksView({ state }) {
     <div style={{ display: "grid", gridTemplateColumns: "160px 1fr", gap: 40, maxWidth: 946 }}>
 
       <div style={{ position: "sticky", top: 0, alignSelf: "start", paddingTop: 4 }}>
-        <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>CONTENTS</Mono>
+        <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>CONTENTS</Mono>
         {toc.map(t => (
-          <button key={t.id} onClick={() => scrollTo(t.id)} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: "5px 0", fontFamily: "'DM Mono',monospace", fontSize: 9, color: "var(--text3)", letterSpacing: 1, cursor: "pointer", lineHeight: 1.8 }}>
+          <button key={t.id} onClick={() => scrollTo(t.id)} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", padding: "5px 0", fontFamily: "'DM Mono',monospace", fontSize: 13, color: "var(--text3)", letterSpacing: 1, cursor: "pointer", lineHeight: 1.8 }}>
             {t.label}
           </button>
         ))}
@@ -73,7 +73,7 @@ export default function HowItWorksView({ state }) {
       <div>
 
         <div style={{ marginBottom: 32 }}>
-          <div style={{ color: "var(--y)", fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 3, marginBottom: 5 }}>? DOCUMENTATION</div>
+          <div style={{ color: "var(--y)", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 3, marginBottom: 5 }}>? DOCUMENTATION</div>
           <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 1, color: "var(--text)", marginBottom: 8 }}>How Northstar Works</h2>
           <P>Northstar is a local-first personal development OS. Everything runs on your machine — no cloud, no subscriptions, no data leaving your computer except API calls to Anthropic for AI analysis.</P>
         </div>
@@ -86,7 +86,7 @@ export default function HowItWorksView({ state }) {
             </Callout>
 
             <div style={{ marginTop: 4, marginBottom: 4 }}>
-              <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>MISSIONS</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>MISSIONS</Mono>
               <P>Missions are the action layer — specific tasks northstar generates from your pillar analyses and weekly check-ins. Every mission belongs to a pillar and has a difficulty, estimated time, and a rationale. There are four types:</P>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {[
@@ -114,11 +114,11 @@ export default function HowItWorksView({ state }) {
                   <div key={m.label} style={{ background: "var(--bg2)", border: `1px solid ${m.color}33`, padding: "12px 14px", position: "relative", overflow: "hidden" }}>
                     <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: m.color + "66" }} />
                     <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 5 }}>
-                      <span style={{ color: m.color, fontSize: 12 }}>{m.icon}</span>
-                      <Mono s={{ fontSize: 9, color: m.color, letterSpacing: 1.5 }}>{m.label.toUpperCase()}</Mono>
+                      <span style={{ color: m.color, fontSize: 14 }}>{m.icon}</span>
+                      <Mono s={{ fontSize: 13, color: m.color, letterSpacing: 1.5 }}>{m.label.toUpperCase()}</Mono>
                     </div>
-                    <div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.6, marginBottom: 7 }}>{m.desc}</div>
-                    <div style={{ fontSize: 10, color: "var(--text3)", fontStyle: "italic", borderLeft: `2px solid ${m.color}44`, paddingLeft: 8 }}>{m.example}</div>
+                    <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6, marginBottom: 7 }}>{m.desc}</div>
+                    <div style={{ fontSize: 14, color: "var(--text3)", fontStyle: "italic", borderLeft: `2px solid ${m.color}44`, paddingLeft: 8 }}>{m.example}</div>
                   </div>
                 ))}
               </div>
@@ -136,9 +136,9 @@ export default function HowItWorksView({ state }) {
               {PILLARS.map(p => (
                 <div key={p.id} style={{ background: "var(--bg2)", border: `1px solid ${p.color}33`, padding: "14px 16px", position: "relative", overflow: "hidden" }}>
                   <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: p.color + "88" }} />
-                  <div style={{ color: p.color, fontFamily: "'DM Mono',monospace", fontSize: 9, letterSpacing: 2, marginBottom: 5 }}>{p.icon} {p.label}</div>
-                  <div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.6, marginBottom: 6 }}>{p.description}</div>
-                  <Mono s={{ fontSize: 8, color: "var(--text3)" }}>{p.questions.length} setup questions</Mono>
+                  <div style={{ color: p.color, fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 2, marginBottom: 5 }}>{p.icon} {p.label}</div>
+                  <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6, marginBottom: 6 }}>{p.description}</div>
+                  <Mono s={{ fontSize: 14, color: "var(--text3)" }}>{p.questions.length} setup questions</Mono>
                 </div>
               ))}
             </div>
@@ -154,11 +154,11 @@ export default function HowItWorksView({ state }) {
             <Step n="3" color="var(--y)" title="Score history is tracked" desc="Every sync result is appended to a score history (up to 12 points). With 2+ data points your pillar card shows a sparkline so you can see the trend at a glance." />
 
             <div style={{ background: "var(--bg2)", border: "1px solid var(--y)33", padding: "16px 18px", marginBottom: 14 }}>
-              <Mono s={{ fontSize: 8, color: "var(--y)", letterSpacing: 2, display: "block", marginBottom: 14 }}>MISSION PERFORMANCE → POINT DELTA</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--y)", letterSpacing: 2, display: "block", marginBottom: 14 }}>MISSION PERFORMANCE → POINT DELTA</Mono>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                 <div>
-                  <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>RECURRING HABITS</Mono>
+                  <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>RECURRING HABITS</Mono>
                   {[
                     { label: "100% of target hit",  pts: "+3", color: "var(--g)" },
                     { label: "75% of target hit",   pts: "+2", color: "var(--g)" },
@@ -167,14 +167,14 @@ export default function HowItWorksView({ state }) {
                     { label: "Under 25% (missed)",  pts: "−2", color: "var(--r)" },
                   ].map(r => (
                     <div key={r.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: "1px solid var(--border)" }}>
-                      <div style={{ fontSize: 11, color: "var(--text2)" }}>{r.label}</div>
-                      <Mono s={{ fontSize: 11, color: r.color, fontWeight: 600 }}>{r.pts}</Mono>
+                      <div style={{ fontSize: 13, color: "var(--text2)" }}>{r.label}</div>
+                      <Mono s={{ fontSize: 13, color: r.color, fontWeight: 600 }}>{r.pts}</Mono>
                     </div>
                   ))}
                 </div>
 
                 <div>
-                  <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>ONE-OFF MISSIONS</Mono>
+                  <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>ONE-OFF MISSIONS</Mono>
                   {[
                     { label: "Completed (counted)",        pts: "+3", color: "var(--g)" },
                     { label: "Completed (standard)",       pts: "+2", color: "var(--g)" },
@@ -185,20 +185,20 @@ export default function HowItWorksView({ state }) {
                     { label: "<50% progress, not overdue", pts: "−1", color: "var(--o)" },
                   ].map(r => (
                     <div key={r.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: "1px solid var(--border)", gap: 8 }}>
-                      <div style={{ fontSize: 11, color: "var(--text2)" }}>{r.label}</div>
-                      <Mono s={{ fontSize: 11, color: r.color, fontWeight: 600, flexShrink: 0 }}>{r.pts}</Mono>
+                      <div style={{ fontSize: 13, color: "var(--text2)" }}>{r.label}</div>
+                      <Mono s={{ fontSize: 13, color: r.color, fontWeight: 600, flexShrink: 0 }}>{r.pts}</Mono>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div style={{ marginTop: 14, padding: "10px 12px", background: "var(--bg3)", border: "1px solid var(--border)" }}>
-                <div style={{ fontSize: 12, color: "var(--text2)" }}>Total algorithmic delta is <strong style={{ color: "var(--text)" }}>capped at ±10 per sync</strong> regardless of mission count.</div>
+                <div style={{ fontSize: 14, color: "var(--text2)" }}>Total algorithmic delta is <strong style={{ color: "var(--text)" }}>capped at ±10 per sync</strong> regardless of mission count.</div>
               </div>
             </div>
 
             <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: "14px 18px", marginBottom: 14 }}>
-              <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>SCORING FORMULA PER SYNC</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>SCORING FORMULA PER SYNC</Mono>
               <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                 {[
                   { label: "Previous score",             color: "var(--c)" },
@@ -214,7 +214,7 @@ export default function HowItWorksView({ state }) {
                   </div>
                 ))}
               </div>
-              <div style={{ marginTop: 10, fontSize: 11, color: "var(--text3)", lineHeight: 1.6 }}>Result is clamped to 1–100. The AI qualitative adjustment captures things mission data can't — momentum in your written answers, contextual signals, or progress without a formal mission attached.</div>
+              <div style={{ marginTop: 10, fontSize: 13, color: "var(--text3)", lineHeight: 1.6 }}>Result is clamped to 1–100. The AI qualitative adjustment captures things mission data can't — momentum in your written answers, contextual signals, or progress without a formal mission attached.</div>
             </div>
 
             <Callout color="var(--c)" icon="⟳">
@@ -243,7 +243,7 @@ export default function HowItWorksView({ state }) {
             <P>The <strong style={{ color: "var(--text)" }}>⟳ SYNC NORTHSTAR</strong> button is a manual override — under normal use you never need it. Use it when you've changed pillar answers mid-week or connected new integration data. Always shows a confirmation dialog first.</P>
             <Step n="1" color="var(--text2)" title="Re-analyze each pillar" desc="Physicality → Affluence → Network → Social. Each uses your latest answers, integration data, completed missions, and check-in digests. Each produces 3 missions sent to Pending." />
             <Step n="2" color="var(--text2)" title="Generate meta-analysis" desc="Synthesizes all updated pillar scores and check-in history into a full weekly overview." />
-            <P style={{ fontSize: 12 }}>A full 4-pillar sync takes 20–55 seconds. There's a 3.5-second gap between calls to stay under rate limits.</P>
+            <P style={{ fontSize: 14 }}>A full 4-pillar sync takes 20–55 seconds. There's a 3.5-second gap between calls to stay under rate limits.</P>
           </Section>
         </div>
 
@@ -266,16 +266,16 @@ export default function HowItWorksView({ state }) {
                 <div key={src.name} style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: "14px 16px" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
                     <span style={{ fontSize: 15 }}>{src.icon}</span>
-                    <Mono s={{ fontSize: 10, color: src.color, letterSpacing: 1 }}>{src.name}</Mono>
+                    <Mono s={{ fontSize: 14, color: src.color, letterSpacing: 1 }}>{src.name}</Mono>
                   </div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     <div>
                       <Mono s={{ fontSize: 7, color: "var(--o)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>SENT TO AI</Mono>
-                      <div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.6 }}>{src.sent}</div>
+                      <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6 }}>{src.sent}</div>
                     </div>
                     <div>
                       <Mono s={{ fontSize: 7, color: "var(--g)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>STAYS LOCAL</Mono>
-                      <div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.6 }}>{src.local}</div>
+                      <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6 }}>{src.local}</div>
                     </div>
                   </div>
                 </div>
@@ -289,7 +289,7 @@ export default function HowItWorksView({ state }) {
             <P>Northstar has two types of memory: <strong style={{ color: "var(--text)" }}>pillar score history</strong> (up to 12 data points per pillar, never expires) and <strong style={{ color: "var(--text)" }}>weekly check-in logs</strong> (configurable retention in Settings).</P>
 
             <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: 16, marginBottom: 14 }}>
-              <Mono s={{ fontSize: 8, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 10 }}>LOG LIFECYCLE</Mono>
+              <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 10 }}>LOG LIFECYCLE</Mono>
               <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap" }}>
                 {[
                   { label: "Check-in done",  sub: "Full answers stored",              color: "var(--c)" },
@@ -298,8 +298,8 @@ export default function HowItWorksView({ state }) {
                 ].map((s, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center" }}>
                     <div style={{ background: s.color + "15", border: `1px solid ${s.color}44`, padding: "8px 12px", textAlign: "center" }}>
-                      <div style={{ fontSize: 11, color: s.color, fontWeight: 600, marginBottom: 2 }}>{s.label}</div>
-                      <Mono s={{ fontSize: 8, color: "var(--text3)" }}>{s.sub}</Mono>
+                      <div style={{ fontSize: 13, color: s.color, fontWeight: 600, marginBottom: 2 }}>{s.label}</div>
+                      <Mono s={{ fontSize: 14, color: "var(--text3)" }}>{s.sub}</Mono>
                     </div>
                     {i < 2 && <div style={{ color: "var(--text3)", fontSize: 16, margin: "0 4px" }}>→</div>}
                   </div>
@@ -326,8 +326,8 @@ export default function HowItWorksView({ state }) {
                 { label: "Weekly Schedule",     desc: "Optimal day-by-day focus areas" },
               ].map(s => (
                 <div key={s.label} style={{ background: "var(--bg2)", padding: "10px 12px" }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "var(--y)", marginBottom: 2 }}>{s.label}</div>
-                  <div style={{ fontSize: 11, color: "var(--text3)", lineHeight: 1.5 }}>{s.desc}</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: "var(--y)", marginBottom: 2 }}>{s.label}</div>
+                  <div style={{ fontSize: 13, color: "var(--text3)", lineHeight: 1.5 }}>{s.desc}</div>
                 </div>
               ))}
             </div>
@@ -360,18 +360,18 @@ export default function HowItWorksView({ state }) {
                 ]},
               ].map(section => (
                 <div key={section.label} style={{ background: "var(--bg2)", border: `1px solid ${section.color}22`, padding: "12px 14px" }}>
-                  <Mono s={{ fontSize: 8, color: section.color, letterSpacing: 1.5, display: "block", marginBottom: 8 }}>{section.label.toUpperCase()}</Mono>
+                  <Mono s={{ fontSize: 14, color: section.color, letterSpacing: 1.5, display: "block", marginBottom: 8 }}>{section.label.toUpperCase()}</Mono>
                   {section.items.map((item, i) => (
                     <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
-                      <span style={{ color: section.color, fontSize: 10, flexShrink: 0, marginTop: 2 }}>·</span>
-                      <div style={{ fontSize: 11, color: "var(--text2)", lineHeight: 1.5 }}>{item}</div>
+                      <span style={{ color: section.color, fontSize: 14, flexShrink: 0, marginTop: 2 }}>·</span>
+                      <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.5 }}>{item}</div>
                     </div>
                   ))}
                 </div>
               ))}
             </div>
 
-            <P style={{ fontSize: 12 }}>To back up: copy <code style={{ color: "var(--text3)" }}>northstar-backend/data/northstar_data.json</code> to a safe location. To delete everything: delete that file and restart the backend.</P>
+            <P style={{ fontSize: 14 }}>To back up: copy <code style={{ color: "var(--text3)" }}>northstar-backend/data/northstar_data.json</code> to a safe location. To delete everything: delete that file and restart the backend.</P>
           </Section>
         </div>
 
@@ -399,9 +399,9 @@ export default function HowItWorksView({ state }) {
                   <div style={{ paddingLeft: 12 }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
                       <span style={{ color: item.color, fontSize: 13 }}>{item.icon}</span>
-                      <Mono s={{ fontSize: 9, color: item.color, letterSpacing: 1.5 }}>{item.title.toUpperCase()}</Mono>
+                      <Mono s={{ fontSize: 13, color: item.color, letterSpacing: 1.5 }}>{item.title.toUpperCase()}</Mono>
                     </div>
-                    <div style={{ fontSize: 12, color: "var(--text2)", lineHeight: 1.7 }}>{item.body}</div>
+                    <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.7 }}>{item.body}</div>
                   </div>
                 </div>
               ))}
