@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Mono, ScoreSparkline } from "./ui";
-import { computeTrends } from "./IntegrationsView";
+import { computeTrends, buildWorkoutContext } from "./IntegrationsView";
+import { callClaude, parseJSON } from "../api";
+import { WORKOUT_OPTIMIZER_SYS } from "../prompts";
 
 const PREVIEW_COUNT = 3;
 
@@ -128,6 +130,279 @@ function PhysicalityTrends({ workoutData }) {
   );
 }
 
+// ─── Workout Optimizer ────────────────────────────────────────────────────────
+
+const MUSCLE_KW = {
+  "Chest":      ["bench", "chest", "fly", "pec", "incline", "decline", "push-up", "pushup", "cable cross"],
+  "Shoulders":  ["overhead press", "ohp", "shoulder press", "lateral raise", "front raise", "military press", "arnold", "upright row"],
+  "Triceps":    ["tricep", "pushdown", "skull", "extension", "close-grip", "close grip"],
+  "Dips":       ["dip"],
+  "Back":       ["row", "pulldown", "pull-up", "pullup", "chin-up", "chinup", "rack pull", "shrug", "t-bar", "lat pull"],
+  "Biceps":     ["curl", "bicep", "hammer", "preacher", "concentration"],
+  "Rear Delts": ["face pull", "rear delt", "reverse fly", "reverse pec", "band pull"],
+  "Deadlift":   ["deadlift", "rdl", "romanian"],
+  "Quads":      ["squat", "leg press", "lunge", "hack squat", "leg extension", "step-up"],
+  "Hamstrings": ["hamstring", "leg curl", "nordic", "stiff-leg"],
+  "Glutes":     ["glute", "hip thrust", "hip extension", "kickback", "bulgarian"],
+  "Calves":     ["calf", "calf raise"],
+  "Core":       ["crunch", "plank", "ab ", " ab", "cable crunch", "sit-up", "leg raise", "russian"],
+};
+
+function inferMuscles(exercises) {
+  const found = new Set();
+  exercises.forEach(ex => {
+    const lower = ex.toLowerCase();
+    Object.entries(MUSCLE_KW).forEach(([muscle, kws]) => {
+      if (kws.some(kw => lower.includes(kw))) found.add(muscle);
+    });
+  });
+  return [...found];
+}
+
+function detectSplit(workoutData) {
+  if (!workoutData) return [];
+  const { sessions = [], workoutTypes = [] } = workoutData;
+  return workoutTypes.map(type => {
+    const typeSessions = sessions.filter(s => s.workout === type);
+    const freq = {};
+    typeSessions.forEach(s =>
+      Object.keys(s.exercises || {}).forEach(ex => { freq[ex] = (freq[ex] || 0) + 1; })
+    );
+    const topExercises = Object.entries(freq)
+      .sort((a, b) => b[1] - a[1]).slice(0, 8).map(([ex]) => ex);
+    return { name: type, exercises: topExercises, muscles: inferMuscles(topExercises), sessionCount: typeSessions.length };
+  });
+}
+
+const PRIORITY_COLOR = { high: "var(--r)", medium: "var(--y)", low: "var(--text3)" };
+const PRIORITY_BG    = { high: "var(--r)15", medium: "var(--y)15", low: "var(--bg2)" };
+const CATEGORY_ICON  = { volume: "▲", intensity: "⚡", exercise: "＋", frequency: "⟳", gap: "⚠" };
+
+function WorkoutOptimizer({ workoutData, profile, pillar }) {
+  const cacheKey = `northstar_wopt_${workoutData?.uploadedAt || ""}`;
+
+  const [result,       setResult]       = useState(() => {
+    try { return JSON.parse(localStorage.getItem(cacheKey) || "null"); } catch { return null; }
+  });
+  const [loading,      setLoading]      = useState(false);
+  const [error,        setError]        = useState(null);
+  const [extraContext, setExtraContext] = useState("");
+  const [editDay,      setEditDay]      = useState(null);   // index being edited
+  const [overrides,    setOverrides]    = useState({});     // name → { muscles: string, exercises: string }
+
+  useEffect(() => {
+    try { const c = localStorage.getItem(cacheKey); if (c) setResult(JSON.parse(c)); }
+    catch { /* ignore */ }
+  }, [cacheKey]);
+
+  const split = useMemo(() => detectSplit(workoutData), [workoutData]);
+
+  const buildPrompt = () => {
+    const goals = pillar.questions
+      .filter(q => q.core)
+      .map(q => `Q: ${q.q}\nA: ${profile?.answers?.[q.key] || "N/A"}`)
+      .join("\n\n");
+
+    const splitText = split.map(day => {
+      const ov = overrides[day.name];
+      const muscles = ov?.muscles?.trim() || day.muscles.join(", ") || "unknown";
+      const exercises = ov?.exercises?.trim() || day.exercises.join(", ") || "unknown";
+      return `${day.name} (${day.sessionCount} sessions) — muscles: ${muscles}\n  Key exercises: ${exercises}`;
+    }).join("\n\n");
+
+    const workoutCtx = buildWorkoutContext(workoutData);
+    return [
+      "PHYSIQUE GOALS:\n" + goals,
+      extraContext.trim() ? "ADDITIONAL CONTEXT:\n" + extraContext.trim() : "",
+      "WORKOUT SPLIT:\n" + splitText,
+      "PERFORMANCE DATA:\n" + workoutCtx,
+    ].filter(Boolean).join("\n\n");
+  };
+
+  const run = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const text   = await callClaude([{ role: "user", content: buildPrompt() }], WORKOUT_OPTIMIZER_SYS, false);
+      const parsed = parseJSON(text);
+      if (parsed) {
+        const r = { ...parsed, generatedAt: new Date().toISOString() };
+        setResult(r);
+        localStorage.setItem(cacheKey, JSON.stringify(r));
+      } else {
+        setError("Couldn't parse the response — try again.");
+      }
+    } catch (e) { setError(e.message); }
+    setLoading(false);
+  };
+
+  const genAge = result?.generatedAt
+    ? Math.round((Date.now() - new Date(result.generatedAt)) / (1000 * 60 * 60))
+    : null;
+
+  return (
+    <div style={{ maxWidth: 740 }}>
+
+      {/* ── Split preview ── */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+          <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2 }}>DETECTED SPLIT</Mono>
+          <Mono s={{ fontSize: 11, color: "var(--text3)" }}>from Hevy · click day to override</Mono>
+        </div>
+
+        {split.length === 0 ? (
+          <div style={{ color: "var(--text3)", fontSize: 13, padding: "20px 0" }}>No workout data — upload Hevy CSV in Integrations.</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {split.map((day, i) => {
+              const ov = overrides[day.name] || {};
+              const isEditing = editDay === i;
+              return (
+                <div key={day.name} style={{ background: "var(--bg1)", border: `1px solid ${isEditing ? "var(--c)88" : "var(--border)"}`, padding: "12px 14px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: isEditing ? 10 : 0 }}>
+                    <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+                      <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1 }}>{day.name}</Mono>
+                      <span style={{ fontSize: 12, color: "var(--text3)" }}>{day.sessionCount}×</span>
+                    </div>
+                    <button
+                      onClick={() => setEditDay(isEditing ? null : i)}
+                      style={{ background: "none", border: "none", color: isEditing ? "var(--c)" : "var(--text3)", fontFamily: "'DM Mono',monospace", fontSize: 12, letterSpacing: 1, cursor: "pointer", padding: 0 }}
+                    >{isEditing ? "DONE" : "EDIT"}</button>
+                  </div>
+
+                  {!isEditing && (
+                    <div style={{ marginTop: 6 }}>
+                      <div style={{ fontSize: 12, color: "var(--text3)", marginBottom: 3 }}>
+                        <span style={{ color: "var(--text2)" }}>{ov.muscles || day.muscles.join(", ") || "—"}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: "var(--text3)", lineHeight: 1.5 }}>
+                        {(ov.exercises || day.exercises.join(", ") || "—")}
+                      </div>
+                    </div>
+                  )}
+
+                  {isEditing && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      <div>
+                        <label style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "var(--text3)", letterSpacing: 1, display: "block", marginBottom: 4 }}>MUSCLE GROUPS</label>
+                        <input
+                          value={ov.muscles ?? day.muscles.join(", ")}
+                          onChange={e => setOverrides(o => ({ ...o, [day.name]: { ...o[day.name], muscles: e.target.value } }))}
+                          style={{ width: "100%", background: "var(--bg2)", border: "1px solid var(--border)", color: "var(--text)", fontFamily: "'DM Mono',monospace", fontSize: 13, padding: "6px 10px", boxSizing: "border-box" }}
+                          placeholder="e.g. Chest, Shoulders, Triceps"
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "var(--text3)", letterSpacing: 1, display: "block", marginBottom: 4 }}>EXERCISES</label>
+                        <input
+                          value={ov.exercises ?? day.exercises.join(", ")}
+                          onChange={e => setOverrides(o => ({ ...o, [day.name]: { ...o[day.name], exercises: e.target.value } }))}
+                          style={{ width: "100%", background: "var(--bg2)", border: "1px solid var(--border)", color: "var(--text)", fontFamily: "'DM Mono',monospace", fontSize: 13, padding: "6px 10px", boxSizing: "border-box" }}
+                          placeholder="e.g. Bench Press, OHP, Lateral Raise..."
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ── Optional extra context ── */}
+      <div style={{ marginBottom: 20 }}>
+        <label style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "var(--text3)", letterSpacing: 1, display: "block", marginBottom: 6 }}>EXTRA CONTEXT (optional)</label>
+        <textarea
+          value={extraContext}
+          onChange={e => setExtraContext(e.target.value)}
+          rows={2}
+          placeholder="e.g. prioritizing hypertrophy over strength, recovering from shoulder strain, contest prep in 12 weeks..."
+          style={{ width: "100%", background: "var(--bg1)", border: "1px solid var(--border)", color: "var(--text)", fontFamily: "'DM Mono',monospace", fontSize: 13, padding: "10px 12px", resize: "vertical", boxSizing: "border-box" }}
+        />
+      </div>
+
+      {/* ── Run button ── */}
+      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 32 }}>
+        <button
+          onClick={run}
+          disabled={loading || split.length === 0}
+          style={{ background: loading ? "var(--bg2)" : "var(--c)", color: loading ? "var(--text3)" : "#000", border: "none", padding: "11px 24px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 2, fontWeight: 600, cursor: loading ? "default" : "pointer" }}
+        >
+          {loading ? "ANALYZING..." : result ? "RE-ANALYZE" : "ANALYZE WORKOUTS →"}
+        </button>
+        {result && genAge !== null && (
+          <Mono s={{ fontSize: 12, color: "var(--text3)" }}>
+            last run {genAge < 1 ? "just now" : genAge === 1 ? "1h ago" : `${genAge}h ago`}
+          </Mono>
+        )}
+      </div>
+
+      {error && <div style={{ color: "var(--r)", fontSize: 13, fontFamily: "'DM Mono',monospace", marginBottom: 20 }}>{error}</div>}
+
+      {/* ── Results ── */}
+      {result && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+
+          {/* Top priority */}
+          <div style={{ background: "var(--c)15", border: "1px solid var(--c)44", padding: "14px 16px", position: "relative" }}>
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "var(--c)" }} />
+            <Mono s={{ fontSize: 11, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 6 }}>TOP PRIORITY THIS WEEK</Mono>
+            <div style={{ fontSize: 14, color: "var(--text)", lineHeight: 1.6 }}>{result.topPriority}</div>
+          </div>
+
+          {/* Assessment */}
+          <div>
+            <Mono s={{ fontSize: 12, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 8 }}>SPLIT ASSESSMENT</Mono>
+            <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.7, paddingLeft: 12, borderLeft: "2px solid var(--border)" }}>{result.splitAssessment}</div>
+          </div>
+
+          {/* Muscle gaps */}
+          {result.muscleGaps?.length > 0 && (
+            <div>
+              <Mono s={{ fontSize: 12, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 8 }}>GAPS ⚠</Mono>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {result.muscleGaps.map((g, i) => (
+                  <span key={i} style={{ background: "var(--r)15", border: "1px solid var(--r)44", color: "var(--r)", fontFamily: "'DM Mono',monospace", fontSize: 12, padding: "3px 10px", letterSpacing: 0.5 }}>{g}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recommendations */}
+          <div>
+            <Mono s={{ fontSize: 12, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>RECOMMENDATIONS</Mono>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {(result.recommendations || []).map((r, i) => (
+                <div key={i} style={{ background: PRIORITY_BG[r.priority] || "var(--bg2)", border: `1px solid ${PRIORITY_COLOR[r.priority] || "var(--border)"}44`, padding: "12px 14px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
+                    <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 13, color: PRIORITY_COLOR[r.priority] || "var(--text3)" }}>
+                      {CATEGORY_ICON[r.category] || "◈"}
+                    </span>
+                    <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 13, color: "var(--text)", fontWeight: 600 }}>
+                      {r.exercise ? r.exercise.toUpperCase() : r.category?.toUpperCase()}
+                    </span>
+                    {r.day && (
+                      <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "var(--text3)", background: "var(--bg2)", padding: "2px 7px" }}>{r.day}</span>
+                    )}
+                    <span style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: PRIORITY_COLOR[r.priority] || "var(--text3)", marginLeft: "auto" }}>
+                      {r.priority?.toUpperCase()}
+                    </span>
+                  </div>
+                  <div style={{ fontSize: 13, color: "var(--text2)", fontWeight: 600, marginBottom: 4 }}>{r.action}</div>
+                  <div style={{ fontSize: 13, color: "var(--text3)", lineHeight: 1.6 }}>{r.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Main view ─────────────────────────────────────────────────────────────────
+
 export default function PillarView({ pillar, state, onSave, onDraftChange }) {
   const analysis   = state.analyses[pillar.id];
   const profile    = state.profiles[pillar.id];
@@ -164,11 +439,21 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
           <div style={{ color: pillar.color, fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 3, marginBottom: 5 }}>{pillar.icon} {pillar.label}</div>
           <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 1, color: "var(--text)" }}>{pillar.sub}</h2>
         </div>
-        {analysis && (
+        {analysis && pillar.id === "physicality" && state.integrations?.workoutData ? (
+          <div style={{ display: "flex", gap: 0 }}>
+            {[["analysis", "ANALYSIS"], ["optimizer", "OPTIMIZER"], ["input", "EDIT GOALS"]].map(([m, label]) => (
+              <button
+                key={m}
+                onClick={() => setMode(m)}
+                style={{ background: mode === m ? "var(--c)" : "none", color: mode === m ? "#000" : "var(--text3)", border: "1px solid var(--border)", borderRight: m === "input" ? "1px solid var(--border)" : "none", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 12, letterSpacing: 1, cursor: "pointer" }}
+              >{label}</button>
+            ))}
+          </div>
+        ) : analysis ? (
           <button onClick={() => setMode(m => m === "analysis" ? "input" : "analysis")} className="hov-border" style={{ background: "none", border: "1px solid var(--border)", color: "var(--text2)", padding: "7px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1 }}>
             {mode === "analysis" ? "EDIT CORE GOALS" : "VIEW ANALYSIS"}
           </button>
-        )}
+        ) : null}
       </div>
 
       {mode === "input" ? (
@@ -376,6 +661,14 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
             </div>
           )}
         </div>
+      )}
+
+      {mode === "optimizer" && pillar.id === "physicality" && (
+        <WorkoutOptimizer
+          workoutData={state.integrations?.workoutData}
+          profile={profile}
+          pillar={pillar}
+        />
       )}
     </div>
   );

@@ -60,6 +60,10 @@ export const NETWORK_SUGGEST_SYS = `You are NORTHSTAR Network Intelligence. Retu
 {"suggestions":[{"id":"s1","type":"specific_person|archetype","name":"name","description":"brief description","platform":"LinkedIn|Twitter|Instagram|IRL","findWhere":"where to find them","pillarsServed":["pillar_id"],"opportunity":"benefit","approach":"how to reach out","priority":1-10,"tags":["tag"]}]}
 Generate 6 suggestions. Keep all strings to 1-2 sentences.`;
 
+export const WORKOUT_OPTIMIZER_SYS = `You are NORTHSTAR Workout Optimizer. Analyze the user's workout split, performance data, and physique goals to deliver specific, data-driven training adjustments. Return ONLY valid JSON, no other text:
+{"splitAssessment":"2-3 sentence honest take on the split structure and how well it serves the stated goals","muscleGaps":["undertrained muscle or missing pattern"],"recommendations":[{"category":"volume|intensity|exercise|frequency|gap","priority":"high|medium|low","exercise":"exercise name or null","day":"workout type name or null","action":"≤10 word imperative action","detail":"specific rationale citing actual numbers from the data"}],"topPriority":"the single most impactful change to make this week"}
+recommendations: exactly 5-8 items, sorted high → low priority. Every detail field MUST cite specific numbers from the data (weights, sets, reps, session counts, trends). Do not give generic advice — "add a 4th set of lateral raises — your shoulder volume is capped at 3 sets/session and side-delt strength has been flat 6 weeks" beats "consider more shoulder work". Categories: volume = add/adjust sets or reps, intensity = increase load or change rep range, exercise = add or swap a movement, frequency = change training days, gap = muscle group absent or severely undertrained. Priority guide: high = do this week, medium = this month, low = worth tracking.`;
+
 // ─── Sunday scheduling helpers ────────────────────────────────────────────────
 
 // Returns the date of the most recent past Sunday (or today if Sunday)
