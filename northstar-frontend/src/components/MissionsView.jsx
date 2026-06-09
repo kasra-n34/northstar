@@ -766,7 +766,6 @@ export default function MissionsView({ state, onAccept, onAcceptRecurring, onDec
                   )}
                   <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
                     {applyFilter(recurringMissions)
-                      .sort((a,b) => ((b.progressCount||0)/(b.targetCount||1)) - ((a.progressCount||0)/(a.targetCount||1)))
                       .map(m => <RecurringCard key={m.id} m={m} onIncrementProgress={onIncrementProgress} onDelete={onDeleteRecurring} onEdit={onEditRecurring} />)}
                   </div>
                 </div>

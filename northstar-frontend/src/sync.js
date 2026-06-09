@@ -206,13 +206,20 @@ export async function runSync(state, onStep, onUpdate) {
   let completed = 0;
   const errors = [];
 
-  // Build completed missions context helper
+  // Build completed missions context helper — splits into recent (this week) vs older
+  // so Claude treats just-finished missions as wins rather than re-flagging them from history.
   const buildCompletedCtx = (pillarId) => {
+    const ONE_WEEK_AGO = Date.now() - 7 * 24 * 60 * 60 * 1000;
     const done = (missions || []).filter(m =>
       (completedMissions || []).includes(m.id) && m.pillar === pillarId
     );
     if (!done.length) return "";
-    return `Completed missions for this pillar: ${done.map(m => m.title).join("; ")}`;
+    const recent = done.filter(m => missionCompletedAt?.[m.id] && new Date(missionCompletedAt[m.id]).getTime() > ONE_WEEK_AGO);
+    const older  = done.filter(m => !recent.includes(m));
+    const lines  = [];
+    if (recent.length) lines.push(`COMPLETED THIS WEEK (treat as wins — do NOT flag as blockers): ${recent.map(m => m.title).join("; ")}`);
+    if (older.length)  lines.push(`Previously completed: ${older.map(m => m.title).join("; ")}`);
+    return lines.join(" | ");
   };
 
   // Build existing (active + pending + recurring) missions context per pillar
