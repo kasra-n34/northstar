@@ -152,7 +152,7 @@ export default function App() {
     setSyncErrors([]);
     setSyncStep("Starting...");
 
-    const { completed, errors } = await runSync(
+    const { completed, errors, scoreBreakdowns, metaPrev, metaFinal } = await runSync(
       stateRef.current,
       (label, current, total) => {
         setSyncStep(label);
@@ -169,6 +169,7 @@ export default function App() {
     setSyncProgress(null);
     setSyncErrors(errors);
     if (completed > 0) setLastSyncDate(new Date().toISOString());
+    return { scoreBreakdowns, metaPrev, metaFinal };
   }, []); // stable — uses refs for guards, stateRef for current state
 
   // Manual override — requires confirm dialog

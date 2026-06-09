@@ -183,11 +183,167 @@ function NotificationPanel({ lastInterviewDate }) {
   );
 }
 
+// ─── Score reveal animation ───────────────────────────────────────────────────
+
+function AnimatedNumber({ from, to, duration = 1200 }) {
+  const [val, setVal] = useState(from ?? to);
+  useEffect(() => {
+    if (from == null || to == null) return;
+    const start = performance.now();
+    const tick  = (now) => {
+      const t    = Math.min(1, (now - start) / duration);
+      const ease = 1 - Math.pow(1 - t, 3);
+      setVal(Math.round(from + (to - from) * ease));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }, [from, to, duration]);
+  return <>{val}</>;
+}
+
+function ScoreRevealStep({ scoreBreakdowns, metaPrev, metaFinal, onContinue }) {
+  const [animPhase, setAnimPhase] = useState(0);
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setAnimPhase(1), 500);
+    const t2 = setTimeout(() => setAnimPhase(2), 1400);
+    const t3 = setTimeout(() => setAnimPhase(3), 2600);
+    return () => [t1, t2, t3].forEach(clearTimeout);
+  }, []);
+
+  const hasMeta = metaPrev != null && metaFinal != null;
+  const metaDelta = hasMeta ? metaFinal - metaPrev : 0;
+
+  return (
+    <div style={{ maxWidth: 660 }}>
+      <div style={{ marginBottom: 32 }}>
+        <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 3, display: "block", marginBottom: 6 }}>SYNC COMPLETE</Mono>
+        <h2 style={{ fontFamily: "'Bebas Neue'", fontSize: 34, letterSpacing: 1, color: "var(--text)", marginBottom: 4 }}>Score Update</h2>
+        <div style={{ fontSize: 13, color: "var(--text3)", display: "flex", gap: 16 }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ display: "inline-block", width: 10, height: 10, background: "#E8FF3B", borderRadius: 1 }} />
+            Mission performance
+          </span>
+          <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span style={{ display: "inline-block", width: 10, height: 10, background: "var(--c)", borderRadius: 1 }} />
+            AI qualitative
+          </span>
+        </div>
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 40 }}>
+        {PILLARS.map(p => {
+          const b = scoreBreakdowns?.[p.id];
+          if (!b || b.prevScore == null) return null;
+          const { prevScore, algoBase, finalScore } = b;
+          const algoDelta = Math.round(algoBase)  - Math.round(prevScore);
+          const qualDelta = Math.round(finalScore) - Math.round(algoBase);
+          const netDelta  = Math.round(finalScore) - Math.round(prevScore);
+          const stableEnd = Math.min(prevScore, algoBase, finalScore);
+
+          const algoLeft  = algoDelta >= 0 ? prevScore  : algoBase;
+          const qualLeft  = qualDelta >= 0 ? algoBase   : finalScore;
+          const algoColor = algoDelta > 0 ? "#E8FF3B" : "#ef4444";
+          const qualColor = qualDelta > 0 ? "var(--c)" : "var(--c)55";
+
+          return (
+            <div key={p.id}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 8, height: 8, borderRadius: "50%", background: p.color }} />
+                  <Mono s={{ fontSize: 13, color: p.color, letterSpacing: 2 }}>{p.label}</Mono>
+                </div>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                  <Mono s={{ fontSize: 13, color: "var(--text3)" }}>{Math.round(prevScore)}</Mono>
+                  <span style={{ fontFamily: "'Bebas Neue'", fontSize: 20, color: netDelta > 0 ? "var(--g)" : netDelta < 0 ? "var(--r)" : "var(--text3)", lineHeight: 1 }}>
+                    {netDelta > 0 ? "▲" : netDelta < 0 ? "▼" : "–"} {Math.abs(netDelta)}
+                  </span>
+                  <Mono s={{ fontSize: 16, color: "var(--text)", fontWeight: 700 }}>{Math.round(finalScore)}</Mono>
+                </div>
+              </div>
+
+              <div style={{ position: "relative", height: 10, background: "var(--bg2)", borderRadius: 3, overflow: "hidden" }}>
+                {/* Stable base fill */}
+                <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${stableEnd}%`, background: "#3a3a3a", borderRadius: 3 }} />
+                {/* Algo segment */}
+                {algoDelta !== 0 && (
+                  <div style={{
+                    position: "absolute", left: `${algoLeft}%`, top: 0, bottom: 0,
+                    width: animPhase >= 1 ? `${Math.abs(algoDelta)}%` : "0%",
+                    background: algoColor,
+                    transition: "width 0.75s cubic-bezier(0.4,0,0.2,1)",
+                  }} />
+                )}
+                {/* Qual segment */}
+                {qualDelta !== 0 && (
+                  <div style={{
+                    position: "absolute", left: `${qualLeft}%`, top: 0, bottom: 0,
+                    width: animPhase >= 2 ? `${Math.abs(qualDelta)}%` : "0%",
+                    background: qualColor,
+                    transition: "width 0.65s cubic-bezier(0.4,0,0.2,1) 0.05s",
+                  }} />
+                )}
+                {/* Prev score marker */}
+                <div style={{ position: "absolute", left: `${prevScore}%`, top: 0, bottom: 0, width: 1.5, background: "rgba(255,255,255,0.25)" }} />
+              </div>
+
+              {animPhase >= 1 && (
+                <div style={{ display: "flex", gap: 14, marginTop: 6 }}>
+                  {algoDelta !== 0 && (
+                    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: 1, background: algoColor, flexShrink: 0 }} />
+                      <Mono s={{ fontSize: 11, color: "var(--text3)" }}>MISSIONS {algoDelta > 0 ? "+" : ""}{algoDelta}</Mono>
+                    </div>
+                  )}
+                  {animPhase >= 2 && qualDelta !== 0 && (
+                    <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                      <div style={{ width: 8, height: 8, borderRadius: 1, background: qualColor, flexShrink: 0 }} />
+                      <Mono s={{ fontSize: 11, color: "var(--text3)" }}>AI {qualDelta > 0 ? "+" : ""}{qualDelta}</Mono>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {hasMeta && (
+        <div style={{
+          borderTop: "1px solid var(--border)",
+          paddingTop: 28,
+          textAlign: "center",
+          marginBottom: 36,
+          opacity: animPhase >= 3 ? 1 : 0,
+          transform: animPhase >= 3 ? "translateY(0)" : "translateY(10px)",
+          transition: "opacity 0.6s ease, transform 0.6s ease",
+        }}>
+          <Mono s={{ fontSize: 12, color: "var(--text3)", letterSpacing: 3, display: "block", marginBottom: 12 }}>OVERALL SCORE</Mono>
+          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 80, lineHeight: 1, color: metaDelta > 0 ? "var(--g)" : metaDelta < 0 ? "var(--r)" : "var(--text3)" }}>
+            {animPhase >= 3 ? <AnimatedNumber from={metaPrev} to={metaFinal} duration={1200} /> : metaPrev}
+          </div>
+          <div style={{ fontSize: 13, color: "var(--text3)", fontFamily: "'DM Mono',monospace", marginTop: 8 }}>
+            {metaDelta > 0 ? `▲ +${metaDelta} from last week` : metaDelta < 0 ? `▼ ${metaDelta} from last week` : "→ Unchanged from last week"}
+          </div>
+        </div>
+      )}
+
+      <button
+        onClick={onContinue}
+        style={{ background: "var(--c)", color: "#000", border: "none", padding: "12px 28px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 2, fontWeight: 600, cursor: "pointer" }}
+      >
+        CONTINUE →
+      </button>
+    </div>
+  );
+}
+
 // ─── Main view ────────────────────────────────────────────────────────────────
 
 export default function InterviewView({ state, onSaveLog, onAddPendingMissions, onUpdatePillarScores, onUpdatePillarAnswers, onRunSync, onSaveIntegrations, onDeleteMission, onDeleteRecurring, onUpdateMission, onUpdateRecurring }) {
   const { analyses = {}, weeklyLogs = [], lastInterviewDate } = state;
   const [phase,            setPhase]            = useState("intro");
+  const [scoreRevealData,  setScoreRevealData]  = useState(null);
   const [answers,          setAnswers]          = useState({});
   const [currentQ,         setCurrentQ]         = useState(0);
   const [result,           setResult]           = useState(null);
@@ -380,7 +536,6 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
         };
         onSaveLog(log);
         if (newMissionsWithIds.length > 0) onAddPendingMissions(newMissionsWithIds);
-        if (parsed.pillarDeltas) onUpdatePillarScores(parsed.pillarDeltas);
         setResult({ ...parsed, newMissions: newMissionsWithIds, missionRemovals, missionUpdates, checkInAnswers: answers });
         setPhase("results");
       }
@@ -404,7 +559,10 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       onUpdatePillarAnswers(pillar.id, { answers: { ...coreAnswers, ...statusAnswers }, extra: profile?.extra || "" });
     }
     setPhase("syncing");
-    onRunSync().then(() => setPhase("done"));
+    onRunSync().then(data => {
+      setScoreRevealData(data || null);
+      setPhase("scoreReveal");
+    });
   };
 
   return (
@@ -726,20 +884,18 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
 
           {result.pillarDeltas && (
             <div className="fu1">
-              <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 12 }}>PILLAR SCORE ADJUSTMENTS</Mono>
+              <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 4 }}>PILLAR ASSESSMENT</Mono>
+              <div style={{ fontSize: 12, color: "var(--text3)", marginBottom: 12 }}>Final scores update after sync.</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                 {PILLARS.map(p => {
                   const delta = result.pillarDeltas?.[p.id];
                   if (!delta) return null;
-                  const current  = analyses[p.id]?.priorityScore || 0;
-                  const newScore = Math.max(1, Math.min(100, current + (delta.delta || 0)));
                   return (
                     <div key={p.id} style={{ background: "var(--bg1)", border: "1px solid var(--border)", padding: "12px 14px", display: "flex", alignItems: "center", gap: 12 }}>
                       <div style={{ width: 8, height: 8, borderRadius: "50%", background: p.color, flexShrink: 0 }} />
                       <div style={{ flex: 1 }}><Mono s={{ fontSize: 13, color: p.color, letterSpacing: 1, display: "block", marginBottom: 2 }}>{p.label}</Mono><div style={{ fontSize: 14, color: "var(--text3)", lineHeight: 1.4 }}>{delta.note}</div></div>
                       <div style={{ textAlign: "right", flexShrink: 0 }}>
                         <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: delta.delta > 0 ? "var(--g)" : delta.delta < 0 ? "var(--r)" : "var(--text3)", lineHeight: 1 }}>{delta.delta > 0 ? "+" : ""}{delta.delta !== 0 ? delta.delta : "—"}</div>
-                        <Mono s={{ fontSize: 14, color: "var(--text3)" }}>{current}→{newScore}</Mono>
                       </div>
                     </div>
                   );
@@ -899,6 +1055,16 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
           <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 3 }}>RUNNING FULL SYNC...</Mono>
           <div style={{ fontSize: 13, color: "var(--text3)", textAlign: "center", maxWidth: 400, lineHeight: 1.7 }}>northstar is re-analyzing all pillars with this week's data and generating new missions. This takes about 30–60 seconds.</div>
         </div>
+      )}
+
+      {/* SCORE REVEAL */}
+      {canInterview && phase === "scoreReveal" && (
+        <ScoreRevealStep
+          scoreBreakdowns={scoreRevealData?.scoreBreakdowns}
+          metaPrev={scoreRevealData?.metaPrev}
+          metaFinal={scoreRevealData?.metaFinal}
+          onContinue={() => setPhase("done")}
+        />
       )}
 
       {/* DONE */}

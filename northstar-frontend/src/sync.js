@@ -241,7 +241,10 @@ export async function runSync(state, onStep, onUpdate) {
   })();
 
   // ── Step: Re-analyze each pillar ─────────────────────────────────────────────
-  const freshAnalyses = { ...analyses };
+  const freshAnalyses    = { ...analyses };
+  const scoreBreakdowns  = {};
+  const metaPrev         = state.metaAnalysis?.overallScore ?? null;
+  let   metaFinal        = null;
 
   for (const pillar of pillarSteps) {
     stepIdx++;
@@ -305,6 +308,14 @@ export async function runSync(state, onStep, onUpdate) {
         const scoreHistory = [...prevHistory, { date: new Date().toISOString(), score: parsed.priorityScore }].slice(-12);
         const updated      = { ...parsed, pillar: pillar.id, scoreHistory };
         freshAnalyses[pillar.id] = updated;
+
+        if (scoreInfo) {
+          scoreBreakdowns[pillar.id] = {
+            prevScore:  scoreInfo.prevScore,
+            algoBase:   scoreInfo.baseScore,
+            finalScore: parsed.priorityScore,
+          };
+        }
 
         // Convert weeklyActions into rich pending missions.
         // Cap is dynamic — based on how many missions are already queued.
@@ -388,6 +399,7 @@ export async function runSync(state, onStep, onUpdate) {
     const parsed = parseJSON(text);
     console.log("[SYNC] parseJSON meta:", parsed ? "OK" : "FAILED — raw text:", text?.slice(0, 200));
     if (parsed) {
+      metaFinal = parsed.overallScore ?? null;
       onUpdate(s => ({ ...s, metaAnalysis: parsed, lastMetaDate: new Date().toISOString() }));
       completed++;
     }
@@ -397,5 +409,5 @@ export async function runSync(state, onStep, onUpdate) {
   }
 
   console.log(`[SYNC] runSync complete — completed: ${completed}, errors:`, errors);
-  return { completed, errors };
+  return { completed, errors, scoreBreakdowns, metaPrev, metaFinal };
 }
