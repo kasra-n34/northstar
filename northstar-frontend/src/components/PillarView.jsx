@@ -130,6 +130,38 @@ function PhysicalityTrends({ workoutData }) {
   );
 }
 
+// ─── Workout Optimizer helpers ───────────────────────────────────────────────
+
+function computeTypicalSets(exerciseHistory) {
+  const result = {};
+  if (!exerciseHistory) return result;
+  Object.entries(exerciseHistory).forEach(([ex, hist]) => {
+    const setCountFreq = {};
+    const weightFreq   = {};
+    const repsFreq     = {};
+    hist.forEach(session => {
+      const ws = (session.sets || []).filter(s => s.weight != null && s.reps != null);
+      if (!ws.length) return;
+      setCountFreq[ws.length] = (setCountFreq[ws.length] || 0) + 1;
+      ws.forEach(s => {
+        const w = Math.round(s.weight * 2) / 2;
+        weightFreq[w] = (weightFreq[w] || 0) + 1;
+        repsFreq[s.reps] = (repsFreq[s.reps] || 0) + 1;
+      });
+    });
+    const mode = freq => {
+      const entries = Object.entries(freq);
+      if (!entries.length) return null;
+      return parseFloat(entries.sort((a, b) => b[1] - a[1])[0][0]);
+    };
+    const sets   = mode(setCountFreq);
+    const weight = mode(weightFreq);
+    const reps   = mode(repsFreq);
+    if (sets != null) result[ex] = { sets, weight: weight ?? 0, reps: reps ?? 0 };
+  });
+  return result;
+}
+
 // ─── Workout Optimizer ────────────────────────────────────────────────────────
 
 const MUSCLE_KW = {
@@ -178,7 +210,7 @@ const PRIORITY_COLOR = { high: "var(--r)", medium: "var(--y)", low: "var(--text3
 const PRIORITY_BG    = { high: "var(--r)15", medium: "var(--y)15", low: "var(--bg2)" };
 const CATEGORY_ICON  = { volume: "▲", intensity: "⚡", exercise: "＋", frequency: "⟳", gap: "⚠" };
 
-function WorkoutOptimizer({ workoutData, profile, pillar }) {
+function WorkoutOptimizer({ workoutData, profile, pillar, userProfile }) {
   const cacheKey = `northstar_wopt_${workoutData?.uploadedAt || ""}`;
 
   const [result,       setResult]       = useState(() => {
@@ -187,8 +219,9 @@ function WorkoutOptimizer({ workoutData, profile, pillar }) {
   const [loading,      setLoading]      = useState(false);
   const [error,        setError]        = useState(null);
   const [extraContext, setExtraContext] = useState("");
-  const [editDay,      setEditDay]      = useState(null);   // index being edited
-  const [overrides,    setOverrides]    = useState({});     // name → { muscles: string, exercises: string }
+  const [editDay,      setEditDay]      = useState(null);
+  const [overrides,    setOverrides]    = useState({});
+  const [tableEdits,   setTableEdits]   = useState({});    // exerciseName → { sets, reps, weight }
 
   useEffect(() => {
     try { const c = localStorage.getItem(cacheKey); if (c) setResult(JSON.parse(c)); }
@@ -196,6 +229,27 @@ function WorkoutOptimizer({ workoutData, profile, pillar }) {
   }, [cacheKey]);
 
   const split = useMemo(() => detectSplit(workoutData), [workoutData]);
+
+  const typicalSets = useMemo(() => {
+    if (!workoutData?.exerciseHistory) return {};
+    const hist = Object.fromEntries(
+      Object.entries(workoutData.exerciseHistory).map(([ex, h]) => [ex, h.map(s => ({ ...s, date: new Date(s.date) }))])
+    );
+    return computeTypicalSets(hist);
+  }, [workoutData]);
+
+  const getTableRow = (ex) => {
+    const edit = tableEdits[ex];
+    const typ  = typicalSets[ex] || { sets: 3, reps: 8, weight: 0 };
+    return {
+      sets:   edit?.sets   ?? typ.sets,
+      reps:   edit?.reps   ?? typ.reps,
+      weight: edit?.weight ?? typ.weight,
+    };
+  };
+
+  const setTableField = (ex, field, val) =>
+    setTableEdits(prev => ({ ...prev, [ex]: { ...getTableRow(ex), ...prev[ex], [field]: val === "" ? "" : Number(val) } }));
 
   const buildPrompt = () => {
     const goals = pillar.questions
@@ -205,16 +259,45 @@ function WorkoutOptimizer({ workoutData, profile, pillar }) {
 
     const splitText = split.map(day => {
       const ov = overrides[day.name];
-      const muscles = ov?.muscles?.trim() || day.muscles.join(", ") || "unknown";
+      const muscles   = ov?.muscles?.trim()   || day.muscles.join(", ")   || "unknown";
       const exercises = ov?.exercises?.trim() || day.exercises.join(", ") || "unknown";
       return `${day.name} (${day.sessionCount} sessions) — muscles: ${muscles}\n  Key exercises: ${exercises}`;
     }).join("\n\n");
 
+    // Build exercise volume table lines
+    const volumeLines = split.flatMap(day => {
+      const ov = overrides[day.name];
+      const exercises = (ov?.exercises?.trim() ? ov.exercises.split(",").map(e => e.trim()) : day.exercises).filter(Boolean);
+      return exercises.map(ex => {
+        const row = getTableRow(ex);
+        const vol = row.sets && row.reps && row.weight ? Math.round(row.sets * row.reps * row.weight) : null;
+        return `  [${day.name}] ${ex}: ${row.sets} sets × ${row.reps} reps @ ${row.weight}lbs${vol ? ` = ${vol.toLocaleString()} lbs total volume` : ""}`;
+      });
+    });
+
+    // Body stats block
+    let bodyStats = "";
+    if (userProfile?.age || userProfile?.sex || userProfile?.height || userProfile?.weight) {
+      const bmi = userProfile.height && userProfile.weight
+        ? (userProfile.weight / ((userProfile.height / 100) ** 2)).toFixed(1)
+        : null;
+      bodyStats = [
+        "BODY STATS (for population comparison):",
+        userProfile.sex    ? `  Sex: ${userProfile.sex}`                : null,
+        userProfile.age    ? `  Age: ${userProfile.age}`                : null,
+        userProfile.height ? `  Height: ${userProfile.height}cm`        : null,
+        userProfile.weight ? `  Weight: ${userProfile.weight}kg`        : null,
+        bmi                ? `  BMI: ${bmi}`                            : null,
+      ].filter(Boolean).join("\n");
+    }
+
     const workoutCtx = buildWorkoutContext(workoutData);
     return [
       "PHYSIQUE GOALS:\n" + goals,
+      bodyStats,
       extraContext.trim() ? "ADDITIONAL CONTEXT:\n" + extraContext.trim() : "",
       "WORKOUT SPLIT:\n" + splitText,
+      volumeLines.length ? "EXERCISE VOLUME (most common sets × reps @ weight):\n" + volumeLines.join("\n") : "",
       "PERFORMANCE DATA:\n" + workoutCtx,
     ].filter(Boolean).join("\n\n");
   };
@@ -310,6 +393,65 @@ function WorkoutOptimizer({ workoutData, profile, pillar }) {
         )}
       </div>
 
+      {/* ── Exercise volume table ── */}
+      {split.length > 0 && (
+        <div style={{ marginBottom: 24 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <Mono s={{ fontSize: 13, color: "var(--text3)", letterSpacing: 2 }}>EXERCISE VOLUME</Mono>
+            <Mono s={{ fontSize: 11, color: "var(--text3)" }}>most common sets × reps · editable</Mono>
+          </div>
+          <div style={{ border: "1px solid var(--border)", overflow: "hidden" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+              <thead>
+                <tr style={{ background: "var(--bg2)" }}>
+                  {["EXERCISE", "DAY", "SETS", "REPS", "WEIGHT (lbs)", "VOLUME"].map((h, i) => (
+                    <th key={i} style={{ padding: "6px 10px", textAlign: i >= 2 ? "center" : "left", fontFamily: "'DM Mono',monospace", fontSize: 7, letterSpacing: 1, color: "var(--text3)", fontWeight: 400, borderBottom: "1px solid var(--border)", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {split.flatMap(day => {
+                  const ov = overrides[day.name];
+                  const exercises = (ov?.exercises?.trim() ? ov.exercises.split(",").map(e => e.trim()) : day.exercises).filter(Boolean);
+                  return exercises.map((ex, ei) => {
+                    const row = getTableRow(ex);
+                    const vol = row.sets && row.reps && row.weight ? Math.round(row.sets * row.reps * row.weight) : null;
+                    const isEdited = !!(tableEdits[ex]);
+                    return (
+                      <tr key={`${day.name}-${ex}`} style={{ borderBottom: "1px solid var(--border)", background: ei % 2 === 0 ? "var(--bg1)" : "var(--bg2)" }}>
+                        <td style={{ padding: "6px 10px", color: "var(--text)", fontSize: 13, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                          {ex}
+                          {isEdited && <span style={{ marginLeft: 5, color: "var(--c)", fontSize: 9 }}>edited</span>}
+                        </td>
+                        <td style={{ padding: "6px 10px" }}>
+                          <Mono s={{ fontSize: 11, color: "var(--text3)" }}>{day.name}</Mono>
+                        </td>
+                        {["sets", "reps", "weight"].map(field => (
+                          <td key={field} style={{ padding: "4px 6px", textAlign: "center" }}>
+                            <input
+                              type="number"
+                              value={row[field]}
+                              onChange={e => setTableField(ex, field, e.target.value)}
+                              style={{ width: 58, padding: "4px 6px", background: "var(--bg2)", border: "1px solid var(--border)", color: "var(--text)", fontFamily: "'DM Mono',monospace", fontSize: 13, textAlign: "center", boxSizing: "border-box" }}
+                              min={0}
+                            />
+                          </td>
+                        ))}
+                        <td style={{ padding: "6px 10px", textAlign: "center" }}>
+                          <Mono s={{ fontSize: 13, color: vol ? "var(--p)" : "var(--text3)" }}>
+                            {vol ? vol.toLocaleString() : "—"}
+                          </Mono>
+                        </td>
+                      </tr>
+                    );
+                  });
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       {/* ── Optional extra context ── */}
       <div style={{ marginBottom: 20 }}>
         <label style={{ fontFamily: "'DM Mono',monospace", fontSize: 11, color: "var(--text3)", letterSpacing: 1, display: "block", marginBottom: 6 }}>EXTRA CONTEXT (optional)</label>
@@ -356,6 +498,38 @@ function WorkoutOptimizer({ workoutData, profile, pillar }) {
             <Mono s={{ fontSize: 12, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 8 }}>SPLIT ASSESSMENT</Mono>
             <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.7, paddingLeft: 12, borderLeft: "2px solid var(--border)" }}>{result.splitAssessment}</div>
           </div>
+
+          {/* Physical comparison */}
+          {result.physicalComparison && (
+            <div>
+              <Mono s={{ fontSize: 12, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>POPULATION COMPARISON</Mono>
+              <div style={{ fontSize: 14, color: "var(--text2)", lineHeight: 1.7, paddingLeft: 12, borderLeft: "2px solid var(--border)", marginBottom: 12 }}>
+                {result.physicalComparison.summary}
+              </div>
+              {result.physicalComparison.categories?.length > 0 && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                  {result.physicalComparison.categories.map((cat, i) => {
+                    const ratingColor = {
+                      elite: "var(--g)", advanced: "var(--c)", intermediate: "var(--y)",
+                      novice: "var(--o)", beginner: "var(--r)",
+                    }[cat.rating] || "var(--text3)";
+                    return (
+                      <div key={i} style={{ background: "var(--bg2)", border: `1px solid ${ratingColor}33`, padding: "12px 14px" }}>
+                        <Mono s={{ fontSize: 9, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 5 }}>{cat.name?.toUpperCase()}</Mono>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 6 }}>
+                          <div style={{ fontFamily: "'Bebas Neue'", fontSize: 22, color: ratingColor, lineHeight: 1, textTransform: "uppercase" }}>{cat.rating}</div>
+                          {cat.percentileApprox != null && (
+                            <Mono s={{ fontSize: 11, color: "var(--text3)" }}>top {100 - cat.percentileApprox}%</Mono>
+                          )}
+                        </div>
+                        <div style={{ fontSize: 12, color: "var(--text3)", lineHeight: 1.55 }}>{cat.note}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Muscle gaps */}
           {result.muscleGaps?.length > 0 && (
@@ -581,6 +755,13 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
           </div>
         </div>
 
+      ) : mode === "optimizer" && pillar.id === "physicality" ? (
+        <WorkoutOptimizer
+          workoutData={state.integrations?.workoutData}
+          profile={profile}
+          pillar={pillar}
+          userProfile={state.userProfile}
+        />
       ) : (
         /* Analysis display */
         <div style={{ display: "flex", flexDirection: "column", gap: 22, maxWidth: 770 }}>
@@ -661,14 +842,6 @@ export default function PillarView({ pillar, state, onSave, onDraftChange }) {
             </div>
           )}
         </div>
-      )}
-
-      {mode === "optimizer" && pillar.id === "physicality" && (
-        <WorkoutOptimizer
-          workoutData={state.integrations?.workoutData}
-          profile={profile}
-          pillar={pillar}
-        />
       )}
     </div>
   );

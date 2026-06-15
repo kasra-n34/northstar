@@ -182,13 +182,11 @@ export default function Dashboard({ state, onNav, onShowHelp }) {
       .then(d => setApiKeySet(!!d.apiKeySet))
       .catch(() => setApiKeySet(false));
   }, []);
-  // Compute overall northstar score: use meta overallScore if available, else average pillar scores
+  // Overall score is always the exact average of all available pillar scores
   const pillarScores = PILLARS.map(p => analyses[p.id]?.priorityScore).filter(Boolean);
-  const overallScore = metaAnalysis?.overallScore
-    ? metaAnalysis.overallScore
-    : pillarScores.length > 0
-      ? Math.round(pillarScores.reduce((a, b) => a + b, 0) / pillarScores.length)
-      : null;
+  const overallScore = pillarScores.length > 0
+    ? Math.round(pillarScores.reduce((a, b) => a + b, 0) / pillarScores.length)
+    : null;
   const now          = new Date();
   const h            = now.getHours();
   const greeting     = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";

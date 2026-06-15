@@ -7,6 +7,10 @@ export default function MetaView({ state }) {
   const metaAge  = lastMetaDate ? Date.now() - new Date(lastMetaDate).getTime() : Infinity;
   const isStale  = metaAge > ONE_WEEK_MS;
   const daysOld  = lastMetaDate ? Math.floor(metaAge / (1000 * 60 * 60 * 24)) : null;
+  const pillarScoreValues = PILLARS.map(p => analyses[p.id]?.priorityScore).filter(Boolean);
+  const overallScore = pillarScoreValues.length > 0
+    ? Math.round(pillarScoreValues.reduce((a, b) => a + b, 0) / pillarScoreValues.length)
+    : meta?.overallScore ?? null;
 
   return (
     <div>
@@ -33,7 +37,7 @@ export default function MetaView({ state }) {
             <div style={{ background: "var(--bg2)", border: "1px solid var(--y)33", padding: "20px 16px", textAlign: "center", position: "relative" }}>
               <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 1.5, background: "var(--y)88" }} />
               <Mono s={{ fontSize: 14, color: "var(--y)", letterSpacing: 2, display: "block", marginBottom: 8 }}>OVERALL</Mono>
-              <div style={{ fontFamily: "'Bebas Neue'", fontSize: 56, color: "var(--y)", lineHeight: 1 }}>{meta.overallScore}</div>
+              <div style={{ fontFamily: "'Bebas Neue'", fontSize: 56, color: "var(--y)", lineHeight: 1 }}>{overallScore}</div>
               <Mono s={{ fontSize: 14, color: "var(--text3)" }}>/100</Mono>
             </div>
             <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: 20 }}>

@@ -399,8 +399,14 @@ export async function runSync(state, onStep, onUpdate) {
     const parsed = parseJSON(text);
     console.log("[SYNC] parseJSON meta:", parsed ? "OK" : "FAILED — raw text:", text?.slice(0, 200));
     if (parsed) {
-      metaFinal = parsed.overallScore ?? null;
-      onUpdate(s => ({ ...s, metaAnalysis: parsed, lastMetaDate: new Date().toISOString() }));
+      // Override Claude's overallScore with the true average of pillar scores
+      const pillarScoreValues = PILLARS.map(p => freshAnalyses[p.id]?.priorityScore).filter(Boolean);
+      const computedOverall = pillarScoreValues.length > 0
+        ? Math.round(pillarScoreValues.reduce((a, b) => a + b, 0) / pillarScoreValues.length)
+        : (parsed.overallScore ?? null);
+      const metaWithComputedScore = { ...parsed, overallScore: computedOverall };
+      metaFinal = computedOverall;
+      onUpdate(s => ({ ...s, metaAnalysis: metaWithComputedScore, lastMetaDate: new Date().toISOString() }));
       completed++;
     }
   } catch (e) {
