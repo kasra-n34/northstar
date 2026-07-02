@@ -338,17 +338,48 @@ function ScoreRevealStep({ scoreBreakdowns, metaPrev, metaFinal, onContinue }) {
   );
 }
 
+// ─── Draft persistence helpers ─────────────────────────────────────────────────
+
+const DRAFT_KEY = "northstar_checkin_draft";
+const RESTORABLE = new Set(["data-refresh", "interview", "results"]);
+
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY);
+    if (!raw) return null;
+    const d = JSON.parse(raw);
+    if (!d.answers || Object.keys(d.answers).length === 0) return null;
+    return d;
+  } catch { return null; }
+}
+
+function clearDraft() {
+  localStorage.removeItem(DRAFT_KEY);
+}
+
 // ─── Main view ────────────────────────────────────────────────────────────────
 
 export default function InterviewView({ state, onSaveLog, onAddPendingMissions, onUpdatePillarScores, onUpdatePillarAnswers, onRunSync, onSaveIntegrations, onDeleteMission, onDeleteRecurring, onUpdateMission, onUpdateRecurring }) {
   const { analyses = {}, weeklyLogs = [], lastInterviewDate } = state;
-  const [phase,            setPhase]            = useState("intro");
+
+  // Restore from draft on first mount
+  const initDraft = loadDraft();
+
+  const [phase,            setPhase]            = useState(initDraft && RESTORABLE.has(initDraft.phase) ? initDraft.phase : "intro");
   const [scoreRevealData,  setScoreRevealData]  = useState(null);
-  const [answers,          setAnswers]          = useState({});
-  const [currentQ,         setCurrentQ]         = useState(0);
-  const [result,           setResult]           = useState(null);
-  const [removalDecisions, setRemovalDecisions] = useState({}); // {missionId: 'accepted'|'declined'}
-  const [updateDecisions,  setUpdateDecisions]  = useState({}); // {missionId: 'accepted'|'declined'}
+  const [answers,          setAnswers]          = useState(initDraft?.answers || {});
+  const [currentQ,         setCurrentQ]         = useState(initDraft?.currentQ || 0);
+  const [result,           setResult]           = useState(initDraft?.result || null);
+  const [removalDecisions, setRemovalDecisions] = useState({});
+  const [updateDecisions,  setUpdateDecisions]  = useState({});
+  const [syncError,        setSyncError]        = useState(null);
+
+  // Save draft whenever relevant state changes
+  useEffect(() => {
+    if (RESTORABLE.has(phase)) {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ answers, currentQ, phase, result }));
+    }
+  }, [answers, currentQ, phase, result]);
 
   // Data refresh phase
   const [hevyStatus, setHevyStatus] = useState("idle"); // idle | uploading | done | error
@@ -377,7 +408,11 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
 
   const setAnswer = (key, val) => setAnswers(a => ({ ...a, [key]: val }));
   const goPrev    = () => setCurrentQ(q => Math.max(0, q - 1));
-  const reset = () => { setPhase("intro"); setAnswers({}); setCurrentQ(0); setResult(null); setRemovalDecisions({}); setUpdateDecisions({}); };
+  const reset = () => {
+    clearDraft();
+    setPhase("intro"); setAnswers({}); setCurrentQ(0); setResult(null);
+    setRemovalDecisions({}); setUpdateDecisions({}); setSyncError(null);
+  };
 
   // ── Data refresh upload handlers ──────────────────────────────────────────────
   const handleHevyUpload = useCallback((file) => {
@@ -559,10 +594,35 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       onUpdatePillarAnswers(pillar.id, { answers: { ...coreAnswers, ...statusAnswers }, extra: profile?.extra || "" });
     }
     setPhase("syncing");
-    onRunSync().then(data => {
-      setScoreRevealData(data || null);
-      setPhase("scoreReveal");
-    });
+    setSyncError(null);
+
+    const SYNC_TIMEOUT_MS = 3 * 60 * 1000;
+    let settled = false;
+
+    const timeoutId = setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        setSyncError("Sync timed out after 3 minutes. Your check-in answers are saved — press Retry to try again.");
+      }
+    }, SYNC_TIMEOUT_MS);
+
+    onRunSync()
+      .then(data => {
+        clearTimeout(timeoutId);
+        if (!settled) {
+          settled = true;
+          clearDraft();
+          setScoreRevealData(data || null);
+          setPhase("scoreReveal");
+        }
+      })
+      .catch(e => {
+        clearTimeout(timeoutId);
+        if (!settled) {
+          settled = true;
+          setSyncError("Sync failed: " + (e.message || "Unknown error. Press Retry to try again."));
+        }
+      });
   };
 
   return (
@@ -603,6 +663,39 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       {/* INTRO */}
       {canInterview && phase === "intro" && (
         <div style={{ maxWidth: 704, display: "flex", flexDirection: "column", gap: 20 }}>
+
+          {/* Continue draft banner */}
+          {(() => {
+            const draft = loadDraft();
+            if (!draft) return null;
+            const answeredCount = Object.keys(draft.answers || {}).length;
+            if (answeredCount === 0) return null;
+            const resumePhase = RESTORABLE.has(draft.phase) ? draft.phase : "interview";
+            const label = draft.phase === "results" ? "Results ready — finish syncing" : `${answeredCount} of ${questions.length} questions answered`;
+            return (
+              <div style={{ background: "var(--c)0D", border: "1px solid var(--c)55", padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 16, position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "var(--c)" }} />
+                <div>
+                  <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 2, display: "block", marginBottom: 4 }}>◎ CHECK-IN IN PROGRESS</Mono>
+                  <div style={{ fontSize: 13, color: "var(--text2)" }}>{label}</div>
+                </div>
+                <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
+                  <button
+                    onClick={() => { setPhase(resumePhase); setAnswers(draft.answers || {}); setCurrentQ(draft.currentQ || 0); if (draft.result) setResult(draft.result); }}
+                    style={{ background: "var(--c)", color: "#000", border: "none", padding: "9px 18px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1.5, fontWeight: 600, cursor: "pointer" }}
+                  >
+                    CONTINUE →
+                  </button>
+                  <button
+                    onClick={() => { clearDraft(); setAnswers({}); setCurrentQ(0); setResult(null); }}
+                    style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "9px 14px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
+                  >
+                    DISCARD
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Status card */}
           <div style={{ background: doneThisWeek ? "var(--g)0D" : todayIsSunday ? "var(--c)0D" : missedCheckin ? "var(--o)0D" : "var(--bg2)", border: `1px solid ${doneThisWeek ? "var(--g)44" : todayIsSunday ? "var(--c)44" : missedCheckin ? "var(--o)44" : "var(--border)"}`, padding: 20, position: "relative", overflow: "hidden" }}>
@@ -758,7 +851,7 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
 
             <div style={{ display: "flex", gap: 10, alignItems: "center", paddingTop: 8, borderTop: "1px solid var(--border)" }}>
               <button
-                onClick={() => { setPhase("interview"); setCurrentQ(0); setAnswers({}); }}
+                onClick={() => setPhase("interview")}
                 style={{ background: "var(--c)", color: "#000", border: "none", padding: "11px 26px", fontFamily: "'DM Mono',monospace", fontSize: 14, letterSpacing: 2, fontWeight: 600 }}
               >
                 CONTINUE TO CHECK-IN →
@@ -1051,9 +1144,35 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       {/* SYNCING */}
       {canInterview && phase === "syncing" && (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 0", gap: 20 }}>
-          <div style={{ width: 48, height: 48, border: "2px solid var(--c)22", borderTop: "2px solid var(--c)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-          <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 3 }}>RUNNING FULL SYNC...</Mono>
-          <div style={{ fontSize: 13, color: "var(--text3)", textAlign: "center", maxWidth: 400, lineHeight: 1.7 }}>northstar is re-analyzing all pillars with this week's data and generating new missions. This takes about 30–60 seconds.</div>
+          {!syncError ? (
+            <>
+              <div style={{ width: 48, height: 48, border: "2px solid var(--c)22", borderTop: "2px solid var(--c)", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 3 }}>RUNNING FULL SYNC...</Mono>
+              <div style={{ fontSize: 13, color: "var(--text3)", textAlign: "center", maxWidth: 400, lineHeight: 1.7 }}>northstar is re-analyzing all pillars with this week's data and generating new missions. This takes about 30–60 seconds.</div>
+            </>
+          ) : (
+            <>
+              <div style={{ width: 48, height: 48, border: "2px solid var(--r)33", borderTop: "2px solid var(--r)", borderRadius: "50%", opacity: 0.5 }} />
+              <div style={{ background: "var(--r)0D", border: "1px solid var(--r)44", padding: "14px 20px", maxWidth: 440, textAlign: "center" }}>
+                <Mono s={{ fontSize: 13, color: "var(--r)", letterSpacing: 2, display: "block", marginBottom: 8 }}>⚠ SYNC FAILED</Mono>
+                <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6 }}>{syncError}</div>
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button
+                  onClick={applyAndSync}
+                  style={{ background: "var(--c)", color: "#000", border: "none", padding: "11px 24px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 2, fontWeight: 600, cursor: "pointer" }}
+                >
+                  ↺ RETRY SYNC
+                </button>
+                <button
+                  onClick={() => setPhase("results")}
+                  style={{ background: "none", border: "1px solid var(--border)", color: "var(--text3)", padding: "11px 18px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1, cursor: "pointer" }}
+                >
+                  ← BACK TO RESULTS
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -1068,6 +1187,7 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
       )}
 
       {/* DONE */}
+      {canInterview && phase === "done" && (() => { clearDraft(); return null; })()}
       {canInterview && phase === "done" && (
         <div style={{ maxWidth: 660, display: "flex", flexDirection: "column", gap: 20 }}>
           <div style={{ background: "var(--g)0D", border: "1px solid var(--g)44", padding: 28, textAlign: "center" }}>

@@ -234,13 +234,20 @@ export default function App() {
   }), [upd]);
   const uncomplete = useCallback(id => upd(s => ({ ...s, completedMissions: (s.completedMissions || []).filter(x => x !== id) })), [upd]);
   const deleteMission = useCallback(id => upd(s => {
+    const wasCompleted = (s.completedMissions || []).includes(id);
+    const mission      = (s.missions || []).find(m => m.id === id);
     const missionCompletedAt = { ...(s.missionCompletedAt || {}) };
     delete missionCompletedAt[id];
+    // Only log deletions of active (non-completed) missions — completed ones don't get penalized
+    const deletedMissionLog = (!wasCompleted && mission)
+      ? [...(s.deletedMissionLog || []), { pillarId: mission.pillar, deletedAt: new Date().toISOString() }]
+      : (s.deletedMissionLog || []);
     return {
       ...s,
       missions: (s.missions || []).filter(m => m.id !== id),
       completedMissions: (s.completedMissions || []).filter(x => x !== id),
       missionCompletedAt,
+      deletedMissionLog,
     };
   }), [upd]);
 
@@ -307,9 +314,17 @@ export default function App() {
     return { ...s, pendingMissions: s.pendingMissions.filter(m => m.id !== id), recurringMissions: [...(s.recurringMissions || []), toAdd] };
   }), [upd]);
 
-  const deleteRecurring = useCallback(id => upd(s => ({
-    ...s, recurringMissions: (s.recurringMissions || []).filter(m => m.id !== id),
-  })), [upd]);
+  const deleteRecurring = useCallback(id => upd(s => {
+    const mission = (s.recurringMissions || []).find(m => m.id === id);
+    const deletedMissionLog = mission
+      ? [...(s.deletedMissionLog || []), { pillarId: mission.pillar, deletedAt: new Date().toISOString() }]
+      : (s.deletedMissionLog || []);
+    return {
+      ...s,
+      recurringMissions: (s.recurringMissions || []).filter(m => m.id !== id),
+      deletedMissionLog,
+    };
+  }), [upd]);
 
   const updateMission = useCallback((id, changes) => upd(s => ({
     ...s,
@@ -339,8 +354,6 @@ export default function App() {
   const saveLog = useCallback(log => {
     upd(s => {
       const pruned = pruneAndCompressLogs([...(s.weeklyLogs || []), log], s.retentionWeeks || 4);
-      // If this check-in was done on Monday (catch-up), reset recurring missions now
-      // since we held off on the reset during app load to preserve last week's data.
       const lastSunday = getLastSunday();
       const recurringMissions = isMonday()
         ? (s.recurringMissions || []).map(m => {
@@ -351,7 +364,10 @@ export default function App() {
             return m;
           })
         : s.recurringMissions;
-      return { ...s, weeklyLogs: pruned, lastInterviewDate: log.date, recurringMissions };
+      const next = { ...s, weeklyLogs: pruned, lastInterviewDate: log.date, recurringMissions };
+      // Update stateRef immediately so sync sees the new log in meta history context
+      stateRef.current = next;
+      return next;
     });
   }, [upd]);
 
@@ -359,19 +375,25 @@ export default function App() {
   const updatePillarAnswers = useCallback((pillarId, { answers, extra }) => {
     const pillar   = PILLARS.find(p => p.id === pillarId);
     const coreKeys = new Set((pillar?.questions || []).filter(q => q.core).map(q => q.key));
+    const filteredAnswers = Object.fromEntries(
+      Object.entries(answers || {}).filter(([k]) => !coreKeys.has(k))
+    );
+    const updatedProfile = {
+      ...(stateRef.current.profiles[pillarId] || {}),
+      answers: {
+        ...(stateRef.current.profiles[pillarId]?.answers || {}),
+        ...filteredAnswers,
+      },
+      extra: extra ?? stateRef.current.profiles[pillarId]?.extra ?? "",
+    };
+    // Update stateRef immediately so runSync sees the new answers even before React re-renders
+    stateRef.current = {
+      ...stateRef.current,
+      profiles: { ...stateRef.current.profiles, [pillarId]: updatedProfile },
+    };
     upd(s => ({
       ...s,
-      profiles: {
-        ...s.profiles,
-        [pillarId]: {
-          ...(s.profiles[pillarId] || {}),
-          answers: {
-            ...(s.profiles[pillarId]?.answers || {}),
-            ...Object.fromEntries(Object.entries(answers || {}).filter(([k]) => !coreKeys.has(k))),
-          },
-          extra: extra ?? s.profiles[pillarId]?.extra ?? "",
-        },
-      },
+      profiles: { ...s.profiles, [pillarId]: updatedProfile },
     }));
   }, [upd]);
 

@@ -100,7 +100,7 @@ function buildMetaHistoryCtx(weeklyLogs = [], limit = 4) {
 // ── Algorithmic score computation ─────────────────────────────────────────────
 // Computes a deterministic score delta from mission performance for a pillar.
 // Returns null on the first sync (no history) — Claude scores freely that time.
-export function computeAlgorithmicScore(pillarId, prevScore, missions, completedMissions, missionCompletedAt, recurringMissions) {
+export function computeAlgorithmicScore(pillarId, prevScore, missions, completedMissions, missionCompletedAt, recurringMissions, deletedMissionLog = []) {
   if (prevScore == null) return null;
 
   const ONE_WEEK_AGO = Date.now() - 7 * 24 * 60 * 60 * 1000;
@@ -109,7 +109,8 @@ export function computeAlgorithmicScore(pillarId, prevScore, missions, completed
   const overdueMissions = [];
 
   // Recurring habits (progress resets weekly — progressCount reflects this week)
-  for (const m of (recurringMissions || []).filter(m => m.pillar === pillarId)) {
+  const recurringForPillar = (recurringMissions || []).filter(m => m.pillar === pillarId);
+  for (const m of recurringForPillar) {
     const pct = Math.min(1, (m.progressCount || 0) / Math.max(1, m.targetCount || 1));
     if      (pct >= 1.00) delta += 3;
     else if (pct >= 0.75) delta += 2;
@@ -119,7 +120,8 @@ export function computeAlgorithmicScore(pillarId, prevScore, missions, completed
   }
 
   // One-off missions
-  for (const m of (missions || []).filter(m => m.pillar === pillarId)) {
+  const activeForPillar = (missions || []).filter(m => m.pillar === pillarId);
+  for (const m of activeForPillar) {
     const isCompleted     = (completedMissions || []).includes(m.id);
     const completedThisWk = isCompleted && missionCompletedAt?.[m.id] && new Date(missionCompletedAt[m.id]).getTime() > ONE_WEEK_AGO;
     const isOverdue       = !isCompleted && m.deadlineDate && new Date(m.deadlineDate).getTime() < now;
@@ -144,9 +146,26 @@ export function computeAlgorithmicScore(pillarId, prevScore, missions, completed
     }
   }
 
-  // Cap total swing per sync cycle
-  delta = Math.max(-10, Math.min(10, delta));
-  return { baseScore: Math.max(1, Math.min(100, prevScore + delta)), delta, prevScore, overdueMissions };
+  // ── Penalty: deleted active missions this week ─────────────────────────────
+  // Discourages gaming the score by deleting goals you're failing.
+  const recentDeletions = (deletedMissionLog || []).filter(
+    d => d.pillarId === pillarId && new Date(d.deletedAt).getTime() > ONE_WEEK_AGO
+  );
+  const deletionPenalty = recentDeletions.length > 0
+    ? Math.min(4, recentDeletions.length * 2)
+    : 0;
+  delta -= deletionPenalty;
+
+  // ── Penalty: no or minimal active goals ───────────────────────────────────
+  // A pillar with nothing being tracked will slowly drift down rather than freeze.
+  const totalGoals = recurringForPillar.length +
+    activeForPillar.filter(m => !(completedMissions || []).includes(m.id)).length;
+  const noGoalsPenalty = totalGoals === 0 ? 3 : totalGoals === 1 ? 1 : 0;
+  delta -= noGoalsPenalty;
+
+  // Cap total swing per sync cycle (extended lower bound for stricter penalties)
+  delta = Math.max(-12, Math.min(10, delta));
+  return { baseScore: Math.max(1, Math.min(100, prevScore + delta)), delta, prevScore, overdueMissions, deletionPenalty, noGoalsPenalty };
 }
 
 export async function runSync(state, onStep, onUpdate) {
@@ -272,12 +291,15 @@ export async function runSync(state, onStep, onUpdate) {
     const scoreInfo = computeAlgorithmicScore(
       pillar.id,
       analyses[pillar.id]?.priorityScore,
-      missions, completedMissions, missionCompletedAt, recurringMissions
+      missions, completedMissions, missionCompletedAt, recurringMissions,
+      state.deletedMissionLog
     );
     const scoringFactors = scoreInfo ? [
       "recurring habit completion",
       "task completions",
       ...(scoreInfo.overdueMissions.length > 0 ? [`overdue tasks (${scoreInfo.overdueMissions.join(", ")})`] : []),
+      ...(scoreInfo.deletionPenalty ? [`-${scoreInfo.deletionPenalty} pts for deleting active goals this week`] : []),
+      ...(scoreInfo.noGoalsPenalty  ? [`-${scoreInfo.noGoalsPenalty} pts for having no/minimal active goals`]  : []),
     ].join(", ") : "";
     const scoringCtx = scoreInfo
       ? `SCORING BASELINE: Previous score ${scoreInfo.prevScore}/100. Mission-based delta this week: ${scoreInfo.delta > 0 ? "+" : ""}${scoreInfo.delta} pts (${scoringFactors}). Computed base score: ${scoreInfo.baseScore}/100. You MUST set priorityScore within [${Math.max(1, scoreInfo.baseScore - 6)}, ${Math.min(100, scoreInfo.baseScore + 6)}] — your only freedom is a ±6 qualitative adjustment on top of the computed base.${scoreInfo.overdueMissions.length === 0 ? " There are currently no overdue missions." : ""}`

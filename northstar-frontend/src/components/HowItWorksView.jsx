@@ -192,8 +192,22 @@ export default function HowItWorksView({ state }) {
                 </div>
               </div>
 
+              <div style={{ marginTop: 16 }}>
+                <Mono s={{ fontSize: 14, color: "var(--r)", letterSpacing: 1.5, display: "block", marginBottom: 8 }}>PENALTIES</Mono>
+                {[
+                  { label: "Deleted an active (incomplete) mission this week", pts: "−2 each, max −4", color: "var(--r)" },
+                  { label: "Pillar has zero active or recurring goals",        pts: "−3",              color: "var(--r)" },
+                  { label: "Pillar has only one active or recurring goal",     pts: "−1",              color: "var(--o)" },
+                ].map(r => (
+                  <div key={r.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "5px 0", borderBottom: "1px solid var(--border)", gap: 8 }}>
+                    <div style={{ fontSize: 13, color: "var(--text2)" }}>{r.label}</div>
+                    <Mono s={{ fontSize: 13, color: r.color, fontWeight: 600, flexShrink: 0 }}>{r.pts}</Mono>
+                  </div>
+                ))}
+              </div>
+
               <div style={{ marginTop: 14, padding: "10px 12px", background: "var(--bg3)", border: "1px solid var(--border)" }}>
-                <div style={{ fontSize: 14, color: "var(--text2)" }}>Total algorithmic delta is <strong style={{ color: "var(--text)" }}>capped at ±10 per sync</strong> regardless of mission count.</div>
+                <div style={{ fontSize: 14, color: "var(--text2)" }}>Total algorithmic delta is <strong style={{ color: "var(--text)" }}>capped at −12 to +10 per sync</strong>. Deleting goals you're failing does not help your score.</div>
               </div>
             </div>
 
@@ -201,13 +215,13 @@ export default function HowItWorksView({ state }) {
               <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 2, display: "block", marginBottom: 10 }}>SCORING FORMULA PER SYNC</Mono>
               <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
                 {[
-                  { label: "Previous score",             color: "var(--c)" },
-                  { label: "+",                          color: "var(--text3)" },
-                  { label: "Mission delta (−10 to +10)", color: "var(--y)" },
-                  { label: "+",                          color: "var(--text3)" },
-                  { label: "AI qualitative (±6)",        color: "var(--p)" },
-                  { label: "=",                          color: "var(--text3)" },
-                  { label: "New score",                  color: "var(--g)" },
+                  { label: "Previous score",              color: "var(--c)" },
+                  { label: "+",                           color: "var(--text3)" },
+                  { label: "Mission delta (−12 to +10)", color: "var(--y)" },
+                  { label: "+",                           color: "var(--text3)" },
+                  { label: "AI qualitative (±6)",         color: "var(--p)" },
+                  { label: "=",                           color: "var(--text3)" },
+                  { label: "New score",                   color: "var(--g)" },
                 ].map((part, i) => (
                   <div key={i} style={{ background: part.color === "var(--text3)" ? "transparent" : part.color + "15", border: part.color === "var(--text3)" ? "none" : `1px solid ${part.color}44`, padding: part.color === "var(--text3)" ? "0" : "5px 10px" }}>
                     <Mono s={{ fontSize: part.color === "var(--text3)" ? 14 : 10, color: part.color, fontWeight: 600 }}>{part.label}</Mono>
@@ -228,7 +242,7 @@ export default function HowItWorksView({ state }) {
             <P>Every Sunday, a structured 4-step ritual keeps everything current. The dashboard shows a live countdown and a "Begin →" button on Sundays.</P>
 
             <Step n="1" color="var(--c)" title="Data Refresh" desc="Upload fresh data — Hevy workout CSV and/or Instagram Connections ZIP. Both optional. Each card shows when data was last uploaded." />
-            <Step n="2" color="var(--c)" title="Weekly Check-In" desc="Answer current-status questions for each active pillar — how training went, career developments, who you connected with, your dating and social life — plus an opening rating and a closing commitment for next week. The following Sunday you're asked how that commitment went." />
+            <Step n="2" color="var(--c)" title="Weekly Check-In" desc="Answer current-status questions for each active pillar — how training went, career developments, who you connected with, your dating and social life — plus an opening rating and a closing commitment for next week. The following Sunday you're asked how that commitment went. Your progress is saved automatically as you go — if you switch tabs or close the app mid-check-in, a 'Continue Your Check-In' banner will appear on the intro screen so you can pick up where you left off." />
             <Step n="3" color="var(--c)" title="NORTHSTAR Analyzes Your Week" desc="Your answers, recent log history, pillar scores, and mission progress are sent to Claude. It returns a progress summary, pillar score adjustments, 2 urgent new missions, a per-pillar digest for long-term memory, and a closing insight." />
             <Step n="4" color="var(--c)" title="Save & Auto-Sync" desc="Your check-in answers are saved directly to your pillar profiles. NORTHSTAR then re-analyzes every pillar with fresh data and generates new missions per pillar — how many depends on how full your queue already is (see dynamic mission cap above). You see a 'Week Locked In' screen when complete." />
 

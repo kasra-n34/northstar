@@ -66,6 +66,7 @@ export const EMPTY_STATE = {
   pendingMissions:   [],
   completedMissions: [],
   missionCompletedAt: {}, // { [missionId]: ISO string } — timestamp when each mission was marked done
+  deletedMissionLog:  [], // [{ pillarId, deletedAt }] — non-completed missions deleted, for scoring
   metaAnalysis:      null,
   lastMetaDate:      null,
   networkContacts:   [],
