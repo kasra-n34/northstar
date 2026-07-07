@@ -70,11 +70,13 @@ function StepFirstSteps() {
       title: "Add your Anthropic API key in Settings",
       desc: (
         <>
-          Open <strong style={{ color: "var(--text)" }}>Settings</strong> and paste your{" "}
-          <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{ color: "var(--c)", textDecoration: "none", borderBottom: "1px solid var(--c)55" }}>
-            Anthropic API key
-          </a>{" "}
-          — this is required for all AI features. Anthropic requires a minimum $5 credit top-up to activate API access. In practice, a weekly sync costs a few cents, so $5 lasts a long time.
+          All AI features (analysis, scoring, missions) require a Claude API key. Here's how to get one:
+          <ol style={{ margin: "10px 0 0 0", paddingLeft: 18, lineHeight: 2 }}>
+            <li>Go to <a href="https://console.anthropic.com" target="_blank" rel="noreferrer" style={{ color: "var(--c)" }}>console.anthropic.com</a> and create a free account (or log in).</li>
+            <li>In the console, go to <strong style={{ color: "var(--text)" }}>Billing</strong> and add at least $5 in credits — required by Anthropic to activate API access. A weekly sync costs a few cents, so $5 lasts a long time.</li>
+            <li>Go to <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{ color: "var(--c)" }}>Settings → API Keys</a>, click <strong style={{ color: "var(--text)" }}>Create Key</strong>, and copy it.</li>
+            <li>Open <strong style={{ color: "var(--text)" }}>Settings</strong> in Northstar, paste the key, and hit Save.</li>
+          </ol>
         </>
       ),
     },

@@ -104,14 +104,32 @@ function ApiKeysSettings() {
       )}
       <KeyRow
         label="ANTHROPIC API KEY"
-        hint="Required for all AI features. Anthropic requires a minimum $5 credit top-up to activate API access — a weekly sync costs a few cents, so it lasts a long time. Get yours at"
-        hintUrl="https://console.anthropic.com"
+        hint="Required for all AI features. Paste your key below and click SAVE."
+        hintUrl={null}
         value={anthropicVal}
         onChange={setAnthropicVal}
         onSave={() => saveKey("anthropicKey", anthropicVal)}
         status={status.hasAnthropicKey ? "set" : "unset"}
         saving={saving === "anthropicKey"}
       />
+      {!status.hasAnthropicKey && (
+        <div style={{ background: "var(--bg2)", border: "1px solid var(--border)", padding: "14px 16px", marginBottom: 8 }}>
+          <Mono s={{ fontSize: 14, color: "var(--text3)", letterSpacing: 1.5, display: "block", marginBottom: 12 }}>HOW TO GET YOUR API KEY</Mono>
+          {[
+            { n: "1", text: <>Go to <a href="https://console.anthropic.com" target="_blank" rel="noreferrer" style={{ color: "var(--c)" }}>console.anthropic.com</a> and create a free account (or log in).</> },
+            { n: "2", text: <>In the console, go to <strong style={{ color: "var(--text)" }}>Billing</strong> and add at least $5 in credits — this is required by Anthropic to activate API access. A weekly sync costs a few cents, so $5 lasts a long time.</> },
+            { n: "3", text: <>Go to <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noreferrer" style={{ color: "var(--c)" }}>Settings → API Keys</a>, click <strong style={{ color: "var(--text)" }}>Create Key</strong>, copy it.</> },
+            { n: "4", text: "Paste the key into the field above and click SAVE." },
+          ].map(s => (
+            <div key={s.n} style={{ display: "flex", gap: 12, marginBottom: 10, alignItems: "flex-start" }}>
+              <div style={{ width: 20, height: 20, borderRadius: "50%", background: "var(--c)18", border: "1px solid var(--c)44", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <Mono s={{ fontSize: 13, color: "var(--c)", fontWeight: 600 }}>{s.n}</Mono>
+              </div>
+              <div style={{ fontSize: 13, color: "var(--text2)", lineHeight: 1.6, paddingTop: 1 }}>{s.text}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
