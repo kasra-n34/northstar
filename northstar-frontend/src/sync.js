@@ -5,7 +5,7 @@ import { buildWorkoutContext, buildInstagramContext, buildInstagramSnapshotConte
 
 
 // Gap between API calls in ms — stays well under rate limits
-const CALL_GAP_MS = 3500;
+const CALL_GAP_MS = 1500;
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
@@ -168,7 +168,7 @@ export function computeAlgorithmicScore(pillarId, prevScore, missions, completed
   return { baseScore: Math.max(1, Math.min(100, prevScore + delta)), delta, prevScore, overdueMissions, deletionPenalty, noGoalsPenalty };
 }
 
-export async function runSync(state, onStep, onUpdate) {
+export async function runSync(state, onStep, onUpdate, onStepError = null) {
   console.log("[SYNC] runSync entered");
   const {
     profiles, analyses, userProfile = {}, weeklyLogs = [], integrations = {},
@@ -386,6 +386,7 @@ export async function runSync(state, onStep, onUpdate) {
     } catch (e) {
       console.error(`[SYNC] ${pillar.label} failed:`, e);
       errors.push(`${pillar.label}: ${e.message}`);
+      if (onStepError) onStepError(pillar.id, e.message);
     }
 
     if (stepIdx < totalSteps) await sleep(CALL_GAP_MS);
@@ -434,6 +435,7 @@ export async function runSync(state, onStep, onUpdate) {
   } catch (e) {
     console.error("[SYNC] meta failed:", e);
     errors.push(`Meta: ${e.message}`);
+    if (onStepError) onStepError('meta', e.message);
   }
 
   console.log(`[SYNC] runSync complete — completed: ${completed}, errors:`, errors);

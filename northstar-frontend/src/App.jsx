@@ -14,6 +14,7 @@ import PillarView       from "./components/PillarView";
 import NetworkView      from "./components/NetworkView";
 import MissionsView     from "./components/MissionsView";
 import InterviewView    from "./components/InterviewView";
+import JobHuntView      from "./components/JobHuntView";
 import MetaView         from "./components/MetaView";
 import IntegrationsView from "./components/IntegrationsView";
 import HowItWorksView   from "./components/HowItWorksView";
@@ -50,22 +51,16 @@ function BackendStatus() {
 
 // ─── Sync status bar (top nav right side) ─────────────────────────────────────
 
-function SyncBar({ syncing, syncStep, syncProgress, lastSyncDate, onSync, canSync }) {
+function SyncBar({ syncing, lastSyncDate, onSync, canSync }) {
   const lastStr = lastSyncDate
     ? new Date(lastSyncDate).toLocaleDateString("en-CA", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })
     : null;
 
   if (syncing) {
-    const pct = syncProgress ? Math.round((syncProgress.current / syncProgress.total) * 100) : 0;
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <Spinner color="var(--c)" size={13} />
-        <div>
-          <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1, display: "block" }}>{syncStep}</Mono>
-          <div style={{ width: 120, height: 2, background: "var(--border)", marginTop: 3 }}>
-            <div style={{ height: "100%", width: `${pct}%`, background: "var(--c)", transition: "width 0.4s ease" }} />
-          </div>
-        </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <Spinner color="var(--c)" size={12} />
+        <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1 }}>SYNCING...</Mono>
       </div>
     );
   }
@@ -94,6 +89,88 @@ function SyncBar({ syncing, syncStep, syncProgress, lastSyncDate, onSync, canSyn
   );
 }
 
+// ─── Sync progress overlay ────────────────────────────────────────────────────
+
+function SyncOverlay({ steps, syncing, elapsed, onDismiss }) {
+  if (!steps.length) return null;
+  const hasErrors = steps.some(s => s.status === "error");
+  const allDone   = !syncing;
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", zIndex: 1500, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+      <div style={{ background: "var(--bg1)", border: `1px solid ${hasErrors && allDone ? "var(--r)55" : "var(--c)44"}`, width: "100%", maxWidth: 480, overflow: "hidden" }}>
+        {/* Header */}
+        <div style={{ height: 2, background: hasErrors && allDone ? "var(--r)" : "linear-gradient(90deg,var(--c),var(--p),transparent)" }} />
+        <div style={{ padding: "18px 22px 14px", borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            {syncing ? <Spinner color="var(--c)" size={13} /> : (
+              hasErrors
+                ? <span style={{ color: "var(--r)", fontSize: 15 }}>✕</span>
+                : <span style={{ color: "var(--g)", fontSize: 15 }}>✓</span>
+            )}
+            <Mono s={{ fontSize: 14, color: syncing ? "var(--c)" : hasErrors ? "var(--r)" : "var(--g)", letterSpacing: 2 }}>
+              {syncing ? "SYNCING NORTHSTAR" : hasErrors ? "SYNC COMPLETED WITH ERRORS" : "SYNC COMPLETE"}
+            </Mono>
+          </div>
+          <Mono s={{ fontSize: 13, color: "var(--text3)" }}>{elapsed}s</Mono>
+        </div>
+
+        {/* Step list */}
+        <div style={{ padding: "14px 22px" }}>
+          {steps.map((step, i) => {
+            const isRunning = step.status === "running";
+            const isDone    = step.status === "done";
+            const isError   = step.status === "error";
+            const isPending = step.status === "pending";
+            const iconColor = isRunning ? "var(--c)" : isDone ? "var(--g)" : isError ? "var(--r)" : "var(--border2)";
+            return (
+              <div key={step.id} style={{ marginBottom: i < steps.length - 1 ? 12 : 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <div style={{ width: 22, height: 22, borderRadius: "50%", background: iconColor + "18", border: `1px solid ${iconColor}66`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    {isRunning && <Spinner color="var(--c)" size={10} />}
+                    {isDone    && <span style={{ color: "var(--g)", fontSize: 12, lineHeight: 1 }}>✓</span>}
+                    {isError   && <span style={{ color: "var(--r)", fontSize: 12, lineHeight: 1 }}>✕</span>}
+                    {isPending && <span style={{ color: "var(--border2)", fontSize: 10 }}>·</span>}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <Mono s={{ fontSize: 13, color: isPending ? "var(--text3)" : isError ? "var(--r)" : isRunning ? "var(--c)" : "var(--text)", letterSpacing: 1 }}>
+                      {step.icon} {step.label}
+                    </Mono>
+                    {isRunning && (
+                      <div style={{ fontSize: 12, color: "var(--text3)", marginTop: 2 }}>Calling Claude API...</div>
+                    )}
+                  </div>
+                  <Mono s={{ fontSize: 12, color: isPending ? "var(--border2)" : isRunning ? "var(--c)" : isDone ? "var(--g)" : "var(--r)" }}>
+                    {isPending ? "WAITING" : isRunning ? "IN PROGRESS" : isDone ? "DONE" : "FAILED"}
+                  </Mono>
+                </div>
+                {isError && step.error && (
+                  <div style={{ marginLeft: 34, marginTop: 6, background: "var(--r)0D", border: "1px solid var(--r)33", padding: "8px 12px" }}>
+                    <Mono s={{ fontSize: 12, color: "var(--r)", letterSpacing: 0.5 }}>ERROR</Mono>
+                    <div style={{ fontSize: 13, color: "var(--text2)", marginTop: 3, lineHeight: 1.5, wordBreak: "break-word" }}>{step.error}</div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        {allDone && (
+          <div style={{ padding: "12px 22px", borderTop: "1px solid var(--border)", display: "flex", justifyContent: "flex-end" }}>
+            <button
+              onClick={onDismiss}
+              style={{ background: hasErrors ? "none" : "var(--c)", color: hasErrors ? "var(--text2)" : "#000", border: hasErrors ? "1px solid var(--border)" : "none", padding: "7px 18px", fontFamily: "'DM Mono',monospace", fontSize: 13, letterSpacing: 1.5, fontWeight: 600, cursor: "pointer" }}
+            >
+              {hasErrors ? "DISMISS" : "DONE →"}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ─── Root App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -104,12 +181,14 @@ export default function App() {
   // Sync state
   const [showOnboarding, setShowOnboarding] = useState(shouldShowOnboarding);
 
-  const [syncing,      setSyncing]      = useState(false);
-  const [syncStep,     setSyncStep]     = useState("");
-  const [syncProgress, setSyncProgress] = useState(null);
-  const [lastSyncDate, setLastSyncDate] = useState(null);
-  const [syncErrors,   setSyncErrors]   = useState([]);
-  const [syncConfirm,  setSyncConfirm]  = useState(false); // manual override confirm
+  const [syncing,       setSyncing]       = useState(false);
+  const [syncSteps,     setSyncSteps]     = useState([]); // { id, label, icon, status, error }
+  const [showSyncPanel, setShowSyncPanel] = useState(false);
+  const [syncElapsed,   setSyncElapsed]   = useState(0);
+  const [lastSyncDate,  setLastSyncDate]  = useState(null);
+  const [syncErrors,    setSyncErrors]    = useState([]);
+  const [syncConfirm,   setSyncConfirm]   = useState(false);
+  const syncElapsedRef  = useRef(null);
   const stateRef = useRef(state); // keep a ref so runSync sees current state
   const syncingRef = useRef(false); // stable guard — avoids stale closure in runSyncFlow
 
@@ -148,25 +227,52 @@ export default function App() {
   const runSyncFlow = useCallback(async () => {
     if (syncingRef.current) return;
     syncingRef.current = true;
+
+    // Build the step list from whichever pillars have profiles
+    const pillarSteps = PILLARS.filter(p => stateRef.current.profiles?.[p.id]);
+    const initialSteps = [
+      ...pillarSteps.map(p => ({ id: p.id, label: p.label, icon: p.icon, status: "pending", error: null })),
+      { id: "meta", label: "META-ANALYSIS", icon: "⬡", status: "pending", error: null },
+    ];
+    setSyncSteps(initialSteps);
+    setSyncElapsed(0);
+    setShowSyncPanel(true);
     setSyncing(true);
     setSyncErrors([]);
-    setSyncStep("Starting...");
+
+    // Elapsed time ticker
+    const startTime = Date.now();
+    syncElapsedRef.current = setInterval(() => {
+      setSyncElapsed(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
 
     const { completed, errors, scoreBreakdowns, metaPrev, metaFinal } = await runSync(
       stateRef.current,
       (label, current, total) => {
-        setSyncStep(label);
-        setSyncProgress({ current, total });
+        // Mark previous step done, current step running
+        setSyncSteps(prev => prev.map((s, i) => {
+          if (i === current - 1) return { ...s, status: "running" };
+          if (i < current - 1 && s.status === "pending") return { ...s, status: "done" };
+          return s;
+        }));
       },
       (updaterFn) => {
         setState(prev => updaterFn(prev));
+      },
+      (stepId, errorMsg) => {
+        setSyncSteps(prev => prev.map(s =>
+          s.id === stepId ? { ...s, status: "error", error: errorMsg } : s
+        ));
       }
     );
 
+    // Clear elapsed ticker, mark all non-error steps done
+    clearInterval(syncElapsedRef.current);
+    setSyncSteps(prev => prev.map(s =>
+      (s.status === "running" || s.status === "pending") ? { ...s, status: "done" } : s
+    ));
     syncingRef.current = false;
     setSyncing(false);
-    setSyncStep("");
-    setSyncProgress(null);
     setSyncErrors(errors);
     if (completed > 0) setLastSyncDate(new Date().toISOString());
     return { scoreBreakdowns, metaPrev, metaFinal };
@@ -349,6 +455,7 @@ export default function App() {
   const saveSuggestions  = useCallback(sg => upd(s => ({ ...s, networkSuggestions: sg })), [upd]);
   const saveIntegrations = useCallback(ig => upd(s => ({ ...s, integrations: ig })), [upd]);
   const saveDraft        = useCallback((id, d) => upd(s => ({ ...s, drafts: { ...(s.drafts || {}), [id]: d } })), [upd]);
+  const saveJobHunt       = useCallback(jh => upd(s => ({ ...s, jobHunt: jh })), [upd]);
 
   // ── Weekly interview ──────────────────────────────────────────────────────────
   const saveLog = useCallback(log => {
@@ -470,6 +577,7 @@ export default function App() {
     if (tab === "network")      return <NetworkView      state={state} onSaveContacts={saveContacts} onSaveSuggestions={saveSuggestions} analyses={state.analyses} />;
     if (tab === "missions")     return <MissionsView     state={state} onAccept={acceptMission} onAcceptRecurring={acceptRecurring} onDecline={declineMission} onComplete={complete} onUncomplete={uncomplete} onDelete={deleteMission} onDeleteRecurring={deleteRecurring} onEditRecurring={editRecurring} onAddRecurring={addRecurring} onIncrementProgress={incrementProgress} onToggleSubtask={toggleSubtask} />;
     if (tab === "interview")    return <InterviewView    state={state} onSaveLog={saveLog} onAddPendingMissions={addPendingMissions} onUpdatePillarScores={updatePillarScores} onUpdatePillarAnswers={updatePillarAnswers} onRunSync={runSyncFlow} onSaveIntegrations={saveIntegrations} onDeleteMission={deleteMission} onDeleteRecurring={deleteRecurring} onUpdateMission={updateMission} onUpdateRecurring={editRecurring} />;
+    if (tab === "jobhunt")      return <JobHuntView      state={state} onSave={saveJobHunt} />;
     if (tab === "meta")         return <MetaView         state={state} />;
     if (tab === "integrations") return <IntegrationsView state={state} onSave={saveIntegrations} />;
     if (tab === "guide")        return <HowItWorksView   state={state} />;
@@ -493,19 +601,15 @@ export default function App() {
               {new Date().toLocaleTimeString("en-CA", { hour: "2-digit", minute: "2-digit" })} · TORONTO, ON
             </Mono>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              {/* Sync error indicator */}
-              {syncErrors.length > 0 && !syncing && (
-                <Mono s={{ fontSize: 13, color: "var(--r)" }} title={syncErrors.join(", ")}>
-                  ⚠ {syncErrors.length} error{syncErrors.length > 1 ? "s" : ""} in last sync
-                </Mono>
-              )}
+              {/* TEST BUTTON — remove before release */}
+              <button onClick={runSyncFlow} disabled={syncing} style={{ background: "var(--r)", color: "#fff", border: "none", padding: "4px 12px", fontFamily: "'DM Mono',monospace", fontSize: 12, letterSpacing: 1, cursor: syncing ? "not-allowed" : "pointer", opacity: syncing ? 0.5 : 1 }}>
+                TEST SYNC
+              </button>
               <Mono s={{ fontSize: 13, color: "var(--text3)" }}>
                 {stateLoaded ? "SYNCED · LOCAL" : "LOADING..."}
               </Mono>
               <SyncBar
                 syncing={syncing}
-                syncStep={syncStep}
-                syncProgress={syncProgress}
                 lastSyncDate={lastSyncDate}
                 onSync={handleSyncManual}
                 canSync={canSync}
@@ -528,20 +632,14 @@ export default function App() {
             </div>
           )}
 
-          {/* Sync progress banner (full-width, shown during sync) */}
-          {syncing && (
-            <div style={{ background: "var(--c)0D", borderBottom: "1px solid var(--c)33", padding: "8px 26px", display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
-              <Spinner color="var(--c)" size={12} />
-              <Mono s={{ fontSize: 13, color: "var(--c)", letterSpacing: 1 }}>{syncStep}...</Mono>
-              {syncProgress && (
-                <Mono s={{ fontSize: 13, color: "var(--text3)" }}>
-                  step {syncProgress.current} of {syncProgress.total}
-                </Mono>
-              )}
-              <Mono s={{ fontSize: 13, color: "var(--text3)", marginLeft: "auto" }}>
-                ~{syncProgress ? (syncProgress.total - syncProgress.current) * 4 : "?"}s remaining
-              </Mono>
-            </div>
+          {/* Sync progress overlay */}
+          {showSyncPanel && (
+            <SyncOverlay
+              steps={syncSteps}
+              syncing={syncing}
+              elapsed={syncElapsed}
+              onDismiss={() => setShowSyncPanel(false)}
+            />
           )}
 
           <div style={{ flex: 1, overflowY: "auto", padding: "34px 38px 80px" }}>

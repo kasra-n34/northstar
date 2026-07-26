@@ -24,10 +24,10 @@ export async function apiFetch(path, options = {}) {
 
 // ─── Claude call ──────────────────────────────────────────────────────────────
 
-export async function callClaude(messages, system, useSearch = false) {
+export async function callClaude(messages, system, useSearch = false, model = "claude-sonnet-4-5", maxTokens = 2200) {
   const body = {
-    model: "claude-sonnet-4-5",
-    max_tokens: 2200,
+    model,
+    max_tokens: maxTokens,
     system,
     messages,
   };
@@ -44,7 +44,8 @@ export async function callClaude(messages, system, useSearch = false) {
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `Backend error ${res.status}`);
+    const message = typeof err.error === "string" ? err.error : err.error?.message;
+    throw new Error(message || `Backend error ${res.status}`);
   }
 
   const data = await res.json();

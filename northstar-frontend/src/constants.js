@@ -76,6 +76,12 @@ export const EMPTY_STATE = {
   weeklyLogs:        [],
   lastInterviewDate: null,
   retentionWeeks:    4,
+  jobHunt: {
+    masterResume:       "",
+    genericCoverLetter: "",
+    applications:       [],
+    companyResearch:    [], // saved per-company research docs — reused if <6mo old, searchable in its own sub-tab
+  },
 };
 
 export const NAV = [
@@ -87,6 +93,7 @@ export const NAV = [
   { id: "social",       label: "SOCIAL",          icon: "✦" },
   { id: "missions",     label: "MISSIONS",        icon: "◉" },
   { id: "interview",    label: "WEEKLY CHECK-IN", icon: "⟳" },
+  { id: "jobhunt",      label: "JOB HUNT",        icon: "✎" },
   { id: "meta",         label: "META",            icon: "⬡" },
   { id: "integrations", label: "CONNECT",         icon: "⊕" },
   { id: "guide",        label: "HOW IT WORKS",    icon: "?" },

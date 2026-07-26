@@ -12,6 +12,13 @@ northstar-frontend/dist/
 # Personal data
 northstar-backend/data/
 
+# Local-only features not meant for the shared repo (see components/JobHuntView.jsx loader)
+**/*.local.jsx
+**/*.local.js
+
+# BusyTeX WASM engine + package data (regenerable via: npx texlyre-busytex download-assets public)
+northstar-frontend/public/busytex/
+
 # macOS
 .DS_Store
 **/.DS_Store

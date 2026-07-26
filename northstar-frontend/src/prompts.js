@@ -65,7 +65,6 @@ export const WORKOUT_OPTIMIZER_SYS = `You are NORTHSTAR Workout Optimizer. Analy
 recommendations: exactly 5-8 items, sorted high → low priority. Every detail field MUST cite specific numbers from the data (weights, sets, reps, session counts, trends). Do not give generic advice.
 physicalComparison: use BODY STATS if provided. Use Canadian/US population norms from health surveys (CHMS, NHANES) and published strength standards (e.g. Wilks, NSCA, ExRx.net percentile tables). For strength, compare key compound lifts relative to bodyweight to population percentile estimates. Rating scale: elite = top 5%, advanced = top 20%, intermediate = top 50%, novice = bottom 30%, beginner = bottom 10% for their demographic. percentileApprox is an integer estimate 1-99.`;
 
-
 // ─── Sunday scheduling helpers ────────────────────────────────────────────────
 
 // Returns the date of the most recent past Sunday (or today if Sunday)

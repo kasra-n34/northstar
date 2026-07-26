@@ -596,7 +596,7 @@ export default function InterviewView({ state, onSaveLog, onAddPendingMissions, 
     setPhase("syncing");
     setSyncError(null);
 
-    const SYNC_TIMEOUT_MS = 3 * 60 * 1000;
+    const SYNC_TIMEOUT_MS = 6 * 60 * 1000;
     let settled = false;
 
     const timeoutId = setTimeout(() => {

@@ -150,9 +150,9 @@ app.post("/api/claude", async (req, res) => {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     const controller = new AbortController();
     const timeout = setTimeout(() => {
-      console.warn("⏱️ Claude request timeout (120s)");
+      console.warn("⏱️ Claude request timeout (180s)");
       controller.abort();
-    }, 120_000);
+    }, 180_000);
 
     try {
       const hasWebSearch =
